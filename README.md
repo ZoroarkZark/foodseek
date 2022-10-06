@@ -30,7 +30,7 @@ React or Expo
 
 **Backend / Server**
 
-For our back end we've decied to use Node.js. 
+For our back end we've decied to use Node.js. (v16.17.1)
 
 Currently we have a method of running a server that can take requests (does not do anything with them). Need to learn more about how to implement the data structures as well as other important features within this server.
 
