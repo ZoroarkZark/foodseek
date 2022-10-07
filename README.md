@@ -32,7 +32,9 @@ React or Expo
 
 For our back end we've decied to use Node.js. (v16.17.1)
 
-Currently we have a method of running a server that can take requests (does not do anything with them). Need to learn more about how to implement the data structures as well as other important features within this server.
+**(10.7.2022)** Added a method for app.js to connect to the mySQL database and insert new data. 
+You can try to add your own data by downloading Postman and making the URL what ever you have app running on
+Then issue a PUT with the url /newuser passing a "email" and "password" header
 
 **Data Base**
 
