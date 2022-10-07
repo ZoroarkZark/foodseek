@@ -33,8 +33,9 @@ app.get('/test', (req,res) => {
 
 // "Create" a new user by calling a put with the specified parameters 
 app.put('/newuser', (req,res) => { 
+	console.log("made it here");
 	if(req.param("email") && req.param("pass")){ // check for the required headers 
-		var SQL_CODE = 'INSERT INTO user_data (user_email, password) VALUES (' + db_connection.escape(req.param("email"))+", "  + db_connection.escape(req.param("pass"))+')';
+		var SQL_CODE = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.param("email"))+", "  + db_pool.escape(req.param("pass"))+')';
 
 		// The pool code made this part like 1 line which is really nice
 		db_pool.query(SQL_CODE, function (err, results, fields) {
