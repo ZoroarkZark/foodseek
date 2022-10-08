@@ -35,37 +35,42 @@ app.get('/test', (req,res) => {
 
 // "Create" a new user by calling a put with the specified parameters 
 app.put('/newuser', (req,res) => { 
-	console.log("made it here");
-	if(req.param("email") && req.param("pass")){ // check for the required headers 
-		var insert_user = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.param("email"))+", "  + db_pool.escape(req.param("pass"))+')';
-
+	console.log(req.query);
+	if(req.query.email && req.query.pass){ // check for the required headers 
+		var insert_user = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.query.email)+", "  + db_pool.escape(req.query.pass)+')';
+		console.log(`Attempting to insert ${req.query.email} ${req.query.pass}`)
 		// The pool code made this part like 1 line which is really nice
 		db_pool.query(insert_user, function (err) {
-			if (err) throw err;
+			if (err){
+				console.log(`Pass : ${process.env.DB_PASS}`);
+				throw err;
+			}
 			console.log("added user to db");
 		});
 		//Response formation
-		console.log("formulating response object");
+		
 		res.statuscode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.end(
 			JSON.stringify({
-				new_user: req.param("email"),
-				new_pass: req.param("pass")
+				new_user: req.query.email,
+				new_pass: req.query.pass
 			})
 			);
 		
 	}
 	else{
-	res.statuscode = 400;}
+		console.log("Couldn't find parameters");
+		res.statuscode = 400;
+	}
 	
 });
 
 // Code to get user information here
 app.get('/getuser', (req,res) => {
 	
-	if(req.param("email")){
-		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.param("email")); // find the row of the specified user
+	if(req.query.email){
+		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
 		
 		var results;
 		db_pool.query(check_user, function(err, result) {
@@ -108,7 +113,7 @@ app.get('/closecons', (req,res) => {
 
 // keeps this app open on the specifed port
 app.listen(port, () => {
-	console.log('listening on port:');
-	console.log(port);
+	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
+	console.log(`listening on port: ${port}`);
 	
 });
