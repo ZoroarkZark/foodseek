@@ -35,10 +35,10 @@ app.get('/test', (req,res) => {
 app.put('/newuser', (req,res) => { 
 	console.log("made it here");
 	if(req.param("email") && req.param("pass")){ // check for the required headers 
-		var SQL_CODE = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.param("email"))+", "  + db_pool.escape(req.param("pass"))+')';
+		var insert_user = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.param("email"))+", "  + db_pool.escape(req.param("pass"))+')';
 
 		// The pool code made this part like 1 line which is really nice
-		db_pool.query(SQL_CODE, function (err, results, fields) {
+		db_pool.query(insert_user, function (err) {
 			if (err) throw err;
 			console.log("added user to db");
 		});
@@ -61,7 +61,36 @@ app.put('/newuser', (req,res) => {
 
 // Code to get user information here
 app.get('/getuser', (req,res) => {
-	if(req.param("email") && req.param("pass")){}
+	
+	if(req.param("email")){
+		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.param("email")); // find the row of the specified user
+		
+		var results;
+		db_pool.query(check_user, function(err, result) {
+		if (err) throw err;
+		results = result;
+		});
+		
+		res.statuscode = 200;
+		res.setHeader("Content-Type", 'application/json');
+		res.end(
+			JSON.stringify({
+				results: results,
+				msg: "found user!"
+			})
+			);
+		
+	}
+	else{
+		res.statuscode = 200;
+		res.setHeader("Content-Type", 'application/json');
+		res.end(
+			JSON.stringify({
+				msg: "Could not find user!"
+			})
+			);
+	}
+	
 });
 
 
@@ -77,5 +106,7 @@ app.get('/closecons', (req,res) => {
 
 // keeps this app open on the specifed port
 app.listen(port, () => {
-	console.log('listening on port ${port}');
+	console.log('listening on port:');
+	console.log(port);
+	
 });
