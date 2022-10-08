@@ -3,6 +3,8 @@ const app = express();
 const database = require('mysql')
 const port = 3000;
 
+//adding line for commit
+
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 
 // SQL connection structure
