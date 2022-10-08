@@ -1,0 +1,27 @@
+{
+  "name": "foodseek",
+  "version": "1.0.0",
+  "description": "*A Food Social Media Platform*",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZoroarkZark/foodseek.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZoroarkZark/foodseek/issues"
+  },
+  "homepage": "https://github.com/ZoroarkZark/foodseek#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
