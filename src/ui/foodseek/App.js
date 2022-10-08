@@ -1,5 +1,6 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import { ThemeProvider } from "react-native-rapi-ui";
 import { Layout, TopNav } from 'react-native-rapi-ui'
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,7 +10,7 @@ const App = () => {
   return (
     <ThemeProvider theme="light">
       <Layout>
-        <TopNav middleContent="Home" />
+        <TopNav middleContent="Home Screen" />
         <TopNav
           leftContent={
             <Ionicons name="chevron-back" size={20} color={themeColor.black} />
@@ -24,6 +25,24 @@ const App = () => {
           rightAction={() => console.log('setting icon pressed')}
           middleContent="Settings"
         />
+        <TopNav middleContent={
+          <TextInput
+            style={textStyles.input}
+            placeholder="Let's gooooo!"
+            keyboardType="default"
+            multiline={true}
+            numberOfLines={3}
+            />
+          }
+        /> 
+        <TopNav middleContent={
+          <TextInput
+            style={textStyles.input}
+            placeholder="Let's gooooo!"
+            keyboardType="default"
+          />
+        }
+      /> 
       </Layout>
       <View style={styles.container}>
         <Text>Hello FoodSeek!</Text>
@@ -33,7 +52,6 @@ const App = () => {
   );
 };
 
-export default App;
 
 const styles = StyleSheet.create({
   container: {
@@ -43,3 +61,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const textStyles = StyleSheet.create({
+  input: {
+    height: 40, 
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
+
+export default App;
