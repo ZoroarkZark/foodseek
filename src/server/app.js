@@ -1,9 +1,15 @@
+// Required Packages
 const express = require('express')
-const app = express();
 const database = require('mysql')
-const port = 3000;
 
-//adding line for commit
+// Server Constants
+const port = 3000;
+const hostname = "localhost";
+
+// Express app 
+const app = express();
+
+
 
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 
@@ -69,21 +75,28 @@ app.put('/newuser', (req,res) => {
 // Code to get user information here
 app.get('/getuser', (req,res) => {
 	
-	if(req.query.email){
+	if(req.query.email && req.query.pass){
 		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
 		
-		var results;
+		let isUser = false;
 		db_pool.query(check_user, function(err, result) {
-		if (err) throw err;
-		results = result;
+			if (err) throw err;
+			
+			if(result[0]){
+				if(result[0].password == req.query.pass){
+					isUser = true;
+					console.log("Valid user login!");
+				}
+			}
+		
 		});
 		
 		res.statuscode = 200;
 		res.setHeader("Content-Type", 'application/json');
 		res.end(
 			JSON.stringify({
-				results: results,
-				msg: "found user!"
+				msg: "found user!",
+				logged_in: isUser
 			})
 			);
 		
@@ -112,8 +125,8 @@ app.get('/closecons', (req,res) => {
 });
 
 // keeps this app open on the specifed port
-app.listen(port, () => {
+app.listen(port,hostname, () => {
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
-	console.log(`listening on port: ${port}`);
+	console.log(`listening to ${hostname} on port: ${port}`);
 	
 });
