@@ -1,6 +1,7 @@
 // Required Packages
 const express = require('express')
 const database = require('mysql')
+const bcrypt = require('bcrypt');
 
 // Server Constants
 const port = 3000;
@@ -40,7 +41,7 @@ app.get('/test', (req,res) => {
 });
 
 // "Create" a new user by calling a put with the specified parameters 
-app.put('/newuser', (req,res) => { 
+app.post('/newuser', (req,res) => { 
 	console.log(req.query);
 	if(req.query.email && req.query.pass){ // check for the required headers 
 		var insert_user = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.query.email)+", "  + db_pool.escape(req.query.pass)+')';
