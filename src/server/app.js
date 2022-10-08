@@ -27,7 +27,6 @@ var db_pool = database.createPool({
 
 
 
-
 // util function for error responses
 // takes in the error object and checks if we have a method of handling
 // takes in a response object to return if we do have a handler method, if not throws an exception and closes
@@ -53,27 +52,6 @@ function errRespond(err){
 			out[2] = 1;
 			return out;
 	}
-}
-
-// function to handle all errors not handled by errno
-// if no user or password is given missing user : no_user , missing password : no_pass
-function sysRespond(sysError){
-	let out = []
-	switch(sysError){
-		case "no_user":
-			console.log("No user name recieved");
-			out[1] = JSON.stringify({
-				msg: "No user name given, please add user name and try signing in again."
-			});
-		case "no_pass":
-			console.log("No password recieved")
-			out[1] = JSON.stringify({
-				msg: "No password given, please add password and try signing in again. If you dont have an account , please make one."
-			});
-
-	}
-
-
 }
 
 
@@ -130,18 +108,19 @@ app.post('/newuser', (req,res) => {
 		});
 	}
 	else{
-		if(!req.query.email){
-			sysRespond("no_user")
+		res.statuscode = 400; // Bad request no parameters given
+		res.end(
+			JSON.stringify({
+				msg: (!req.query.email ? "No Email Provided!" : "No Password Provided!") // if no email, error is no email, if email then error must be password
 		}
-		else if(!req.query.pass){
-			sysRespond("no_pass")
-		}
+		)
+		);
 	}
 	
 });
 
 // Code to get user information here
-app.get('/getuser', (req,res) => {
+app.get('/login', (req,res) => {
 	
 	if(req.query.email && req.query.pass){
 		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
