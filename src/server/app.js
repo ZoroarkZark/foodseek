@@ -55,6 +55,27 @@ function errRespond(err){
 	}
 }
 
+// function to handle all errors not handled by errno
+// if no user or password is given missing user : no_user , missing password : no_pass
+function sysRespond(sysError){
+	let out = []
+	switch(sysError){
+		case "no_user":
+			console.log("No user name recieved");
+			out[1] = JSON.stringify({
+				msg: "No user name given, please add user name and try signing in again."
+			});
+		case "no_pass":
+			console.log("No password recieved")
+			out[1] = JSON.stringify({
+				msg: "No password given, please add password and try signing in again. If you dont have an account , please make one."
+			});
+
+	}
+
+
+}
+
 
 // call when terminating to ensure db pool is closed 
 // can also just be used to call things on termination in general hopefully
@@ -109,6 +130,12 @@ app.post('/newuser', (req,res) => {
 		});
 	}
 	else{
+		if(!req.query.email){
+			sysRespond("no_user")
+		}
+		else if(!req.query.pass){
+			sysRespond("no_pass")
+		}
 	}
 	
 });

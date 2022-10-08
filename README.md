@@ -32,11 +32,19 @@ React or Expo
 
 For our back end we've decied to use Node.js. (v16.17.1)
 
+
+
 **(10.7.2022)** Added a method for app.js to connect to the mySQL database and insert new data. 
 You can try to add your own data by downloading Postman and making the URL what ever you have app running on
 Then issue a PUT with the url /newuser passing a "email" and "password" header
 
+**(10.7.2022)** 
+app.js now add users and validate sign in credentials. Added error handling for trying to create accounts with the same email 
+(no duplicates). Added error handling for lack of username or password durring sign in.  
+
 **Data Base**
 
+The data base is running on strawberry pie and portforwarded to allow connection. 
 SQL
 Going to want to look into login systems and stuff
+
