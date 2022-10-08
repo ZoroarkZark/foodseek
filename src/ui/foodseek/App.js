@@ -14,7 +14,7 @@ const App = () => {
           leftContent={
             <Ionicons name="chevron-back" size={20} color={themeColor.black} />
           }
-          rightAction={() => console.log('back icon pressed')}
+          leftAction={() => console.log('back icon pressed')}
           middleContent="Profile"
         />
         <TopNav
