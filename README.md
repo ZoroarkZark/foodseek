@@ -2,14 +2,16 @@
 
 *A Food Social Media Platform*
 
+---
 
 ## Goal
 Our goal is to connect food insecure people (Our users) with free food.
 
+
 ## Method
 Connect our users with food suppliers that are voiding or wasting some food. Get the supplier to hold the food for some amount of time for one of our users to pick the food up.
 
-
+---
 
 ## Generally
 In order to implement our goal with our method. We will need
@@ -19,11 +21,13 @@ In order to implement our goal with our method. We will need
   - Login system for returning user (SQL / Database)
 
 
-
+---
 
 ## UI
 
 React or Expo
+
+---
 
 ## Backend / Server
 
@@ -41,6 +45,7 @@ Currently the back-end is pretty sparse but we have two working functions for us
 These functions are handled by calling a HTTP method on a URL
 
 **POST '/newuser'**
+
 Takes in two "parameters"/"headers" with keys ("email", "pass").
 If these two keys are not present a response with `statuscode 400` will be returned detailing which key was missing.
 
@@ -49,6 +54,7 @@ If the email value is one that is already on the server a error `ER_DUP_ENTRY` i
 If both keys are present and there are no conflicts with emails. A `INSERT` is passed to the mySQL database with the new user information
 
 **GET '/login'**
+
 Takes in two paramters with keys ("email", "pass").
 Currently no error handling set up for missing keys or anything so it will probably just hang and eventually time out
 
@@ -56,6 +62,7 @@ It checks the database if the user is present and will return a little msg in a 
 
 
 **errRespond(err)**
+
 The `errRespond` method takes in a single parameter `err`. This `err` is generated during the response cylce in any app.METHOD, or in the database calls.
 It returns a list as output with the following fields : `[0:status code for error, 1: json msg for error, 2:fatal]`
 `[0]` : what status code the response will get based on that error
@@ -67,11 +74,12 @@ Currently you have to save the results of this function in a variable, and then 
 In an ideal situation we could just call this function and the response would automatically get filled out instead.
 
 **terminate(err)**
+
 This function makes sure to close the DB pool before throwing what ever error we pass as `err` and halting the program.
 Typically this will be called if `errRespond(err)[2] == 1`
 
 
-
+---
 ## Data Base
 
 Currently the database is being run on a MySQL server on my (Cal) computer. 
