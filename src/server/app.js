@@ -135,6 +135,9 @@ app.get('/login', (req,res) => {
 					console.log("Valid user login!");
 				}
 			}
+			else {
+				// could not find user in database code goes here
+			}
 		
 		});
 		
@@ -149,11 +152,11 @@ app.get('/login', (req,res) => {
 		
 	}
 	else{
-		res.statuscode = 200;
+		res.statuscode = 400;
 		res.setHeader("Content-Type", 'application/json');
 		res.end(
 			JSON.stringify({
-				msg: "Could not find user!"
+				msg: "Faulty Parameters!"
 			})
 			);
 	}
