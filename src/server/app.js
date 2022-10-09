@@ -3,6 +3,8 @@ const express = require('express');
 const database = require('mysql');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
 
 // Server Constants
 const port = 3000;
@@ -84,7 +86,12 @@ app.get('/test', (req,res) => {
 
 
 app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
-
+app.use(session({
+	secret: "testsecret", // session secret between client and server 
+	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
+	resave: false//  wanna see if I can make my own store 
+})); // call the session in each method 
+	
 
 
 // "Create" a new user by calling a put with the specified parameters 
@@ -167,10 +174,13 @@ app.get('/login', (req,res) => {
 });
 
 
+// Basically I learned using cookies is super unsafe for tracking a user session. People can edit their cookies and could send 
+// another users login token. To avoid that Im gonna implement sessions and some randomization when it comes to generating session keys 
+
+
 // A temporary method to test giving cookies to users
 // will check if cookie is already on a user before assigning
 app.post('/getcookies', (req,res) => {
-	
 	// requiring parameter "email"
 	if( db_pool.escape(req.query.email) ){
 		
@@ -202,9 +212,11 @@ app.post('/getcookies', (req,res) => {
 	}
 });
 
+// Use cookies to perform some action
+// This is gonna depreciate as soon as sessions is up
 app.get('/cookieaction', (req,res) => {
-	
-	console.log(req.cookies);
+	console.log(req.session);
+	//console.log(req.cookies);
 	if( req.cookies ){ // user has cookies
 		
 		if( req.cookies.login_id ){
@@ -224,6 +236,27 @@ app.get('/cookieaction', (req,res) => {
 	}
 		
 	
+});
+
+
+
+// assign some session variables
+app.post('/ses_test', (req,res) => {
+	console.log(req.sessionId); // print out the session object
+	req.session.test = true;
+	res.end('done');
+	
+});
+
+// get session variables
+app.get('/ses_test', (req,res) => {
+	console.log(req.session);
+	if (req.session.test){
+		res.end('Session test true');
+	}
+	else{
+		res.end('Session test false');
+	}
 });
 
 // keeps this app open on the specifed port
