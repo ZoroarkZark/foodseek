@@ -71,6 +71,37 @@ function terminate(err){
 
 }
 
+// insert a session id and user into the database
+function saveSession(sid, user){
+	var insertSession = `INSERT INTO session_data (session_id, session_user) VALUES ( ${db_pool.escape(sid)}, ${db_pool.escape(user)})`;
+	console.log("attempting query");
+	db_pool.query(insertSession, function(err){
+		if (err) throw err;
+		console.log("inserted user session data!");
+	});
+	
+	return;
+}
+
+
+
+// validate if a specified user has the given session id
+function validateSession(sid, user){
+	var sessionLookup = `SELECT * FROM session_data WHERE session_user = ${db_pool.escape(user)}`;
+	
+	db_pool.query(sessionLookup, function(err, results) {
+		if(err) throw err;
+		
+		if(results){ // got a result 
+			if(sid == results[0].session_id){ // session is valid 
+				return true; 
+			}
+		}
+		return false; // either no result, or invalid session 
+	});	
+}
+
+
 // Basic input 
 // Doesnt do anything but respond with a json
 app.get('/test', (req,res) => {
@@ -136,7 +167,7 @@ app.get('/login', (req,res) => {
 		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
 		
 		let isUser = false;
-		db_pool.query(check_user, function(err, result) {
+		db_pool.query(check_user, (err, result) => {
 			if (err) throw err;
 			
 			if(result[0]){
@@ -240,22 +271,36 @@ app.get('/cookieaction', (req,res) => {
 
 
 
-// assign some session variables
+// Session Test Post 
+// Take in a parameter 'email' and assign it as the session variable `user`, and then upload both to the database
 app.post('/ses_test', (req,res) => {
-	console.log(req.sessionId); // print out the session object
-	req.session.test = true;
-	res.end('done');
+	console.log(req.sessionID); // print out the session id
+	
+	if( req.query.email ){
+		req.session.user = req.query.email; // set the user in the session (I think this also sets the session)
+		
+		console.log("saving session");
+		saveSession(req.sessionID, req.session.user); // save into the database
+		
+		res.end('Done');
+	}
+	else{
+		res.end('No Email Provided');
+	}
 	
 });
 
 // get session variables
 app.get('/ses_test', (req,res) => {
-	console.log(req.session);
-	if (req.session.test){
-		res.end('Session test true');
+	console.log(req.sessionID);
+	
+	if (req.session.user){
+		if (validateSession(req.sessionID, req.session.user)){
+			res.end('Have a valid session');
+		}
 	}
 	else{
-		res.end('Session test false');
+		res.end('No Session');
 	}
 });
 
