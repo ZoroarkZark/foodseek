@@ -1,7 +1,8 @@
 // Required Packages
-const express = require('express')
-const database = require('mysql')
+const express = require('express');
+const database = require('mysql');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 
 // Server Constants
 const port = 3000;
@@ -67,6 +68,7 @@ function terminate(err){
 	throw err; // throw the error to console and halt program
 
 }
+
 // Basic input 
 // Doesnt do anything but respond with a json
 app.get('/test', (req,res) => {
@@ -81,8 +83,9 @@ app.get('/test', (req,res) => {
 });
 
 
-// create an error handler response 
-// pass in the given error from the function and then generate response
+app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
+
+
 
 // "Create" a new user by calling a put with the specified parameters 
 app.post('/newuser', (req,res) => { 
@@ -164,14 +167,63 @@ app.get('/login', (req,res) => {
 });
 
 
-// Close the connection pool started on initialization
-app.get('/closecons', (req,res) => {
-	res.statuscode = 200;
-	res.end();
-	console.log("Closing Pool");
-	db_pool.end(function (err) {
-		if (err) throw err;
-	});
+// A temporary method to test giving cookies to users
+// will check if cookie is already on a user before assigning
+app.post('/getcookies', (req,res) => {
+	
+	// requiring parameter "email"
+	if( db_pool.escape(req.query.email) ){
+		
+		if( req.cookies ){
+			if( req.cookies.login_id){
+				// this person already has a cookie
+				console.log("Already logged in");
+				res.status(200).end( JSON.stringify({
+					login_id: req.cookies.login_id,
+					msg: "you are already logged in"
+				}));
+				return; // this could fuck everything up idk
+			}
+		}
+			
+		var cookie_str = `${db_pool.escape(req.query.email)}123456`;
+		res.cookie("login_id", cookie_str, {maxAge: 300000}); // give a cookie based on the provided email that lasts 5min(300k milliseconds)
+		console.log("Gave user a cookie");
+		res.status(200).end( JSON.stringify({
+			login_id: cookie_str,
+			msg: "successfully assigned login id",
+		}));
+		console.log(res);
+	}
+	else{
+		res.status(400).end(JSON.stringify({
+			msg: "give an email to login!"
+		}));
+	}
+});
+
+app.get('/cookieaction', (req,res) => {
+	
+	console.log(req.cookies);
+	if( req.cookies ){ // user has cookies
+		
+		if( req.cookies.login_id ){
+			// a login_id cookie was found
+			console.log("Logged in user doing something!");
+			res.status(200).end(JSON.stringify( {
+				login_id: req.cookies.login_id,
+				msg: "A logged in user did something!"
+			}));
+		}
+	}
+	else{
+		console.log("User is not logged in!");
+		res.status(400).end(JSON.stringify({
+			msg: "login before attempting that action!"
+		}));
+	}
+		
+	
 });
 
 // keeps this app open on the specifed port
