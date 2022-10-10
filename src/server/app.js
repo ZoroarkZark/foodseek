@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+const MyStore = require('./memstore.js')(session);
+
+const Store = new MyStore({table_name: 'session_data'});
 
 // Server Constants
 const port = 3000;
@@ -71,36 +74,6 @@ function terminate(err){
 
 }
 
-// insert a session id and user into the database
-function saveSession(sid, user){
-	var insertSession = `INSERT INTO session_data (session_id, session_user) VALUES ( ${db_pool.escape(sid)}, ${db_pool.escape(user)})`;
-	console.log("attempting query");
-	db_pool.query(insertSession, function(err){
-		if (err) throw err;
-		console.log("inserted user session data!");
-	});
-	
-	return;
-}
-
-
-
-// validate if a specified user has the given session id
-function validateSession(sid, user){
-	var sessionLookup = `SELECT * FROM session_data WHERE session_user = ${db_pool.escape(user)}`;
-	
-	db_pool.query(sessionLookup, function(err, results) {
-		if(err) throw err;
-		
-		if(results){ // got a result 
-			if(sid == results[0].session_id){ // session is valid 
-				return true; 
-			}
-		}
-		return false; // either no result, or invalid session 
-	});	
-}
-
 
 // Basic input 
 // Doesnt do anything but respond with a json
@@ -118,6 +91,7 @@ app.get('/test', (req,res) => {
 
 app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
 app.use(session({
+	store: Store,
 	secret: "testsecret", // session secret between client and server 
 	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
 	resave: false//  wanna see if I can make my own store 
@@ -310,7 +284,7 @@ app.post('/ses_test', (req,res) => {
 
 // get session variables
 app.get('/ses_test', (req,res) => {
-	console.log(req.sessionID);
+	console.log(req.session);
 	
 	if (req.session.user){
 		if (validateSession(req.sessionID, req.session.user)){
