@@ -161,8 +161,8 @@ app.post('/newuser', (req,res) => {
 });
 
 // Code to get user information here
-app.get('/login', (req,res) => {
-	
+//app.get('/login', (req,res) => {
+app.post('/login', (req, res) => {	
 	if(req.query.email && req.query.pass){
 		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
 		
@@ -174,6 +174,18 @@ app.get('/login', (req,res) => {
 				if(result[0].password == req.query.pass){
 					isUser = true;
 					console.log("Valid user login!");
+					req.session.regenerate(function (err) {
+						if (err) throw err;
+						
+						req.session.logged_in = true
+						req.session.user = req.query.email // store user info in session
+						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
+						req.session.save(function (err) {
+							if (err) throw err;
+							//res.redirect('/')
+						})
+						
+					})
 				}
 			}
 			else {
@@ -187,7 +199,7 @@ app.get('/login', (req,res) => {
 		res.end(
 			JSON.stringify({
 				msg: "found user!",
-				logged_in: isUser
+				//logged_in: isUser
 			})
 			);
 		
@@ -204,6 +216,12 @@ app.get('/login', (req,res) => {
 	
 });
 
+// logs out the user by destroying the session
+app.get('/logout', (req, res) => {
+	// once store class in made add logic to remove session id from database
+	req.session.destroy();
+	
+})
 
 // Basically I learned using cookies is super unsafe for tracking a user session. People can edit their cookies and could send 
 // another users login token. To avoid that Im gonna implement sessions and some randomization when it comes to generating session keys 
