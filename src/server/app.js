@@ -1,7 +1,7 @@
 // Required Packages
 const express = require('express');
 const database = require('mysql');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -148,13 +148,12 @@ app.post('/login', (req, res) => {
 			
 			if(result[0]){
 				if(result[0].password == req.query.pass){
-					isUser = true;
+					req.session.logged_in = true
+					req.session.user = req.query.email // store user info in session
 					console.log("Valid user login!");
 					req.session.regenerate(function (err) {
 						if (err) throw err;
 						
-						req.session.logged_in = true
-						req.session.user = req.query.email // store user info in session
 						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
 						req.session.save(function (err) {
 							if (err) throw err;
@@ -195,7 +194,13 @@ app.post('/login', (req, res) => {
 // logs out the user by destroying the session
 app.get('/logout', (req, res) => {
 	// once store class in made add logic to remove session id from database
-	req.session.destroy();
+	req.session.destroy( (err) => {
+		if(err){
+			console.log(`Couldnt destroy session: ${req.sessionID}`);
+			throw err;
+		}
+		console.log(`Session: ${req.sessionID} destroyed from database`);
+	});
 	
 })
 
@@ -272,9 +277,7 @@ app.post('/ses_test', (req,res) => {
 	
 	if( req.query.email ){
 		req.session.user = req.query.email; // set the user in the session (I think this also sets the session)
-		
-		console.log("saving session");
-		saveSession(req.sessionID, req.session.user); // save into the database
+	
 		
 		res.end('Done');
 	}

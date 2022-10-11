@@ -92,11 +92,12 @@ module.exports =
 				this.options.schema.columns.data,
 				this.options.schema.columns.expr,
 				this.options.schema.table_name,
-				this.options.schema.id,
+				this.options.schema.columns.id,
 				sid
 			]
 			
 			var sql = mysql.format(get_sql, parameters); // format (replace ?? with parameters)
+			console.log(sql);
 			// *format also escapes the values
 
 			// call the query 
@@ -132,29 +133,30 @@ module.exports =
 		set(sid, session, callback = noop){
 			
 			// create an expiration time
-			var expr_time = Date.now() + this.options.maxAge;
+			var expr_time = (Date.now() + this.options.maxAge) / 1000;
 			session = JSON.stringify(session);
 			
 			// set items 
 			var set_sql = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE ?? = VALUES(??), ?? = VALUES(??)";
 			
 			var parameters = [
-				this.options.table_name,
-				this.options.schema.id,
-				this.options.schema.expr,
-				this.options.schema.data,
+				this.options.schema.table_name,
+				this.options.schema.columns.id,
+				this.options.schema.columns.expr,
+				this.options.schema.columns.data,
 				sid,
 				expr_time,
 				session,
-				this.options.schema.expr,
-				this.options.schema.expr,
-				this.options.schema.data,
-				this.options.schema.data
+				this.options.schema.columns.expr,
+				this.options.schema.columns.expr,
+				this.options.schema.columns.data,
+				this.options.schema.columns.data
 
 
 			]
 
 			var sql = mysql.format(set_sql, parameters)
+			console.log(sql);
 			this.conn_pool.query(sql, (err) => {
 				if (err){ // error inserting data
 					console.log(`Error setting ${sid} into DB!`);
@@ -169,18 +171,19 @@ module.exports =
 		touch(sid, callback){
 			console.log(`Touching session: ${sid}`);
 
-			var expr_time = Date.now() + this.maxAge; // new expire time
+			var expr_time = (Date.now() + this.maxAge)/1000; // new expire time
 
 			var touch_sql = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
 			var parameters = [
-				this.options.table_name,
-				this.options.schema.expr,
+				this.options.schema.table_name,
+				this.options.schema.columns.expr,
 				expr_time,
-				this.options.schema.id,
+				this.options.schema.columns.id,
 				sid
 			];
 
 			var sql = mysql.format(touch_sql,parameters);
+			console.log(sql);
 
 			this.conn_pool.query(sql, (err) => {
 				if(err){
@@ -202,11 +205,14 @@ module.exports =
 			var del_sql = "DELETE FROM ?? WHERE ?? = ?";
 			
 			var parameters = [
-				this.options.table_name,
-				this.options.schema.id
+				this.options.schema.table_name,
+				this.options.schema.columns.id,
+				sid
+
 			];
 
 			var sql = mysql.format(del_sql,parameters);
+			console.log(sql);
 
 			this.conn_pool.query(sql, (err) => {
 				if (err) {
@@ -226,12 +232,13 @@ module.exports =
 			var clear_sql = "DELETE FROM ?? WHERE ?? < ?";
 			
 			var parameter = [
-				this.options.table_name,
-				this.options.schema.expr,
-				Date.now()
+				this.options.schema.table_name,
+				this.options.schema.columns.expr,
+				(Date.now() / 1000)
 			]
 
 			var sql = mysql.format(clear_sql,parameter);
+			console.log(sql);
 			this.conn_pool.query(sql, (err) => {
 				if (err){
 					console.log("Failed to remove expired sessions");
