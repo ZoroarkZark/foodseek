@@ -5,9 +5,8 @@ const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const MyStore = require('./memstore.js')(session);
+const MyStore = require('./memstore.js');
 
-const Store = new MyStore({table_name: 'session_data'});
 
 // Server Constants
 const port = 3000;
@@ -31,6 +30,9 @@ var db_pool = database.createPool({
 	database: process.env.DB_ACTIVE_DB
 });
 
+
+// Instance of MyStore
+const Store = new MyStore(db_pool);
 
 
 // util function for error responses
@@ -298,6 +300,7 @@ app.get('/ses_test', (req,res) => {
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {
+	console.log(db_pool.prototype);
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
 	console.log(`listening to ${hostname} on port: ${port}`);
 	
