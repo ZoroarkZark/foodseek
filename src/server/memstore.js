@@ -1,11 +1,16 @@
+
 // MEMORY STORE FOR OUR EXPRESS-SESSION
+<<<<<<< HEAD
 const mysql   = require('mysql')
 const session = require('express-session');
 const _ = require('underscore');
 
+=======
+const mysql = require('mysql')
+const sess = require('express-session');
+>>>>>>> f95f9a6507f081a5aa271289e8bdc9782986a126
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path and require env 
-
-
+const events = require('events');
 
 
 /*
@@ -37,6 +42,7 @@ require('dotenv').config({path: __dirname +'/.env'}); // fix .env path and requi
 // Memory store class 
 // By Express-Session requirement must be an event emiiter 
 module.exports =
+<<<<<<< HEAD
 	class MyStore extends session.Store {
 		
 		// Initialize the connection pool
@@ -75,6 +81,16 @@ module.exports =
 				this.setExpirationInterval(); // call this function to start expiration 
 			}
 			
+=======
+	class MyStore extends sess.MemoryStore {
+		
+		// Initialize the connection pool
+		constructor(options = {} ){
+			super(options);
+			this.table = options.table_name;
+			
+			this.conn_pool = options.conn_pool;
+>>>>>>> f95f9a6507f081a5aa271289e8bdc9782986a126
 		}
 		
 		
@@ -86,6 +102,7 @@ module.exports =
 			console.log(`Attempting to get session: ${sid}`);
 
 			// Get all that match this session id 
+<<<<<<< HEAD
 			var get_sql = 'SELECT ?? AS data, ?? as expires FROM ?? WHERE ?? = ?';
 			// going to replace ?? and ? with these values in order
 			var parameters = [
@@ -95,6 +112,9 @@ module.exports =
 				this.options.schema.id,
 				sid
 			]
+=======
+			var get_query = `SELECT session_obj FROM ${this.table} WHERE session_id = '${sid}'`;
+>>>>>>> f95f9a6507f081a5aa271289e8bdc9782986a126
 			
 			var sql = mysql.format(get_sql, parameters); // format (replace ?? with parameters)
 			// *format also escapes the values
@@ -128,7 +148,11 @@ module.exports =
 			
 		}
 		
+		//Set
 		//add a session to the datastore
+		// sid      : sessionID
+		// session  : the session object 
+		// callback : callback function for the  cb(err)
 		set(sid, session, callback = noop){
 			
 			// create an expiration time
@@ -195,8 +219,10 @@ module.exports =
 		}
 		
 		//remove a session
+		// Curently this times out each time
 		destroy(sid, callback){
 
+<<<<<<< HEAD
 			console.log(`Destroying session: ${sid}`);
 			
 			var del_sql = "DELETE FROM ?? WHERE ?? = ?";
@@ -261,5 +287,30 @@ module.exports =
 		}
 	}
 
+=======
+
+			// Delete query code for SQL
+			var del_query = `DELETE FROM ${this.table} WHERE session_id = '${sid}'`;
+			//console.log(del_query); // print out 
+
+			//switching over to the getConnection flow
+			// This will split up the pool.query into steps so we can
+			// see what part might be failing more clearly
+			// might be good to implement this across the board
+			this.conn_pool.getConnection( (err, conn) => {
+				if (err) throw err;
+
+				conn.query(del_query, (err, res, fields) => {
+					conn.release(); // release connection bc we are done w it
+					
+					if (err) throw err;
+
+					callback(err);
+				});
+			});
+			
+		}
+}
+>>>>>>> f95f9a6507f081a5aa271289e8bdc9782986a126
 		
 			

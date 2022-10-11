@@ -1,7 +1,7 @@
 // Required Packages
 const express = require('express');
 const database = require('mysql');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -121,6 +121,7 @@ app.post('/newuser', (req,res) => {
 			}
 			else{
 				console.log("User added successfully");
+				res.end('Added user!');
 			}
 		});
 	}
@@ -161,10 +162,13 @@ app.post('/login', (req, res) => {
 							//res.redirect('/')
 						})
 						
-					})
+					});
+
+					res.end('Logged In');
 				}
 			}
 			else {
+				res.end('Couldnt login');
 				// could not find user in database code goes here
 			}
 		
@@ -286,16 +290,10 @@ app.post('/ses_test', (req,res) => {
 
 // get session variables
 app.get('/ses_test', (req,res) => {
-	console.log(req.session);
-	
-	if (req.session.user){
-		if (validateSession(req.sessionID, req.session.user)){
-			res.end('Have a valid session');
-		}
-	}
-	else{
-		res.end('No Session');
-	}
+	Store.get( req.sessionID, (err, session) => {
+		if (err) throw err;
+		console.log(session);
+	});
 });
 
 // keeps this app open on the specifed port
