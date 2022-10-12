@@ -100,7 +100,7 @@ app.post('/test_post', (req,res) => {
 	res.setHeader('Content-Type','application/json');
 	res.end(
 		JSON.stringify({
-			msg: 'Successful test post',
+			msg: 'Test Post Working!',
 			passed_items: req.query,
 		})
 	);
