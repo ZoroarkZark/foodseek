@@ -144,7 +144,10 @@ app.post('/login', (req, res) => {
 		
 		let isUser = false;
 		db_pool.query(check_user, (err, result) => {
-			if (err) throw err;
+			if(err){
+				console.log(`Error in query ${check_user}`);
+				throw err;
+			}
 			
 			if(result[0]){
 				if(result[0].password == req.query.pass){
@@ -152,12 +155,19 @@ app.post('/login', (req, res) => {
 					req.session.user = req.query.email // store user info in session
 					console.log("Valid user login!");
 					req.session.regenerate(function (err) {
-						if (err) throw err;
+						if (err) {
+							console.log(`Error regenerating session ${req.sessionID}`);
+							throw err;
+						}
 						
 						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
 						req.session.save(function (err) {
-							if (err) throw err;
-							//res.redirect('/')
+							if (err){
+								console.log(`Error saving ${req.sessionID}`);
+								throw err;
+							}
+
+							res.end(`Logged in as ${req.session.user} and assigned session `);
 						})
 						
 					})
@@ -165,18 +175,12 @@ app.post('/login', (req, res) => {
 			}
 			else {
 				// could not find user in database code goes here
+				res.end('Could not validate information! Try creating a new account');
 			}
 		
 		});
 		
-		res.statuscode = 200;
-		res.setHeader("Content-Type", 'application/json');
-		res.end(
-			JSON.stringify({
-				msg: "found user!",
-				//logged_in: isUser
-			})
-			);
+		
 		
 	}
 	else{
@@ -200,106 +204,13 @@ app.get('/logout', (req, res) => {
 			throw err;
 		}
 		console.log(`Session: ${req.sessionID} destroyed from database`);
+		res.end('Logged out!');
 	});
 	
 })
 
 // Basically I learned using cookies is super unsafe for tracking a user session. People can edit their cookies and could send 
 // another users login token. To avoid that Im gonna implement sessions and some randomization when it comes to generating session keys 
-
-
-// A temporary method to test giving cookies to users
-// will check if cookie is already on a user before assigning
-app.post('/getcookies', (req,res) => {
-	// requiring parameter "email"
-	if( db_pool.escape(req.query.email) ){
-		
-		if( req.cookies ){
-			if( req.cookies.login_id){
-				// this person already has a cookie
-				console.log("Already logged in");
-				res.status(200).end( JSON.stringify({
-					login_id: req.cookies.login_id,
-					msg: "you are already logged in"
-				}));
-				return; // this could fuck everything up idk
-			}
-		}
-			
-		var cookie_str = `${db_pool.escape(req.query.email)}123456`;
-		res.cookie("login_id", cookie_str, {maxAge: 300000}); // give a cookie based on the provided email that lasts 5min(300k milliseconds)
-		console.log("Gave user a cookie");
-		res.status(200).end( JSON.stringify({
-			login_id: cookie_str,
-			msg: "successfully assigned login id",
-		}));
-		console.log(res);
-	}
-	else{
-		res.status(400).end(JSON.stringify({
-			msg: "give an email to login!"
-		}));
-	}
-});
-
-// Use cookies to perform some action
-// This is gonna depreciate as soon as sessions is up
-app.get('/cookieaction', (req,res) => {
-	console.log(req.session);
-	//console.log(req.cookies);
-	if( req.cookies ){ // user has cookies
-		
-		if( req.cookies.login_id ){
-			// a login_id cookie was found
-			console.log("Logged in user doing something!");
-			res.status(200).end(JSON.stringify( {
-				login_id: req.cookies.login_id,
-				msg: "A logged in user did something!"
-			}));
-		}
-	}
-	else{
-		console.log("User is not logged in!");
-		res.status(400).end(JSON.stringify({
-			msg: "login before attempting that action!"
-		}));
-	}
-		
-	
-});
-
-
-
-// Session Test Post 
-// Take in a parameter 'email' and assign it as the session variable `user`, and then upload both to the database
-app.post('/ses_test', (req,res) => {
-	console.log(req.sessionID); // print out the session id
-	
-	if( req.query.email ){
-		req.session.user = req.query.email; // set the user in the session (I think this also sets the session)
-	
-		
-		res.end('Done');
-	}
-	else{
-		res.end('No Email Provided');
-	}
-	
-});
-
-// get session variables
-app.get('/ses_test', (req,res) => {
-	console.log(req.session);
-	
-	if (req.session.user){
-		if (validateSession(req.sessionID, req.session.user)){
-			res.end('Have a valid session');
-		}
-	}
-	else{
-		res.end('No Session');
-	}
-});
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {

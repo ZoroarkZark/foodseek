@@ -109,6 +109,7 @@ module.exports =
 				
 				var result = results[0] || null; // return the item or null
 
+				console.log(result);
 				if(!result) {
 					return callback(null,null); // item not found, no error 
 				}
