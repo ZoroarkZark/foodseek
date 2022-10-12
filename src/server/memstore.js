@@ -55,7 +55,7 @@ module.exports =
 			this.options.table_name     = "session_data";
 			this.options.clearExpired   = true;
 			this.options.expireInterval = 900000;
-			this.options.maxAge         =86400000; 
+			this.options.maxAge         = 86400000; 
 			this.options.schema         = {
 									table_name: 'session_data',
 										columns: {
