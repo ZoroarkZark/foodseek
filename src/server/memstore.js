@@ -55,7 +55,7 @@ module.exports =
 			this.options.table_name     = "session_data";
 			this.options.clearExpired   = true;
 			this.options.expireInterval = 900000;
-			this.options.maxAge         =86400000; 
+			this.options.maxAge         = 86400000; 
 			this.options.schema         = {
 									table_name: 'session_data',
 										columns: {
@@ -117,7 +117,7 @@ module.exports =
 				var data;
 				// try to parse the string into a json object
 				try{
-					data = JSON.parse(result.session_obj); 
+					data = JSON.parse(result.data); 
 				}
 				catch (err){
 					console.log(`Trouble parsing session into object for ${sid}`);
@@ -169,10 +169,10 @@ module.exports =
 			
 		}
 
-		touch(sid, callback){
+		touch(sid, session, callback){
 			console.log(`Touching session: ${sid}`);
 
-			var expr_time = (Date.now() + this.maxAge)/1000; // new expire time
+			var expr_time = (Date.now() + this.options.maxAge)/1000; // new expire time
 
 			var touch_sql = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
 			var parameters = [
