@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const MyStore = require('./memstore.js');
+const DBHandler = require('./sqlhandler.js');
 
 
 // Server Constants
@@ -30,10 +31,18 @@ var db_pool = database.createPool({
 	database: process.env.DB_ACTIVE_DB
 });
 
+// Options object for DBHandler
+var db_handler_object = {
+	pool: db_pool,
+	user_tabl: "user_data",
+	email_col: "user_email",
+	pass_col: "password"
+
+}
 
 // Instance of MyStore
 const Store = new MyStore(db_pool);
-
+const DB    = new DBHandler(db_handler_object);
 
 /*	 CAPTAINS LOG 10/11/2022
 	It's cold outside. The fog has rolled in. 
@@ -137,54 +146,23 @@ app.post('/signup', (req,res) => {
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 	
 	if(req.query.email && req.query.pass){ // check for the required headers 
-		var sign_sql = "INSERT INTO $ ($, $) VALUES ($$, $$)";
-		var parameters = 
-		[
-			"user_data",
-			"user_email",
-			"password",
-			req.query.email,
-			req.query.pass
-		];
+		
 
 
 		
 		console.log(`Attempting to insert ${req.query.email} ${req.query.pass} into db`)
 		// The pool code made this part like 1 line which is really nice
-		db_pool.query(sign_sql, parameters, function (err) {
-			// I think we should fully remove this and the err respond function
-			// We don't really need it and we can just handle a duplicate in this body
-			// next update
-			if (err){
-				let err_response = errRespond(err);	// get error response info
-				res.statuscode = err_response[0]; // place into the response
-				res.end(err_response[1]);
-				
-				if(err_response[2] == 1){
-					terminate(err);
-				}
+		DB.insertUser(req.query.email, req.query.pass, (err) => {
+			if(err){
+				res.end("Error on insertion");
+				throw err;
 			}
-			else{
-				console.log("User added successfully");
-				res.statuscode = 200;
-				res.setHeader("Content-Type", 'application/json');
-				res.end(
-					JSON.stringify({
-						msg: "account created!",
-				
-					})
-				);
-			}
+			res.end("User Inserted");
 		});
+
 	}
 	else{
-		res.statuscode = 400; // Bad request no parameters given
-		res.end(
-			JSON.stringify({
-				msg: (!req.query.email ? "No Email Provided!" : "No Password Provided!") // if no email, error is no email, if email then error must be password
-		}
-		)
-		);
+		res.end("Bad input args")
 	}
 	
 });
