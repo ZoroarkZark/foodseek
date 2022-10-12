@@ -7,6 +7,7 @@ const session = require('express-session');
 
 const MyStore = require('./memstore.js');
 const DBHandler = require('./sqlhandler.js');
+const { isNull } = require('underscore');
 
 
 // Server Constants
@@ -34,7 +35,7 @@ var db_pool = database.createPool({
 // Options object for DBHandler
 var db_handler_object = {
 	pool: db_pool,
-	user_tabl: "user_data",
+	user_table: "user_data",
 	email_col: "user_email",
 	pass_col: "password"
 
@@ -56,50 +57,6 @@ const DB    = new DBHandler(db_handler_object);
 	db_pool.query(sql_code, [values..], callback)
 
 */ 
-
-
-
-
-// util function for error responses
-// takes in the error object and checks if we have a method of handling
-// takes in a response object to return if we do have a handler method, if not throws an exception and closes
-// returns a err_response list [0:statuscode, 1:content, 2:fatal] fatal is 1 for fatal, 0 for non fatal
-// remove this shit in the future its trash
-function errRespond(err){
-	let out = []
-	switch(err.errno){
-		case 1062: // Duplicate entry. The SQL server is set to only allow unique emails so it will throw an error for duplicates
-			console.log("Duplicate Entry, Non-Fatal for us");
-			out[0] = 400;
-			out[1] = JSON.stringify({
-				msg: "User Already has an account! try signing in."
-				});
-			out[2] = 0; // non fatal
-			return out;
-			break;
-		default: // Add other errnos above 
-			out[0] = 500;
-			out[1] = JSON.stringify({
-				msg: "FATAL ERROR!"
-				});
-			out[2] = 1;
-			return out;
-	}
-}
-
-
-// call when terminating to ensure db pool is closed 
-// can also just be used to call things on termination in general hopefully
-function terminate(err){
-	
-	// Pools closed bitch
-	db_pool.end(function (err) {
-		if (err) throw err;
-	});
-	
-	throw err; // throw the error to console and halt program
-
-}
 
 
 // Basic test
@@ -156,6 +113,7 @@ app.post('/signup', (req,res) => {
 			if(err){
 				res.end("Error on insertion");
 				throw err;
+				// handle dup entry for user has an account 
 			}
 			res.end("User Inserted");
 		});
@@ -170,6 +128,7 @@ app.post('/signup', (req,res) => {
 // Code to get user information here
 //app.get('/login', (req,res) => {
 app.post('/login', (req, res) => {	
+
 	if(req.query.email && req.query.pass){
 		var check_sql = "SELECT * FROM $ WHERE $ = $$";
 		var parameters = 
@@ -178,44 +137,21 @@ app.post('/login', (req, res) => {
 			"user_email",
 			req.query.email
 		]
-		db_pool.query(check_sql, parameters, (err, result) => {
-			if (err) throw err;
-			
-			if(result[0]){
-				if(result[0].password == req.query.pass){
-					req.session.logged_in = true
-					req.session.user = req.query.email // store user info in session
+		DB.getUser(req.query.email , (err, pass) => {
 					console.log("Valid user login!");
 					req.session.regenerate(function (err) {
 						if (err) throw err;
-						
+						req.session.user = req.query.email // store user info in session
 						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
 						req.session.save(function (err) {
 							if (err) throw err;
-							//res.redirect('/')
+							res.end(`signed in ${req.query.email} with sessionid: ${req.sessionID} `);
 						})
 						
 					})
-				}
-			}
-			else {
-				// could not find user in database code goes here
-				console.log("invaild pass word, try signing in again!");
-				//res.redirect('/');										// going to want to redirect somewhere maybe back to login but not sure
-			}
-		
+				
 		});
-		
-		res.statuscode = 200;
-		res.setHeader("Content-Type", 'application/json');
-		res.end(
-			JSON.stringify({
-				msg: "found user!",
-				//logged_in: isUser
-			})
-			);
-		
-	}
+	} 
 	else{
 
 		res.statuscode = 400;
@@ -232,19 +168,15 @@ app.post('/login', (req, res) => {
 // logs out the user by destroying the session
 app.get('/logout', (req, res) => {
 	// once store class in made add logic to remove session id from database
-	req.session.destroy( (err) => {
-		if(err){
-			console.log(`Couldnt destroy session: ${req.sessionID}`);
-			res.end(
-				JSON.stringify({
-					msg: "Error signing out"
-				})
-			)
-			throw err;
-		}
-		console.log(`Session: ${req.sessionID} destroyed from database`);
-	});
-
+	req.session.user = null
+	req.session.save( (err) => {
+		if (err) throw err;
+			req.session.destroy((err) => {
+				if (err) throw err;
+			})
+	})
+	
+	
 	res.end(
 		JSON.stringify({
 			msg: "Signed out"

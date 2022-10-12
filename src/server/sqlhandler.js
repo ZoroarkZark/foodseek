@@ -32,7 +32,7 @@ module.exports =
        // The callback is to handle redirection in app.js (and errors)
        // callback should be callback(error)
         insertUser(email, password, callback){
-            var sql = "INSERT INTO $ ($, $) VALUES ($$, $$)"; // get the sql code
+            var sql = "INSERT INTO ?? (??, ??) VALUES (?, ?)"; // get the sql code
             var parameters = [
                 this.user_table,
                 this.email,
@@ -40,7 +40,7 @@ module.exports =
                 email,
                 password
             ];
-
+            
             this.conn.query(sql, parameters, (err) => {
                 if(err){
                     console.log(`Error inserting user ${email}`);
@@ -57,7 +57,7 @@ module.exports =
         // if no user is found it will return a null
         // callback will be -> callback(err, result)
         getUser(email, callback){
-            var sql = "SELECT * FROM $ WHERE $ = $$";
+            var sql = "SELECT * FROM ? WHERE ? = ??";
             var parameters = [
                 this.user_table,
                 this.email,
