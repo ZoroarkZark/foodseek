@@ -193,10 +193,14 @@ app.post('/signup', (req,res) => {
 //app.get('/login', (req,res) => {
 app.post('/login', (req, res) => {	
 	if(req.query.email && req.query.pass){
-		var check_user = "SELECT * FROM user_data WHERE user_email = " + db_pool.escape(req.query.email); // find the row of the specified user
-		
-		let isUser = false;
-		db_pool.query(check_user, (err, result) => {
+		var check_sql = "SELECT * FROM $ WHERE $ = $$";
+		var parameters = 
+		[
+			"user_data",
+			"user_email",
+			req.query.email
+		]
+		db_pool.query(check_sql, parameters, (err, result) => {
 			if (err) throw err;
 			
 			if(result[0]){
@@ -253,10 +257,21 @@ app.get('/logout', (req, res) => {
 	req.session.destroy( (err) => {
 		if(err){
 			console.log(`Couldnt destroy session: ${req.sessionID}`);
+			res.end(
+				JSON.stringify({
+					msg: "Error signing out"
+				})
+			)
 			throw err;
 		}
 		console.log(`Session: ${req.sessionID} destroyed from database`);
 	});
+
+	res.end(
+		JSON.stringify({
+			msg: "Signed out"
+		})
+	);
 	
 })
 
