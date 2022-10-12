@@ -49,7 +49,7 @@ function buildURL(base = "http://localhost:3000", url, params = {}){
     
     if(params){
       var keys = Object.keys(params); // get the keys and values
-      var vals = Object.keys(params); 
+      var vals = Object.values(params); 
 
       var query = "?";
       for( let i=0; i<keys.length; i++){
