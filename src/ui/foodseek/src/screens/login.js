@@ -91,7 +91,7 @@ export const LoginScreen = ({ route, navigation }) => {
           .then((json) => setJSON(json))
           .catch((error) => console.error(error))
           .finally(() => setLoading(false)); 
-    navigation.navigate("LoginResponse", {resp: json});
+    navigation.navigate("Response", {resp: json});
   }
   return (
     <ThemeProvider theme="light">

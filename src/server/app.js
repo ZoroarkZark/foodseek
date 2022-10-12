@@ -45,7 +45,7 @@ const Store = new MyStore(db_pool);
 
 	or even just
 	db_pool.query(sql_code, [values..], callback)
-	
+
 */ 
 
 
@@ -93,18 +93,32 @@ function terminate(err){
 }
 
 
-// Basic input 
-// Doesnt do anything but respond with a json
-app.get('/test', (req,res) => {
+// Basic test
+// responds with a json of the passed query items
+app.post('/test_post', (req,res) => {
 	res.statuscode = 200;
 	res.setHeader('Content-Type','application/json');
 	res.end(
 		JSON.stringify({
-			test1: "true",
-			words: "words words words"
+			msg: 'Successful test post',
+			passed_items: req.query,
 		})
 	);
 });
+
+// test get from server
+app.get('/test_get', (req,res) => {
+	res.statuscode = 200;
+	res.setHeader('Content-Type','application/json');
+	res.end(
+		JSON.stringify({
+			msg: 'Successful test get',
+			response: "responde goes here"
+		})
+	);
+});
+
+
 
 
 app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
@@ -123,12 +137,24 @@ app.post('/signup', (req,res) => {
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 		
 	if(req.query.email && req.query.pass){ // check for the required headers 
-		var insert_user = 'INSERT INTO user_data (user_email, password) VALUES (' + db_pool.escape(req.query.email)+", "  + db_pool.escape(req.query.pass)+')';
-		var sign_sql = "INSERT INTO user_data ,user_email, password) VALUES $$"
+		var sign_sql = "INSERT INTO $ ($, $), password) VALUES ($$, $$)";
+		var parameters = 
+		[
+			"user_data",
+			"user_email",
+			"password",
+			req.query.email,
+			req.query.pass
+		];
+
+
 		
-		console.log(`Attempting to insert ${req.query.email} ${req.query.pass}`)
+		console.log(`Attempting to insert ${req.query.email} ${req.query.pass} into db`)
 		// The pool code made this part like 1 line which is really nice
-		db_pool.query(insert_user, function (err) {
+		db_pool.query(sign_sql, parameters, function (err) {
+			// I think we should fully remove this and the err respond function
+			// We don't really need it and we can just handle a duplicate in this body
+			// next update
 			if (err){
 				let err_response = errRespond(err);	// get error response info
 				res.statuscode = err_response[0]; // place into the response
@@ -237,99 +263,6 @@ app.get('/logout', (req, res) => {
 // Basically I learned using cookies is super unsafe for tracking a user session. People can edit their cookies and could send 
 // another users login token. To avoid that Im gonna implement sessions and some randomization when it comes to generating session keys 
 
-
-// A temporary method to test giving cookies to users
-// will check if cookie is already on a user before assigning
-app.post('/getcookies', (req,res) => {
-	// requiring parameter "email"
-	if( db_pool.escape(req.query.email) ){
-		
-		if( req.cookies ){
-			if( req.cookies.login_id){
-				// this person already has a cookie
-				console.log("Already logged in");
-				res.status(200).end( JSON.stringify({
-					login_id: req.cookies.login_id,
-					msg: "you are already logged in"
-				}));
-				return; // this could fuck everything up idk
-			}
-		}
-			
-		var cookie_str = `${db_pool.escape(req.query.email)}123456`;
-		res.cookie("login_id", cookie_str, {maxAge: 300000}); // give a cookie based on the provided email that lasts 5min(300k milliseconds)
-		console.log("Gave user a cookie");
-		res.status(200).end( JSON.stringify({
-			login_id: cookie_str,
-			msg: "successfully assigned login id",
-		}));
-		console.log(res);
-	}
-	else{
-		res.status(400).end(JSON.stringify({
-			msg: "give an email to login!"
-		}));
-	}
-});
-
-// Use cookies to perform some action
-// This is gonna depreciate as soon as sessions is up
-app.get('/cookieaction', (req,res) => {
-	console.log(req.session);
-	//console.log(req.cookies);
-	if( req.cookies ){ // user has cookies
-		
-		if( req.cookies.login_id ){
-			// a login_id cookie was found
-			console.log("Logged in user doing something!");
-			res.status(200).end(JSON.stringify( {
-				login_id: req.cookies.login_id,
-				msg: "A logged in user did something!"
-			}));
-		}
-	}
-	else{
-		console.log("User is not logged in!");
-		res.status(400).end(JSON.stringify({
-			msg: "login before attempting that action!"
-		}));
-	}
-		
-	
-});
-
-
-
-// Session Test Post 
-// Take in a parameter 'email' and assign it as the session variable `user`, and then upload both to the database
-app.post('/ses_test', (req,res) => {
-	console.log(req.sessionID); // print out the session id
-	
-	if( req.query.email ){
-		req.session.user = req.query.email; // set the user in the session (I think this also sets the session)
-	
-		
-		res.end('Done');
-	}
-	else{
-		res.end('No Email Provided');
-	}
-	
-});
-
-// get session variables
-app.get('/ses_test', (req,res) => {
-	console.log(req.session);
-	
-	if (req.session.user){
-		if (validateSession(req.sessionID, req.session.user)){
-			res.end('Have a valid session');
-		}
-	}
-	else{
-		res.end('No Session');
-	}
-});
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {
