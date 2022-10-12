@@ -44,8 +44,8 @@ function formUrl(url,email,password) {
 //  -url    : action resource for the request
 //  -params : an object like {email: "example@ex.com", pass: "secure_pass"}
 // and return the finalized version of the url to pass in the request
-function buildURL(base = "http://localhost:3000", url, params = {}){
-    var URL = base.concat(base,url); // create the main url with the url appended to the root 
+function buildURL(base = "http://localhost:3000", url, params = null){
+    var URL = base+url; // create the main url with the url appended to the root 
     
     
     if(params){
@@ -55,23 +55,20 @@ function buildURL(base = "http://localhost:3000", url, params = {}){
       var query = "?";
       for( let i=0; i<keys.length; i++){
         var amp = (i!=keys.length-1) ? "&" : ""; // if we are not the last element add an & to split up parameters
-        query = query.concat(query,`${keys[i]}=${vals[i]}`, amp);
+        query +=`${keys[i]}=${vals[i]}`+amp;
       }
-
-      return URL.concat(URL,query);
+      return (URL+query);
     }
 
     return URL;
 
 }
-
+//const def_root = "http://localhost:3000";
 const def_root = "http://localhost:3000";
-
 export const LoginScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [json, setJSON] = useState([]);
     const navigation = useNavigation();
 
   async function login(){
@@ -79,20 +76,23 @@ export const LoginScreen = () => {
     //  So Nico and I can set the keys to whatever we want them to be
     // when you form the object to pass to build url you can ask us or we can start documentign more what they will be
     // 
-    const response = await fetch(buildURL(def_root,"/login", {email: email, pass: password}),
+    //const response = await fetch(buildURL(def_root,"/login", {email: email, pass: password}),
+    console.log(buildURL(def_root,"/test_get"));
+    await fetch(buildURL(def_root,"/test_get"),
         {
-            method: 'POST',
+            method: "GET",
             headers: {
-                Accept: 'application/json',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             //body: JSON.stringify({ "email": email, "pass":password }), Currently we recieve our headers in the url but we should probably move the backend to take body items. Commented out so the build would work for now
         })
           .then((response) => response.json())
-          .then((json) => setJSON(json))
+          .then(boi => {console.log(boi)})
           .catch((error) => console.error(error))
           .finally(() => setLoading(false)); 
     //navigation.navigate("Response", {resp: json});
+
     navigation.navigate("Response");
   }
   return (
