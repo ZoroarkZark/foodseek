@@ -135,9 +135,9 @@ app.use(session({
 // Changing this to '/signup'
 app.post('/signup', (req,res) => { 
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
-		
+	
 	if(req.query.email && req.query.pass){ // check for the required headers 
-		var sign_sql = "INSERT INTO $ ($, $), password) VALUES ($$, $$)";
+		var sign_sql = "INSERT INTO $ ($, $) VALUES ($$, $$)";
 		var parameters = 
 		[
 			"user_data",
