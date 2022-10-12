@@ -81,16 +81,23 @@ Typically this will be called if `errRespond(err)[2] == 1`
 
 **User Auth**
 
-User authenitcation is done currently with some testing function `/getcookies` and `/cookieaction`.
-There are no sorts of security measures taken or any real validation. So far basically a user requests a login token called `login_id`,
-if the user is already signed in (they already have a login_id) nothing happens, if they don't have one, one is assigned. Users can then use `/cookieaction` and get a 
-correct response.
+User Auth is sort of working!
 
-Seeing as this is very surface level authenitcation I would like to push this further. Also currently there is not persistent storage of the logged in users so I have some ideas for that as well.
+Currently we have a means to store session data from a user on the SQL database and return that information to a user. There are a ton of bugs so far but that's  the game.
 
-End goal is to have another table in the user_db on MySQL that holds columns {user_email, session_id ..} and maybe some other fields.
-Then when we are performing actions we lookup using the current users email (identifier) if their session_id stored in the database matches their current login_id (if they have one). If they don't have a login_id, or if it doesn't match (say its dated)
- the user needs to re-signin to gain a login_id that will then be pushed to the db
+Most of the 10/10 was spent creating the memstore.js MyStore class. The reasoning for its creation is that the package "express-session" which lets us track user information for a session requires a memory store class. The provided one only works on memory and "is not meant for production". Creating the class was an absolute hassle but now we have something.
+
+
+
+**MyStore**
+
+The class `MyStore` extends the express-session class `Store` in order to incorperate a lot of the basic functionality.
+
+Three  methods are required to implement this class, `get(sid, cb)`, `set(sid, session, cb)`, `destroy(sid, cb)`. The getter takes a session id and returns a session object if found (this object contains that users cookies for the session), set places session date in the database given a session id, and destroy removes a session from the database given a session id. The last argument `cb` is a callback function that is returned at the end of each function call. There is more specific information in the memstore.js file.
+
+There are also some othe features I implemented in here. `touch(sid, cb)` "touches" a session aka gives it a new expiration time. I also implemented a means to remove expired sessions. 
+
+
 
 ---
 ## Data Base
