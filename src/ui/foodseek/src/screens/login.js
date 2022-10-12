@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -44,7 +45,7 @@ function formUrl(url,email,password) {
 //  -params : an object like {email: "example@ex.com", pass: "secure_pass"}
 // and return the finalized version of the url to pass in the request
 function buildURL(base = "http://localhost:3000", url, params = {}){
-    var URL = concat(base,url); // create the main url with the url appended to the root 
+    var URL = base.concat(base,url); // create the main url with the url appended to the root 
     
     
     if(params){
@@ -54,10 +55,10 @@ function buildURL(base = "http://localhost:3000", url, params = {}){
       var query = "?";
       for( let i=0; i<keys.length; i++){
         var amp = (i!=keys.length-1) ? "&" : ""; // if we are not the last element add an & to split up parameters
-        query = concat(query,`${keys[i]}=${vals[i]}`, amp);
+        query = query.concat(query,`${keys[i]}=${vals[i]}`, amp);
       }
 
-      return concat(URL,query);
+      return URL.concat(URL,query);
     }
 
     return URL;
@@ -66,14 +67,14 @@ function buildURL(base = "http://localhost:3000", url, params = {}){
 
 const def_root = "http://localhost:3000";
 
-export const LoginScreen = ({ route, navigation }) => {
+export const LoginScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [json, setJSON] = useState([]);
+    const navigation = useNavigation();
 
-
-  async function login({ route, navigation }){
+  async function login(){
     setLoading(true);
     //  So Nico and I can set the keys to whatever we want them to be
     // when you form the object to pass to build url you can ask us or we can start documentign more what they will be
@@ -91,7 +92,8 @@ export const LoginScreen = ({ route, navigation }) => {
           .then((json) => setJSON(json))
           .catch((error) => console.error(error))
           .finally(() => setLoading(false)); 
-    navigation.navigate("Response", {resp: json});
+    //navigation.navigate("Response", {resp: json});
+    navigation.navigate("Response");
   }
   return (
     <ThemeProvider theme="light">
