@@ -1,3 +1,27 @@
+import React from 'react';
+import { Main } from './src/Main';
+
+
+export default function App() {
+  return (<>
+    <Main />
+  </>);
+}
+
+
+
+{/*
+
+import Main from './src/Main';
+export default function App() {
+  return (
+    <Main />
+  );
+}
+
+
+
+
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
@@ -21,25 +45,31 @@ function loginHandler(email,password){
   console.log("I don't do anything yet. Entered: "+email+" and "+password);
 }
 
-function App () {
 
-return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Home Screen' }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{ title: 'Profile Screen'}}
-        />
-    </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+
+
+
+export default function App () {
+
+    return (
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ title: 'Home Screen' }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ title: 'Profile Screen'}}
+            />
+        </Stack.Navigator>
+        </NavigationContainer>
+      );
+    };
+
+
 
 const HomeScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
@@ -68,7 +98,7 @@ const HomeScreen = ({ navigation }) => {
                 navigation.navigate('Profile', { name: 'Ferdy' })
                 }
               />
-            }*/
+            
           />
         <View 
           style={{
@@ -158,4 +188,4 @@ const textStyles = StyleSheet.create({
   },
 });
 
-export default App;
+*/}
