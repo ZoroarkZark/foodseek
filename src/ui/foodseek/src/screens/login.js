@@ -38,8 +38,33 @@ function formUrl(url,email,password) {
     return(URL);
 }
 
+// This function will take in:
+//  -base   : root for the app
+//  -url    : action resource for the request
+//  -params : an object like {email: "example@ex.com", pass: "secure_pass"}
+// and return the finalized version of the url to pass in the request
+function buildURL(base = "http://localhost:3000", url, params = {}){
+    var URL = concat(base,url); // create the main url with the url appended to the root 
+    
+    
+    if(params){
+      var keys = Object.keys(params); // get the keys and values
+      var vals = Object.keys(params); 
 
-const url = "http://localhost/login";
+      var query = "?";
+      for( let i=0; i<keys.length; i++){
+        var amp = (i!=keys.length-1) ? "&" : ""; // if we are not the last element add an & to split up parameters
+        query = concat(query,`${keys[i]}=${vals[i]}`, amp);
+      }
+
+      return concat(URL,query);
+    }
+
+    return URL;
+
+}
+
+const def_root = "http://localhost:3000";
 
 export const LoginScreen = ({ route, navigation }) => {
     const [email, setEmail] = useState("");
@@ -50,14 +75,17 @@ export const LoginScreen = ({ route, navigation }) => {
 
   async function login({ route, navigation }){
     setLoading(true);
-    const response = await fetch(formUrl(url,email,password),
+    //  So Nico and I can set the keys to whatever we want them to be
+    // when you form the object to pass to build url you can ask us or we can start documentign more what they will be
+    // 
+    const response = await fetch(buildURL(def_root,"/login", {email: email, pass: password}),
         {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "email": email, "pass":password }),
+            //body: JSON.stringify({ "email": email, "pass":password }), Currently we recieve our headers in the url but we should probably move the backend to take body items. Commented out so the build would work for now
         })
           .then((response) => response.json())
           .then((json) => setJSON(json))
