@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 export const ResponseScreen = ({route, navigation}) => {
     const { resp, response } = route.params; // saves the json from the response given after the fetch function is called
-    let str = json.stringify(response);
+    let str = JSON.stringify(response);
 
     return (
         <View style={{ padding: 20 }}>

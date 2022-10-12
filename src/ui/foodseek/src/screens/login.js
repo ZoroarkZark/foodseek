@@ -39,7 +39,7 @@ function formUrl(url,email,password) {
 }
 
 
-const url = "http://108.90.204.32:80/";
+const url = "http://localhost/login";
 
 export const LoginScreen = ({ route, navigation }) => {
     const [email, setEmail] = useState("");
@@ -50,7 +50,7 @@ export const LoginScreen = ({ route, navigation }) => {
 
   async function login({ route, navigation }){
     setLoading(true);
-    const response = await fetch(url,
+    const response = await fetch(formUrl(url,email,password),
         {
             method: 'POST',
             headers: {
