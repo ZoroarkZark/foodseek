@@ -2,6 +2,7 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 import { LoginScreen } from './login';
@@ -12,7 +13,7 @@ import { SettingsScreen } from './settings';
 
 
 const Stack = createNativeStackNavigator();
-
+const Drawer = createDrawerNavigator();
 
 export const AppNavigator = () => (
     <NavigationContainer>
@@ -39,9 +40,24 @@ export const AppNavigator = () => (
     />
     <Stack.Screen
         name="Response"
-        component={ResponseScreen}
+        component={ResponseDrawer}
         options={{ title: 'Response' }}
     />
     </Stack.Navigator>
     </NavigationContainer>
     )
+
+const ResponseDrawer = () => (
+    <Drawer.Navigator>
+    <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: 'Home Screen' }}
+    />
+    <Drawer.Screen
+        name="User"
+        component={UserScreen}
+        options={{ title: 'User Screen'}}
+    />
+    </Drawer.Navigator>
+)
