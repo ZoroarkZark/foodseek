@@ -185,8 +185,17 @@ app.get('/logout', (req, res) => {
 	
 })
 
-// Basically I learned using cookies is super unsafe for tracking a user session. People can edit their cookies and could send 
-// another users login token. To avoid that Im gonna implement sessions and some randomization when it comes to generating session keys 
+// Not the actual thing just yet but gonna use this to test signed in users
+app.post('/foodlist', (req, res) => {
+	if(req.session.user){ // user has a session
+		// food list 
+		res.end("Signed in user action!");
+	}
+	else{
+		res.end("Not signed in user!");
+	}
+
+})
 
 
 // keeps this app open on the specifed port
