@@ -1,29 +1,27 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { createDrawerNavigator } from 'react-navigation-drawer';
-import { createAppContainer } from 'react-navigation';
-
-const RootDrawerNavigatior = createDrawerNavigator({
-    Sett: {
-        screen: Settings
-    }
-})
+import { StyleSheet, Text, View } from 'react-native';
 
 export const SettingsScreen = ({ navigation }) => {
     return (
-        <Text>Edit Name {">"}</Text>
-        {(['right'] as const).map((anchor) => (
-            <React.Fragment key={anchor}>
-              <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-              <SwipeableDrawer
-                anchor={anchor}
-                open={state[anchor]}
-                onClose={toggleDrawer(anchor, false)}
-                onOpen={toggleDrawer(anchor, true)}
-              >
-                {list(anchor)}
-              </SwipeableDrawer>
-            </React.Fragment>
-          ))}
+        <View style={styles.container}>
+            <Text style={styles.text}>Edit Display Name {">"}</Text>
+            <Text style={styles.text}>Email</Text>
+            <Text style={styles.text}>Vendor or Eater</Text>
+            <Text style={styles.text}>Style</Text>
+            <Text style={styles.text}>Log Out {">"}</Text>
+        </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#E6E6E3',
+        alignItems: 'left',
+        justifyContent: 'left',
+    },
+    text: {
+        padding: 10,
+        fontSize: 25,
+    },
+})
