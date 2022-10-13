@@ -8,6 +8,7 @@ import { LoginScreen } from './login';
 import { HomeScreen } from './home';
 import { UserScreen } from './user';
 import { ResponseScreen } from './response';
+import { SettingsScreen } from './settings';
 
 
 const Stack = createNativeStackNavigator();
@@ -16,6 +17,11 @@ const Stack = createNativeStackNavigator();
 export const AppNavigator = () => (
     <NavigationContainer>
     <Stack.Navigator>
+    <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
+    />
     <Stack.Screen
         name="Login"
         component={LoginScreen}
