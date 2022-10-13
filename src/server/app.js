@@ -185,6 +185,12 @@ app.get('/logout', (req, res) => {
 	
 })
 
+// ____________________
+// | Food For Thought |
+// |__________________|
+/*
+	Food posting soon to come
+*/
 // Not the actual thing just yet but gonna use this to test signed in users
 app.post('/foodlist', (req, res) => {
 	if(req.session.user){ // user has a session
