@@ -76,7 +76,7 @@ module.exports =
                 }
 
                 return callback(null, result[this.pass]);
-            })
+            });
         }
 
     }
