@@ -114,6 +114,7 @@ app.post('/signup', (req,res) => {
 				res.end("Error on insertion");
 				throw err;
 				// handle dup entry for user has an account 
+				
 			}
 			res.end("User Inserted");
 		});
