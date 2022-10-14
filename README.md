@@ -60,6 +60,45 @@ Currently no error handling set up for missing keys or anything so it will proba
 
 It checks the database if the user is present and will return a little msg in a json if true. Currently not handling what happens when user isnt present but we can do what ever we want for that its not too hard
 
+**POST '/signup'**
+
+Takes in two parameters with keys ("email", "pass").
+Currently no error handling set up for missing keys or dup entry so it will probably just hang and eventually time out
+
+It added the email and pass to the database 
+
+**GET '/logout'** 
+Takes no parameters
+
+It sets the session of the user to null and destroys the session which logs them out 
+
+**MEMSTORE**
+
+**get(sid, callback = noop)**
+Takes a session id and a callback function, returns the users session data, or error if it couldnt find one 
+
+**set(sid, session, callback = noop)**
+Takes a session id , session , and a callback function , sets the session into the database, callback is to handle redirection in app.js (and errors)
+
+**touch(sid, session, callback)**
+Takes a session id , session , and a callback function, updates the session expire time, callback is to handle redirection in app.js (and errors)
+
+**destroy(sid, callback)**
+Takes a session and a callback function, destroys the session by deleting it from the database, callback is to handle redirection in app.js (and errors)
+
+**clearExpired(callback)**
+Takes only a callback function, removes expired sessions from the database, callback is to handle redirection in app.js (and errors)
+
+**setExpirationInterval(interval)**
+Takes an interval(time), sets the expire time of the session to interval
+
+**sqlhandler**
+
+**insertUser(email, password, callback)**
+Takes user email, password , and a callback function. It inserts a new user into the database , callback is to handle redirection in app.js (and errors)
+
+**getUser(email, callback)**
+Takes the user email and a callback function , returns the password if it finds the user , if no user found returns null
 
 **errRespond(err)**
 
