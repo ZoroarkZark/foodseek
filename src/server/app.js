@@ -67,7 +67,7 @@ app.post('/test_post', (req,res) => {
 	res.end(
 		JSON.stringify({
 			msg: 'Test Post Working!',
-			passed_items: req.query,
+			passed_items: req.body,
 		})
 	);
 });
@@ -102,20 +102,30 @@ app.use(session({
 app.post('/signup', (req,res) => { 
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 	
-	if(req.query.email && req.query.pass){ // check for the required headers 
-		
+	if(req.body.email && req.body.pass){ // check for the required headers 
+		let isVend = false;
 
-
-		
-		console.log(`Attempting to insert ${req.query.email} ${req.query.pass} into db`)
+		if(req.body.isVendor){
+			isVend = (req.body.isVendor == "true") ? true : false;
+		}
+		console.log(`Attempting to insert ${req.body.email} ${req.body.pass} into db`)
 		// The pool code made this part like 1 line which is really nice
-		DB.insertUser(req.query.email, req.query.pass, (err) => {
+		DB.insertUser(req.body.email, req.body.pass, (err) => {
 			if(err){
 				res.end("Error on insertion");
 				throw err;
 				// handle dup entry for user has an account 
 			}
-			res.end("User Inserted");
+
+			res.end(
+				JSON.stringify(
+					{
+						status: "Successful Insertion",
+						user_email: req.body.email,
+						user_pass: req.body.pass,
+						isVendor: isVend
+					})
+			);
 		});
 
 	}
@@ -129,23 +139,23 @@ app.post('/signup', (req,res) => {
 //app.get('/login', (req,res) => {
 app.post('/login', (req, res) => {	
 
-	if(req.query.email && req.query.pass){
+	if(req.body.email && req.body.pass){
 		var check_sql = "SELECT * FROM $ WHERE $ = $$";
 		var parameters = 
 		[
 			"user_data",
 			"user_email",
-			req.query.email
+			req.body.email
 		]
-		DB.getUser(req.query.email , (err, pass) => {
+		DB.getUser(req.body.email , (err, pass) => {
 					console.log("Valid user login!");
 					req.session.regenerate(function (err) {
 						if (err) throw err;
-						req.session.user = req.query.email // store user info in session
+						req.session.user = req.body.email // store user info in session
 						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
 						req.session.save(function (err) {
 							if (err) throw err;
-							res.end(`signed in ${req.query.email} with sessionid: ${req.sessionID} `);
+							res.end(`signed in ${req.body.email} with sessionid: ${req.sessionID} `);
 						})
 						
 					})
@@ -168,6 +178,7 @@ app.post('/login', (req, res) => {
 // logs out the user by destroying the session
 app.get('/logout', (req, res) => {
 	// once store class in made add logic to remove session id from database
+	var out_user = req.session.user;
 	req.session.user = null
 	req.session.save( (err) => {
 		if (err) throw err;
@@ -179,7 +190,7 @@ app.get('/logout', (req, res) => {
 	
 	res.end(
 		JSON.stringify({
-			msg: "Signed out"
+			msg: `Signed out ${out_user}`
 		})
 	);
 	

@@ -57,7 +57,7 @@ module.exports =
         // if no user is found it will return a null
         // callback will be -> callback(err, result)
         getUser(email, callback){
-            var sql = "SELECT * FROM ? WHERE ? = ??";
+            var sql = "SELECT * FROM ?? WHERE ?? = ?";
             var parameters = [
                 this.user_table,
                 this.email,
@@ -67,6 +67,7 @@ module.exports =
             this.conn.query(sql, parameters, (err, results) => {
                 if(err){
                     console.log(`Error finding user ${email}`);
+                    console.log(err);
                     return callback(err, null);
                 }
 
