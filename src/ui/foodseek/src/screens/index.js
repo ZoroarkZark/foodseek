@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-
+//
 import { LoginScreen } from './login';
 import { HomeScreen } from './home';
 import { UserScreen } from './user';
@@ -19,14 +19,14 @@ export const AppNavigator = () => (
     <NavigationContainer>
     <Stack.Navigator>
     <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
-    />
-    <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ title: 'Login' }}
+    />
+    <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
     />
     <Stack.Screen
         name="Home"
