@@ -17,29 +17,24 @@ const Drawer = createDrawerNavigator();
 
 export const AppNavigator = () => (
     <NavigationContainer>
-    <Stack.Navigator>
+    <Stack.Navigator> 
     <Stack.Screen
-        name="Login"
+        name="Login" //LOGIN PAGE SCREEN
         component={LoginScreen}
         options={{ title: 'Login' }}
     />
     <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
-    />
-    <Stack.Screen
-        name="Home"
+        name="Home" //HOME PAGE SCREEN
         component={HomeScreen}
         options={{ title: 'Home Screen' }}
     />
     <Stack.Screen
-        name="User"
+        name="User" //USER PAGE SCREEN
         component={UserScreen}
         options={{ title: 'User Screen'}}
     />
     <Stack.Screen
-        name="Response"
+        name="Response" //RESPONSE PAGE SCREEN
         component={ResponseDrawer}
         options={{ title: 'Response' }}
     />
@@ -58,6 +53,11 @@ const ResponseDrawer = () => (
         name="User"
         component={UserScreen}
         options={{ title: 'User Screen'}}
+    />
+    <Drawer.Screen
+        name="Settings" //SETTINGS PAGE SCREEN
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
     />
     </Drawer.Navigator>
 )
