@@ -4,9 +4,10 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 export const SettingsScreen = ({ navigation }) => {
     const [allegiance, setAllegiance] = useState('an eater');
     const [email, setEmail] = useState('randomBot@nau.edu');
+    let wr = new writeToConfig();
 
-    const allegianceHandler = () => {
-        if (allegiance == 'an eater'){
+    function allegianceHandler() {
+        if (allegiance == 'an eater') {
             setAllegiance('a vendor');
         }
         else {
