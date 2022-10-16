@@ -10,6 +10,7 @@ const DBHandler = require('./sqlhandler.js');
 const { isNull } = require('underscore');
 
 const bodyParser    = require('body-parser');
+const { on } = require('./memstore.js');
 
 
 // Server Constants
@@ -121,89 +122,103 @@ app.use(express.json());
 app.post('/signup', (req,res) => { 
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 
+	// our response is just going to contain the issue field for signup
 	var response_obj = {
-		issue: 0,
-		email: "",
-		pass: "",
-		vend: 0
+		issue: 0 // no issue until we get one 
 	}
 	
-	//test log
-	//console.log(req.body);
+	// Lets get the data out of the body
+	req.setEncoding('utf8'); 
+	req.on('data', (body) => { // need to get something in the body before we do anything
+		body = JSON.parse(body); // parse the object as a json (we need to make sure this is enforced i don't wanna have to deal with non json lmao)
+		console.log(body);
 
-	if(req.body.email && req.body.pass){ // check for the required headers 
-		let isVend = false;
+		if(body.email && body.pass){ // have the required arguments
+			//var isVendor = (body.isVendor) ? body.isVendor : 0; // if we have the field make it the field else make it 0
 
-		if(req.body.isVendor){
-			isVend = (req.body.isVendor == 1) ? true : false;
+			DB.insertUser(body.email, body.pass, (err) => { // attempt to insert the user into the database
+				if(err){ // error on insertion
+					if(err.errno == 1062){ // duplicate entry
+						response_obj.issue =1;
+					}
+					else{
+						response_obj.issue = 2;
+						throw err; // unexpected err
+					}
+				}
+				else{ // no error on insert
+					response_obj.issue = 0;
+				}
+				res.end(JSON.stringify(response_obj)); // send the result back
+			});
 		}
-		console.log(`Attempting to insert ${req.body.email} ${req.body.pass} into db`)
-		// The pool code made this part like 1 line which is really nice
-		DB.insertUser(req.body.email, req.body.pass, (err) => {
-			if(err){
-				response_obj.issue = err.code
-				res.end("Error on insertion");
-				throw err;
-				// handle dup entry for user has an account 
-				
-			}
+		else{
+			// did not get the right parameters on input
+			response_obj.issue = 2;
+			res.end(JSON.stringify(response_obj));
 
-			res.end(
-				JSON.stringify(
-					{
-						status: "Successful Insertion",
-						user_email: req.body.email,
-						user_pass: req.body.pass,
-						isVendor: isVend
-					})
-			);
-		});
-
-	}
-	else{
-		res.end("Bad input args")
-	}
-	
+		}
+	});
 });
 
 // Code to get user information here
 //app.get('/login', (req,res) => {
 app.post('/login', (req, res) => {	
 	res.setHeader("Content-Type", 'application/json');
-	if(req.body.email && req.body.pass){
-		var check_sql = "SELECT * FROM ? WHERE ? = ??";
-		var parameters = 
-		[
-			"user_data",
-			"user_email",
-			req.body.email
-		]
-		DB.getUser(req.body.email , (err, pass) => {
-					console.log("Valid user login!");
-					req.session.regenerate(function (err) {
-						if (err) throw err;
-						req.session.user = req.body.email // store user info in session
-						//saveSession(req.sessionID, req.session.user) // save session in database not sure if we want this going forward
-						req.session.save(function (err) {
-							if (err) throw err;
-							res.end(`signed in ${req.body.email} with sessionid: ${req.sessionID} `);
-						})
-						
-					})
-				
-		});
-	} 
-	else{
-
-		res.statuscode = 400;
-		res.setHeader("Content-Type", 'application/json');
-		res.end(
-			JSON.stringify({
-				msg: "Faulty Parameters!"
-			})
-			);
+	var response_obj = { // response object
+		issue: 0,
+		user: "",
+		pass: "",
+		vend: 0
 	}
-	
+
+	// get the body of the request
+	req.setEncoding('utf8');
+	req.on('data', (body) => {
+		body = JSON.parse(body);
+		console.log(body);
+
+		if(body.email && body.pass){ // have required fields
+			DB.getUser(body.email, (err, pass) => {
+				console.log(pass);
+				if(err){ // issue probably SQL related
+					response_obj.issue = 3;
+					throw err;
+				}
+
+				if(!pass){ // no result given back but no error indicates no user exists 
+					response_obj.issue = 1; // no email found
+					res.end(JSON.stringify(response_obj));
+				}
+				else{ // we got the password back
+					if( body.pass == pass ){ // matched password to a user
+						response_obj.issue = 0;
+						response_obj.user = body.email;
+						response_obj.pass = body.pass;
+						// vendor is not really set up yet
+
+						req.session.regenerate( (err) => { // session stuff
+							if (err) throw err;
+							req.session.user = body.email;
+
+							req.session.save( (err) => {
+								res.end(JSON.stringify(response_obj));
+							});
+						});
+					}
+					else{ // bad password
+						response_obj.issue = 2; // email exists in db but pass is not a match
+						response_obj.user = body.email;
+						res.end(JSON.stringify(response_obj));
+					}
+				}
+			})
+		}
+		else{
+			response_obj.issue = 3; // no args 
+			res.end(JSON.stringify(response_obj));
+		}
+	});
 });
 
 // logs out the user by destroying the session
@@ -221,7 +236,8 @@ app.get('/logout', (req, res) => {
 	
 	res.end(
 		JSON.stringify({
-			msg: `Signed out ${out_user}`
+			issue: 0,
+			user: out_user
 		})
 	);
 	

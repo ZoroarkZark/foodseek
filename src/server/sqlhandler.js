@@ -1,9 +1,5 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 
-const mysql = require('mysql');
-const { object } = require('underscore');
-
-
 
 // DBHandler
 // Going to be the class handling the sql database
@@ -43,10 +39,10 @@ module.exports =
             
             this.conn.query(sql, parameters, (err) => {
                 if(err){
-                    console.log(`Error inserting user ${email}`);
+                    console.log(`Error inserting user ${email} - sqlhandler`);
                     return callback(err);
                 }
-                console.log(`Successfully created user ${email} with password: ${password}`);
+                console.log(`Successfully created user ${email} with password: ${password} - sqlhandler`);
                 return callback(null); // no error
             });
 
@@ -66,16 +62,17 @@ module.exports =
 
             this.conn.query(sql, parameters, (err, results) => {
                 if(err){
-                    console.log(`Error finding user ${email}`);
+                    console.log(`Error finding user ${email} - sqlhandler`);
                     console.log(err);
                     return callback(err, null);
                 }
 
-                var result = results[0] | null;
+                var result = (results[0]) ? results[0] : null;
                 if(!result){
+                    console.log("null result - sqlhandler");
                     return callback(null, null); // no error but no result
                 }
-
+                console.log("found - sqlhandler");
                 return callback(null, result[this.pass]);
             });
         }

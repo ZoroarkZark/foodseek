@@ -1,4 +1,44 @@
 const http = require('node:http'); // http library from Node.js
+const { reduce } = require('underscore');
+
+// Standard Signup/Login Flow response/request object
+/*
+    request signup: You send this to the createAccount function
+    obj {
+        user_email: input_email,
+        user_pass: input_pass,
+        isVendor: input_isVendor
+    } -> POST to server/signup
+
+    What you will get in the callback of createAccount
+    obj: {
+        issue: [0: none, 1: email already exists in database, 2: some other err ]
+    }
+    auto redirect to login on sucess
+
+
+    request login : loginUser input arguments
+    obj {
+        user_email: in_email,
+        user_pass: in_pass,
+    }
+
+    response login : loginUser return to callback
+    obj: {
+        issue: [0: none, 1: no email found, 2: incorrect pass, 3: some other err]
+        user_email: email,
+        user_pass: pass,
+        isVendor: isVendor,
+    }
+
+    request logout : logoutUser no args
+    {}
+
+    response logout: callback to args
+    {
+        issue [0: signed out, 1: not signed out]
+    }
+*/
 
 // http.request(url, options, callback)
 // URL : defines the action to request from the server ( a string to a resource)
@@ -9,9 +49,11 @@ const http = require('node:http'); // http library from Node.js
 
 
 class ServerInterface{
-    constructor(base){ // default options for our request (server should be the same across all calls)
-        this.req.host = base.host;
-        this.req.port = base.port;
+    constructor(base ={}){ // default options for our request (server should be the same across all calls)
+        this.req = {
+            host: base.host,
+            port: base.port
+        }
     }
 
 
@@ -29,17 +71,17 @@ class ServerInterface{
      *  this is how the response will get handled 
      *  
      * @usage 
-     *  createAccount(user_info, (results) => {
+     *  ServerInterface.createAccount(user_info, (results) => {
      *      if(results.issue == 0){ // sucessful sign up logic}
-     *      if(results.issue == 1){ // account already exists logic (take to login screen)}
-     *      else{
-     *          // something bad happened to get here so idk 
-     *      }
+     *      if(results.issue == 1){ // take to login bc they have an email }
+     *      else { // something outside of the scope of this class happened and needs to be dealt with somewhere else}
      * })
      */
+
+        // Potentially there is a huge error here, In between the request.on('error') and call of the callback function. Idk if we could get an error after recieving all of the info but who knows
     createAccount(credentials, callback){
        
-        credentials = JSON.stringify(credentials); // create it as a string
+        credentials = JSON.stringify(credentials); // create it as a string to pass to the server 
         
         var options = {
             host: this.req.host,
@@ -55,29 +97,66 @@ class ServerInterface{
         var request = http.request(options, (res) => { // make the actual request 
             res.setEncoding('utf8');
             res.on('data', (chunk) => {
-                callback(JSON.parse(chunk)); // callback on the recieved data
+                callback(chunk); // callback on the recieved data : this is the result
             });
            
         });
 
-        request.on('error', (err) => { throw err;})
+        request.on('error', (err) => { throw err;}) // this might mean some internal issue with the request idk we might need an error to happen here to know more
 
         request.write(credentials); // write the credentials to the request body
         request.end(); // end the request
 
     }
+
+
+
+
+    loginUser(credentials, callback){
+        credentials = JSON.stringify(credentials); // turn it into a string for the request
+
+        var options = {
+            host: this.req.host,
+            port: this.req.port,
+            path: "/login",
+            method: "POST",
+            Headers: {
+                'Content-Type' : 'application/json',
+                'Content-Length': Buffer.byteLength(credentials)
+            }
+        }
+
+        var request = http.request(options, (res) =>{
+            res.setEncoding('utf8');
+            res.on('data', (chunk) => {
+                callback(chunk);
+            })
+        });
+
+        request.on('error', (err) => { throw err;});
+        
+        request.write(credentials);
+        request.end();
+    }
+
+    logoutUser(callback){
+        var options = {
+            host: this.req.host,
+            port: this.req.port,
+            path: "/logout",
+            method: "GET"
+        }
+
+        var request = http.request(options, (res) => {
+            res.setEncoding('utf8')
+            res.on('data', (chunk) =>{
+                callback(chunk);
+            });
+        });
+        
+        request.on('error', (err) => {throw err;})
+        request.end();
+    }
 }
 
-const SI = new ServerInterface({host: "localhost", port: 3000});
-
-SI.createAccount(
-    {
-        email: "marzipan",
-        pass: "lovely",
-        isVendor: 1
-    },
-
-    (results) => {
-
-    }
-)
+module.exports = ServerInterface;

@@ -4,16 +4,16 @@
 
 ---
 
-## Goal
+# Goal
 Our goal is to connect food insecure people (Our users) with free food.
 
 
-## Method
+# Method
 Connect our users with food suppliers that are voiding or wasting some food. Get the supplier to hold the food for some amount of time for one of our users to pick the food up.
 
 ---
 
-## Generally
+# Generally
 In order to implement our goal with our method. We will need
   - A UI for both the User's and Suppliers. (front end react)
   - A shared data structure for them to read and write to. (back end in Node)
@@ -23,13 +23,13 @@ In order to implement our goal with our method. We will need
 
 ---
 
-## UI
+# UI
 
 React or Expo
 
 ---
 
-## Backend / Server
+# Backend / Server
 
 For our back end we've decied to use Node.js. (v16.17.1)
 
@@ -43,6 +43,10 @@ app.js now add users and validate sign in credentials. Added error handling for 
 
 Currently the back-end is pretty sparse but we have two working functions for user signup and login.
 These functions are handled by calling a HTTP method on a URL
+
+
+---
+## app.js
 
 **POST '/newuser'**
 
@@ -72,80 +76,116 @@ Takes no parameters
 
 It sets the session of the user to null and destroys the session which logs them out 
 
-**MEMSTORE**
+---
+## MyStore : Express-Session Store class for our SQL server
+MyStore extends all the functionality of a Express-Session.Store class but is tooled for our database only. This was needed because Express-Session will automatically store to memory instead of a database which is not meant for production
 
-**get(sid, callback = noop)**
+**Constructor(connection)** : to create a MyStore instance pass it a database connection 
+
+**get(sid, callback)**
 Takes a session id and a callback function, returns the users session data, or error if it couldnt find one 
 
-**set(sid, session, callback = noop)**
-Takes a session id , session , and a callback function , sets the session into the database, callback is to handle redirection in app.js (and errors)
+`callback(error, results)` : results are returned in the callback
+
+**set(sid, session, callback)**
+Takes a session id , session , and a callback function , sets the session into the database
+
+`callback(error)` : callback is there to handle errors
 
 **touch(sid, session, callback)**
-Takes a session id , session , and a callback function, updates the session expire time, callback is to handle redirection in app.js (and errors)
+Takes a session id , session , and a callback function, updates the session expire time
+
+`callback(error)` : errors or null basically
 
 **destroy(sid, callback)**
-Takes a session and a callback function, destroys the session by deleting it from the database, callback is to handle redirection in app.js (and errors)
+Takes a session and a callback function, destroys the session by deleting it from the database
 
-**clearExpired(callback)**
-Takes only a callback function, removes expired sessions from the database, callback is to handle redirection in app.js (and errors)
+`callback(err)` : errors or null
+
+**clearExpired()**
+Cleares expired sessions using the interval `expireInterval` which is set in the constructor. 
 
 **setExpirationInterval(interval)**
 Takes an interval(time), sets the expire time of the session to interval
 
-**sqlhandler**
+---
+
+## DBHandler : Handles the user_data SQL table
+DBHandler is responsible for creating and selecting users from the database. I think this will also be how we do food cards in the future
+
+**Constructor(options)** : The Options args represent the column names for the data we are manipulating in SQL and the connection pool used
 
 **insertUser(email, password, callback)**
-Takes user email, password , and a callback function. It inserts a new user into the database , callback is to handle redirection in app.js (and errors)
+Takes user email, password , and a callback function. It inserts a new user into the database 
+
+`callback(err)` : error or null
 
 **getUser(email, callback)**
-Takes the user email and a callback function , returns the password if it finds the user , if no user found returns null
+Takes the user email and a callback function , returns the password if it finds the user , if no user found returns null to the callback
 
-**errRespond(err)**
+`callback(err, pass)` : if there is an error callback will be given it, if the password is found it will be in the pass arg
 
-The `errRespond` method takes in a single parameter `err`. This `err` is generated during the response cylce in any app.METHOD, or in the database calls.
-It returns a list as output with the following fields : `[0:status code for error, 1: json msg for error, 2:fatal]`
-`[0]` : what status code the response will get based on that error
-`[1]` : JSON object returned in the response
-`[2]` : Fatal is 1 if the program should halt, and 0 if we can continue after the error
+---
 
-This function gets it's intended job done, but I would like to rethink the strategy and see if it can be cleaned up some more.
-Currently you have to save the results of this function in a variable, and then set the response inside the METHOD body to items of that variable.
-In an ideal situation we could just call this function and the response would automatically get filled out instead.
+## ServerInterface: Handles making requests to the backend
+The ServerInterface will be the connection between the front and backend. 
+To use the ServerInterface add `const ServerInterface = require('./serverhandler.js')` *you will need to change the path for what ever file you are in relative to the server folder*
 
-**terminate(err)**
-
-This function makes sure to close the DB pool before throwing what ever error we pass as `err` and halting the program.
-Typically this will be called if `errRespond(err)[2] == 1`
+Then instantiate an object with `const SI = new ServerInterface(base)`
 
 
-**User Auth**
+**Constructor(base)** : base is the base connection information for the requests. Mandatory fields are host and port
 
-User Auth is sort of working!
+**createAccount(credentials, callback)**
 
-Currently we have a means to store session data from a user on the SQL database and return that information to a user. There are a ton of bugs so far but that's  the game.
+`credentials` : JSON object containing fields (`email`, `pass`)
 
-Most of the 10/10 was spent creating the memstore.js MyStore class. The reasoning for its creation is that the package "express-session" which lets us track user information for a session requires a memory store class. The provided one only works on memory and "is not meant for production". Creating the class was an absolute hassle but now we have something.
+`callback(body_data)` : callback handles the body data recieved from the request (this is where you will get the servers response essentially)
+
+`body_data`: is the JSON response of our server. For this particular request it contains one field.
+- `body_data.issue` = 0:no issues on creation, 1:acc already exists, 2:bad error contact support
 
 
+**loginUser(credentials, callback)**
 
-**MyStore**
+`credentials` : JSON object containing fields (`email`, `pass`)
 
-The class `MyStore` extends the express-session class `Store` in order to incorperate a lot of the basic functionality.
+`callback(body_data)`: handle the body data recieved from the request
 
-Three  methods are required to implement this class, `get(sid, cb)`, `set(sid, session, cb)`, `destroy(sid, cb)`. The getter takes a session id and returns a session object if found (this object contains that users cookies for the session), set places session date in the database given a session id, and destroy removes a session from the database given a session id. The last argument `cb` is a callback function that is returned at the end of each function call. There is more specific information in the memstore.js file.
+`body_data`: JSON object recieved from the response
+- `body_data.issue`: 0:none, 1:no email (no acc), 2:bad pass, 3:contact supprt
+- `body_data.user` : the user of the account
+- `body_data.pass` : the pass for the account (this is not needed and only for debugging)
+- `body_data.vend` : vendor status (not implemented but you will still get a value here)
 
-There are also some othe features I implemented in here. `touch(sid, cb)` "touches" a session aka gives it a new expiration time. I also implemented a means to remove expired sessions. 
+**logoutUser(callback)**
 
+`callback(body_data)` : handle the body data from the response
+
+`body_data` : JSON object from response
+- `body_data.issue`: 0:none, 1:something bad happened trying to logout
 
 
 ---
-## Data Base
+# Data Base
 
 Currently the database is being run on a MySQL server on my (Cal) computer. 
 
-We are connecting to it via a Node package called mySql. Using this node package we create a database connection pool called `db_pool`
-in order to avoid exess code required to handle individual connections.
+**Current Tables That Matter**
 
-The database is live and currently accepting information from the server connections.
+## user_data
+
+**cols**
+- userid: auto-incrementing, unique key for users
+- user_email: the email as input by the user
+- password: password as input by the user
+
+## session_data
+
+**cols**
+- session_id: the session id for the session
+- session_obj: the stringified object for the session
+- expires: time as an int (in seconds) until this expires
+- vendor : idk if this should be here but vendor status
 
 
