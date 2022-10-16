@@ -112,6 +112,11 @@ class ServerInterface{
 
 
 
+    /**
+     * Login User
+     * @param {JSON} credentials : user credentials for signing in
+     * @param {function} callback : callback function to handle the response body of our server
+     */
     loginUser(credentials, callback){
         credentials = JSON.stringify(credentials); // turn it into a string for the request
 
@@ -139,6 +144,10 @@ class ServerInterface{
         request.end();
     }
 
+    /**
+     * logoutUser
+     * @param {function} callback : handle body data from server response
+     */
     logoutUser(callback){
         var options = {
             host: this.req.host,
@@ -154,6 +163,30 @@ class ServerInterface{
             });
         });
         
+        request.on('error', (err) => {throw err;})
+        request.end();
+    }
+
+
+    /**
+     * test_user: testing to see if we have user sessions still working
+     * @param {function} callback: callback to handle body data
+     */
+    test_user(callback){
+        var options = {
+            host: this.req.host,
+            port: this.req.port,
+            path: "/foodlist",
+            method: "POST"
+        }
+        
+        var request = http.request(options, (res) => {
+            res.setEncoding('utf8');
+            res.on('data', (chunk) => {
+                callback(chunk);
+            })
+        });
+
         request.on('error', (err) => {throw err;})
         request.end();
     }

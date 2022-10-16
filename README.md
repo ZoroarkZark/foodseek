@@ -135,6 +135,7 @@ Then instantiate an object with `const SI = new ServerInterface(base)`
 
 
 **Constructor(base)** : base is the base connection information for the requests. Mandatory fields are host and port
+*the body_data must be parsed to JSON before use*
 
 **createAccount(credentials, callback)**
 

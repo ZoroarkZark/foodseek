@@ -251,13 +251,19 @@ app.get('/logout', (req, res) => {
 */
 // Not the actual thing just yet but gonna use this to test signed in users
 app.post('/foodlist', (req, res) => {
+
+	food_list = {
+		populated: 0
+	}
+
 	if(req.session.user){ // user has a session
-		// food list 
-		res.end("Signed in user action!");
+		food_list.populated = 1;
 	}
 	else{
-		res.end("Not signed in user!");
+		food_list.populated = 0;
 	}
+
+	res.end(JSON.stringify(food_list));
 
 })
 
