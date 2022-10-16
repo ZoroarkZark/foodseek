@@ -1,6 +1,5 @@
 const http = require('node:http'); // http library from Node.js
 
-
 // http.request(url, options, callback)
 // URL : defines the action to request from the server ( a string to a resource)
 // Options: is an object with some options for the connection:
@@ -48,7 +47,17 @@ const http = require('node:http'); // http library from Node.js
 signup_object = {
     hostname: "localhost",
     port: 3000,
-    path: '/signup',
+    path: '/signout',
+    method: 'post',
+    
+}
+
+// login Request
+// default object 
+login_object = {
+    hostname: "localhost",
+    port: 3000,
+    path: '/login',
     method: 'post',
     
 }
@@ -60,8 +69,8 @@ function createAccount(req, in_email, in_pass, vendor){
         pass: in_pass,
         isVendor: vendor
     });
-
-    req.headers = {
+    
+    req.headers = { 
         'Content-Type': 'application/json',
         'Content-Length' : Buffer.byteLength(userdata)
     }
@@ -70,15 +79,16 @@ function createAccount(req, in_email, in_pass, vendor){
         console.log(`Code ${res.statusCode}`);
         console.log(`Headers ${JSON.stringify(res.headers)}`);
         
-        res.on('data', (chunk) =>{
-            console.log(JSON.parse(chunk));
-        });
+        //res.setEncoding('utf8');
+        //res.on('data', (chunk) =>{
+        //    console.log(JSON.parse(chunk));
+        //    
+        //});
     
         res.on("end", () => {
             console.log("finished request/response cylce");
         })
-    }
-    );
+    })
 
     request.write(userdata);
     request.end();
@@ -86,4 +96,7 @@ function createAccount(req, in_email, in_pass, vendor){
 }
 
 
-createAccount(signup_object, "adam1234", "pass1234");
+
+//createAccount(signup_object, "test", "test")
+createAccount(login_object, "test", "test")
+

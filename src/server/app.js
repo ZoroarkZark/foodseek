@@ -9,6 +9,8 @@ const MyStore = require('./memstore.js');
 const DBHandler = require('./sqlhandler.js');
 const { isNull } = require('underscore');
 
+const bodyParser    = require('body-parser');
+
 
 // Server Constants
 const port = 3000;
@@ -16,6 +18,10 @@ const hostname = "localhost";
 
 // Express app 
 const app = express();
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+
 
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 
@@ -102,6 +108,9 @@ app.use(session({
 app.post('/signup', (req,res) => { 
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 	
+	//test log
+	//console.log(req.body);
+
 	if(req.body.email && req.body.pass){ // check for the required headers 
 		let isVend = false;
 
@@ -139,9 +148,9 @@ app.post('/signup', (req,res) => {
 // Code to get user information here
 //app.get('/login', (req,res) => {
 app.post('/login', (req, res) => {	
-
+	res.setHeader("Content-Type", 'application/json');
 	if(req.body.email && req.body.pass){
-		var check_sql = "SELECT * FROM $ WHERE $ = $$";
+		var check_sql = "SELECT * FROM ? WHERE ? = ??";
 		var parameters = 
 		[
 			"user_data",
