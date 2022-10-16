@@ -64,18 +64,30 @@ const DB    = new DBHandler(db_handler_object);
 
 */ 
 
+function testCall(obj){
+	console.log(Object.keys(obj));
+	console.log(Object.values(obj));
+	return;
+}
 
 // Basic test
 // responds with a json of the passed query items
 app.post('/test_post', (req,res) => {
-	res.statuscode = 200;
-	res.setHeader('Content-Type','application/json');
-	res.end(
+	//console.log(req);
+
+
+	req.setEncoding('utf8'); // Set encoding on this side to match encoding on fakefront (soon to be called something else)
+	req.on('data', (chunk) => { // When we recieve the chunk set the body
+		testCall(JSON.parse(chunk)); // The chunk data comes in super late so it needs to get passed to a function, I think this can be handled pretty easily
+		res.statuscode = 200;
+		res.setHeader('Content-Type','application/json');
+		res.end(
 		JSON.stringify({
 			msg: 'Test Post Working!',
-			passed_items: req.body,
 		})
 	);
+	})
+
 });
 
 // test get from server
@@ -100,13 +112,21 @@ app.use(session({
 	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
 	resave: false//  wanna see if I can make my own store 
 })); // call the session in each method 
-	
+app.use(express.json());
+
 
 
 // Create new user
 // Changing this to '/signup'
 app.post('/signup', (req,res) => { 
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
+
+	var response_obj = {
+		issue: 0,
+		email: "",
+		pass: "",
+		vend: 0
+	}
 	
 	//test log
 	//console.log(req.body);
@@ -115,12 +135,13 @@ app.post('/signup', (req,res) => {
 		let isVend = false;
 
 		if(req.body.isVendor){
-			isVend = (req.body.isVendor == "true") ? true : false;
+			isVend = (req.body.isVendor == 1) ? true : false;
 		}
 		console.log(`Attempting to insert ${req.body.email} ${req.body.pass} into db`)
 		// The pool code made this part like 1 line which is really nice
 		DB.insertUser(req.body.email, req.body.pass, (err) => {
 			if(err){
+				response_obj.issue = err.code
 				res.end("Error on insertion");
 				throw err;
 				// handle dup entry for user has an account 
