@@ -8,7 +8,7 @@ class writeToConfig {
     //Takes in a json object and overwrites the config file with that object
     writeFromJSON(json){
         try {
-        this.fs.writeFileSync('config.txt', JSON.stringify(json));
+            this.fs.writeFileSync('config.txt', JSON.stringify(json));
         } catch (err) {
             console.error(err);
         }
@@ -41,6 +41,16 @@ class writeToConfig {
 
     //remove parameter, if it exists
     //do nothing if it doesnt
+    deleteKey(key){
+        try {
+            let data = this.fs.readFileSync('config.txt');
+            let json = JSON.parse(data.toString());
+            json.delete(key);
+            this.writeFromJSON(json);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     //get parameter, if it exists
     getValue(key){
