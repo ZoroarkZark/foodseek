@@ -63,6 +63,11 @@ function buildURL(base = "http://localhost:3000", url, params = null){
     return URL;
 
 }
+
+
+const ServerInterface = require('../../../../server/serverhandler.js');
+const SI = new ServerInterface({host: "localhost", port: 3000});
+
 //const def_root = "http://localhost:3000";
 const def_root = "http://localhost:3000";
 export const LoginScreen = () => {
@@ -77,21 +82,33 @@ export const LoginScreen = () => {
     // when you form the object to pass to build url you can ask us or we can start documentign more what they will be
     // 
     //const response = await fetch(buildURL(def_root,"/login", {email: email, pass: password}),
-    console.log(buildURL(def_root,"/test_get"));
-    await fetch(buildURL(def_root,"/test_get"),
-        {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            //body: JSON.stringify({ "email": email, "pass":password }), Currently we recieve our headers in the url but we should probably move the backend to take body items. Commented out so the build would work for now
-        })
-          .then((response) => response.json())
-          .then(boi => {console.log(boi)})
-          .catch((error) => console.error(error))
-          .finally(() => setLoading(false)); 
-    //navigation.navigate("Response", {resp: json});
+
+    //
+
+    // Screens CreateAcc, MainLoggedIn, Error
+
+    var creds = {
+      email: email,
+      pass: password
+    }
+
+    SI.loginUser(creds, (body) => {
+      body = JSON.parse(body);
+      if(body.issue == 0){
+        // successful login
+        navigation.navigate("SucessfulLoginScreen")
+      }
+      if(body.issue == 1) // no email found for acc
+      {
+        navigation.navigate("Re-enter Email/ signup")
+      }
+      if(body.issue ==2 ){
+        // password recovery
+      }
+      else {
+        // big issues just 
+      }
+    })
 
     navigation.navigate("Response");
   }

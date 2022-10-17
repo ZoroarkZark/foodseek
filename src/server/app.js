@@ -257,9 +257,11 @@ app.post('/foodlist', (req, res) => {
 	}
 
 	if(req.session.user){ // user has a session
+		console.log(`User has session!`);
 		food_list.populated = 1;
 	}
 	else{
+		console.log("session data not found");
 		food_list.populated = 0;
 	}
 
