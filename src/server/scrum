@@ -1,0 +1,28 @@
+10/14/2022
+    Fern: 
+        yesterday: Planning out the app UI, general layout, did some drawer navigation stuff
+        today: make basic functionality for a bunch of pages,
+        problems: how to setup the forgot password and signup stuff
+
+    Me:
+        yesterday: implemented the sql handler
+        today: implement vendor logic, and requests for front end
+        problems: none im a god
+    
+    Nisse:
+        yesterday: not too much but did a lot of research
+        today: creating foodcards, and how to take in foodcard objects
+        problems: nothing 
+
+    Nico:
+        yesterday: updated the readme, caching research
+        today: working today,
+        prollems: prolly nothing
+
+    Adam:
+        Problems: accessing file 
+
+
+
+    Notes: 
+        Maybe have a local file saved in the app directory for the device that holds the user information / cached data
