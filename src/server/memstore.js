@@ -157,13 +157,13 @@ module.exports =
 			]
 
 			var sql = mysql.format(set_sql, parameters)
-			console.log(sql);
+			//console.log(sql);
 			this.conn_pool.query(sql, (err) => {
 				if (err){ // error inserting data
-					console.log(`Error setting ${sid} into DB!`);
+					console.log(`Error setting ${sid} into DB! - memstore`);
 					return callback(err);
 				}
-				
+				console.log("inserted session - memstore");
 				callback();
 			});
 			
@@ -227,7 +227,7 @@ module.exports =
 		}
 
 		// clear expired items
-		clearExpired(callback){
+		clearExpired(){
 			console.log("Clearing expired items");
 
 			var clear_sql = "DELETE FROM ?? WHERE ?? < ?";
@@ -243,10 +243,9 @@ module.exports =
 			this.conn_pool.query(sql, (err) => {
 				if (err){
 					console.log("Failed to remove expired sessions");
-					callback(err);
+					throw err;
 				}
 
-				callback();
 			});
 		}
 
