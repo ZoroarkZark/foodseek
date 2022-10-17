@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, {useState, createRef} from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  Image,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 /*
 Try to prompt the user for their email.
@@ -8,3 +18,9 @@ Current functionality intended: give password right away OR go to a reset passwo
 Later functionality intended: find a way to send a vertification method, then let that go back to the app to make the reset password page.
 */
 
+export const ForgotPasswordScreen = ({ navigation }) => {
+    
+
+
+
+};

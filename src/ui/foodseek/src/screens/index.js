@@ -9,7 +9,10 @@ import { LoginScreen } from './login';
 import { HomeScreen } from './home';
 import { UserScreen } from './user';
 import { ResponseScreen } from './response';
+import { SignupScreen } from './signup';
 import { SettingsScreen } from './settings';
+import { EatSignupScreen } from './eatersignup';
+import { VenSignupScreen } from './vendorsignup';
 
 
 const Stack = createNativeStackNavigator();
@@ -36,8 +39,9 @@ export const AppNavigator = () => (
     <Stack.Screen
         name="Response" //RESPONSE PAGE SCREEN
         component={ResponseDrawer}
-        options={{ title: 'Response' }}
+        options={{ header: false }}
     />
+    
     </Stack.Navigator>
     </NavigationContainer>
     )
@@ -47,7 +51,7 @@ const ResponseDrawer = () => (
     <Drawer.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'Home Screen' }}
+        options={{ header: false }}
     />
     <Drawer.Screen
         name="User"
@@ -58,6 +62,21 @@ const ResponseDrawer = () => (
         name="Settings" //SETTINGS PAGE SCREEN
         component={SettingsScreen}
         options={{ title: 'Settings' }}
+    />
+    <Drawer.Screen
+        name="SignUp" //SIGNUP DECISION PAGE
+        component={SignupScreen}
+        options={{ header: false }}
+    />
+    <Drawer.Screen
+        name="EaterSignup" //EATER SIGNUP SCREEN
+        component={EatSignupScreen}
+        options={{ title: 'Eater Signup'}}
+    />
+    <Drawer.Screen
+        name="VendorSignup" //EATER SIGNUP SCREEN
+        component={VenSignupScreen}
+        options={{ title: 'Vendor Signup'}}
     />
     </Drawer.Navigator>
 )

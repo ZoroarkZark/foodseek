@@ -7,7 +7,7 @@ Intended functionality: To ask first whether or not you want to be an "Eater" or
 
 */
 export const SignupScreen = ({ navigation }) => {
-
+    
 
 
 
