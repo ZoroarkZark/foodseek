@@ -5,6 +5,10 @@ const database = require('mysql');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+//JWT
+const jwt = require('jsonwebtoken');
+
+
 const MyStore = require('./memstore.js');
 const DBHandler = require('./sqlhandler.js');
 const { isNull } = require('underscore');
@@ -26,6 +30,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 
+const jwt_secret = process.env.JWT_SECRET; // store the secret
+
 // SQL connection structure
 // Gets sql login info from the ./env file
 // Switched to using a pool connection for mulitple uploads
@@ -44,7 +50,8 @@ var db_handler_object = {
 	pool: db_pool,
 	user_table: "user_data",
 	email_col: "user_email",
-	pass_col: "password"
+	pass_col: "password",
+	vend_col: "vendor"
 
 }
 
@@ -74,9 +81,8 @@ function testCall(obj){
 // Basic test
 // responds with a json of the passed query items
 app.post('/test_post', (req,res) => {
-	//console.log(req);
 
-
+	console.log(req);
 	req.setEncoding('utf8'); // Set encoding on this side to match encoding on fakefront (soon to be called something else)
 	req.on('data', (chunk) => { // When we recieve the chunk set the body
 		testCall(JSON.parse(chunk)); // The chunk data comes in super late so it needs to get passed to a function, I think this can be handled pretty easily
@@ -120,6 +126,7 @@ app.use(express.json());
 // Create new user
 // Changing this to '/signup'
 app.post('/signup', (req,res) => { 
+	
 	res.setHeader('Content-Type', 'application/json'); // set response to be a json 
 
 	// our response is just going to contain the issue field for signup
@@ -131,12 +138,13 @@ app.post('/signup', (req,res) => {
 	req.setEncoding('utf8'); 
 	req.on('data', (body) => { // need to get something in the body before we do anything
 		body = JSON.parse(body); // parse the object as a json (we need to make sure this is enforced i don't wanna have to deal with non json lmao)
-		console.log(body);
+		console.log('ACTION-------SIGNUP');
 
 		if(body.email && body.pass){ // have the required arguments
 			//var isVendor = (body.isVendor) ? body.isVendor : 0; // if we have the field make it the field else make it 0
 
-			DB.insertUser(body.email, body.pass, (err) => { // attempt to insert the user into the database
+			var vendStatus = (body.vendor) ? body.vedor : 0;
+			DB.insertUser(body.email, body.pass, vendStatus, (err) => { // attempt to insert the user into the database
 				if(err){ // error on insertion
 					if(err.errno == 1062){ // duplicate entry
 						response_obj.issue =1;
@@ -176,35 +184,43 @@ app.post('/login', (req, res) => {
 	req.setEncoding('utf8');
 	req.on('data', (body) => {
 		body = JSON.parse(body);
-		console.log(body);
+		console.log('ACTION-------LOGIN');
 
 		if(body.email && body.pass){ // have required fields
-			DB.getUser(body.email, (err, pass) => {
-				console.log(pass);
+			DB.getUser(body.email, (err, result) => {
+				console.log(result);
 				if(err){ // issue probably SQL related
 					response_obj.issue = 3;
 					throw err;
 				}
 
-				if(!pass){ // no result given back but no error indicates no user exists 
+				if(!result["password"]){ // no result given back but no error indicates no user exists 
 					response_obj.issue = 1; // no email found
 					res.end(JSON.stringify(response_obj));
 				}
 				else{ // we got the password back
-					if( body.pass == pass ){ // matched password to a user
+					if( body.pass == result["password"] ){ // matched password to a user
 						response_obj.issue = 0;
 						response_obj.user = body.email;
-						response_obj.pass = body.pass;
-						// vendor is not really set up yet
+						
+						//create token to send back to user
+						const token = jwt.sign({
+							id: body.email,
+							vendor: result["vendor"]
 
-						req.session.regenerate( (err) => { // session stuff
-							if (err) throw err;
-							req.session.user = body.email;
-
-							req.session.save( (err) => {
-								res.end(JSON.stringify(response_obj));
-							});
+						}, jwt_secret, {
+							expiresIn: 8000000
 						});
+
+						console.log(`Token : ${token}`);
+						// pass the jwt as a cookie to the user
+						res.cookie("jwt", token, {
+							httpOnly: true,
+							maxAge: 8000000 *1000
+						})
+
+						res.end(JSON.stringify(response_obj));
+
 					}
 					else{ // bad password
 						response_obj.issue = 2; // email exists in db but pass is not a match
@@ -224,22 +240,12 @@ app.post('/login', (req, res) => {
 // logs out the user by destroying the session
 app.get('/logout', (req, res) => {
 	// once store class in made add logic to remove session id from database
-	var out_user = req.session.user;
-	req.session.user = null
-	req.session.save( (err) => {
-		if (err) throw err;
-			req.session.destroy((err) => {
-				if (err) throw err;
-			})
-	})
+	console.log('ACTION-------LOGOUT');
 	
-	
-	res.end(
-		JSON.stringify({
-			issue: 0,
-			user: out_user
-		})
-	);
+	res.cookie("jwt", "",{maxAge: "1"}); // null their cookie
+	res.end(JSON.stringify({
+		issue: 0
+	}))
 	
 })
 
@@ -251,24 +257,43 @@ app.get('/logout', (req, res) => {
 */
 // Not the actual thing just yet but gonna use this to test signed in users
 app.post('/foodlist', (req, res) => {
-
-	food_list = {
+	console.log('ACTION-------FOODLIST');
+	//console.log(req.cookies);
+	const resp_obj = {
+		issues: 0,
 		populated: 0
-	}
+	};
 
-	if(req.session.user){ // user has a session
-		console.log(`User has session!`);
-		food_list.populated = 1;
+	const jwt_token = req.cookies.jwt; // get the jwt token
+	if(jwt_token){ // non-null token
+		jwt.verify(jwt_token, jwt_secret, (err, decoded) => {
+			if(err){ // jwt decode error 
+				resp_obj.issues =2;
+				res.end(JSON.stringify(resp_obj));
+				throw err;
+			}
+			resp_obj.user = decoded.id;
+			console.log(decoded);
+			if(decoded.vendor == 1){ // decoded user is a vendor
+				resp_obj.populated = 1;
+				res.end(JSON.stringify(resp_obj));
+			}
+			else{ // decoded user is not a vendor
+				resp_obj.populated = 1;
+				res.end(JSON.stringify(resp_obj));
+			}
+		});
 	}
 	else{
-		console.log("session data not found");
-		food_list.populated = 0;
+		resp_obj.issues = 1;
+		res.end(JSON.stringify(resp_obj));
 	}
-
-	res.end(JSON.stringify(food_list));
 
 })
 
+function validateJWT(token){
+
+}
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {

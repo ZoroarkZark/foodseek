@@ -10,7 +10,8 @@ var userid = `user${rid}`;
 
 var user_credentials = {
     email: userid,
-    pass: "password"
+    pass: "password",
+    vendor: 0
 }
 
 
@@ -59,7 +60,7 @@ setTimeout(() => {
 setTimeout(() => {
     SI.test_user( (body) => {
         body = JSON.parse(body);
-        if(body.populated == 1){
+        if(body.issues == 0){
             console.log("Signed in user action");
             return;
         }
@@ -78,3 +79,14 @@ setTimeout(() => {
 
     });
 }, 6000)
+
+setTimeout(() => {
+    SI.test_user( (body) => {
+        body = JSON.parse(body);
+        if(body.issues == 0){
+            console.log("Signed in user action");
+            return;
+        }
+        console.log("User not signed in!");
+    });
+}, 8000);

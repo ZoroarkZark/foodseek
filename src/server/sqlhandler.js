@@ -16,6 +16,7 @@ module.exports =
             this.user_table = options.user_table;
             this.email = options.email_col;
             this.pass = options.pass_col;
+            this.vend = options.vend_col;
         }
 
         /*
@@ -27,22 +28,25 @@ module.exports =
        // given an email and passwword
        // The callback is to handle redirection in app.js (and errors)
        // callback should be callback(error)
-        insertUser(email, password, callback){
-            var sql = "INSERT INTO ?? (??, ??) VALUES (?, ?)"; // get the sql code
+        insertUser(email, password, vend, callback){
+            var sql = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?)"; // get the sql code
             var parameters = [
                 this.user_table,
                 this.email,
                 this.pass,
+                this.vend,
                 email,
-                password
+                password,
+                vend
             ];
             
             this.conn.query(sql, parameters, (err) => {
                 if(err){
-                    console.log(`Error inserting user ${email} - sqlhandler`);
+                    //console.log(`Error inserting user ${email} - sqlhandler`);
+                    console.log(err);
                     return callback(err);
                 }
-                console.log(`Successfully created user ${email} with password: ${password} - sqlhandler`);
+                //console.log(`Successfully created user ${email} with password: ${password} - sqlhandler`);
                 return callback(null); // no error
             });
 
@@ -62,18 +66,18 @@ module.exports =
 
             this.conn.query(sql, parameters, (err, results) => {
                 if(err){
-                    console.log(`Error finding user ${email} - sqlhandler`);
+                    //console.log(`Error finding user ${email} - sqlhandler`);
                     console.log(err);
                     return callback(err, null);
                 }
 
                 var result = (results[0]) ? results[0] : null;
                 if(!result){
-                    console.log("null result - sqlhandler");
+                    //console.log("null result - sqlhandler");
                     return callback(null, null); // no error but no result
                 }
-                console.log("found - sqlhandler");
-                return callback(null, result[this.pass]);
+                //console.log("found - sqlhandler");
+                return callback(null, result);
             });
         }
 

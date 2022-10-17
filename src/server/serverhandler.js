@@ -48,12 +48,20 @@ const { reduce } = require('underscore');
 // Optional overload http.request(options, callback) and specify the url as the path option
 
 
+
 class ServerInterface{
     constructor(base ={}){ // default options for our request (server should be the same across all calls)
         this.req = {
             host: base.host,
             port: base.port
         }
+
+        this.agent = new http.Agent({
+            keepAlive: true,
+            timeout: 3000
+        })
+
+        this.user_token = ""; // default token is nothing
     }
 
 
@@ -86,17 +94,20 @@ class ServerInterface{
         var options = {
             host: this.req.host,
             port: this.req.port,
+            agent: this.agent,
             path: "/signup",
             method: "POST",
             Headers: {
                 'Content-Type'  : 'application/json',
                 'Content-Length': Buffer.byteLength(credentials)
             }
+            
         }; // Form the request object from our default host and port, with path,method and body 
 
         var request = http.request(options, (res) => { // make the actual request 
             res.setEncoding('utf8');
             res.on('data', (chunk) => {
+                console.log(res.headers);
                 callback(chunk); // callback on the recieved data : this is the result
             });
            
@@ -123,6 +134,7 @@ class ServerInterface{
         var options = {
             host: this.req.host,
             port: this.req.port,
+            agent: this.agent,
             path: "/login",
             method: "POST",
             Headers: {
@@ -134,7 +146,11 @@ class ServerInterface{
         var request = http.request(options, (res) =>{
             res.setEncoding('utf8');
             res.on('data', (chunk) => {
-                callback(chunk);
+                var recieved_cookie = res.headers['set-cookie'][0]; // get the jwt token (prolly unsafe cause its just index access and if jwt ended up being cookie #2 wed be fucked)
+                var token = recieved_cookie.split(";",1); // get the actaul value portion
+                token = token[0].split("=",2)[1]; // get the value
+                this.user_token = token; // set the user token
+                callback(chunk); // callback on the result
             })
         });
 
@@ -149,19 +165,26 @@ class ServerInterface{
      * @param {function} callback : handle body data from server response
      */
     logoutUser(callback){
+        this.user_token = "";
         var options = {
             host: this.req.host,
             port: this.req.port,
+            agent: this.agent,
             path: "/logout",
-            method: "GET"
+            method: "GET",
+            
         }
 
         var request = http.request(options, (res) => {
+
+
             res.setEncoding('utf8')
             res.on('data', (chunk) =>{
+                console.log(res.headers);
                 callback(chunk);
             });
         });
+        
         
         request.on('error', (err) => {throw err;})
         request.end();
@@ -176,13 +199,19 @@ class ServerInterface{
         var options = {
             host: this.req.host,
             port: this.req.port,
+            agent: this.agent,
             path: "/foodlist",
-            method: "POST"
+            method: "POST",
+            headers: {
+                'Cookie': `jwt=${this.user_token}; expires=${new Date(new Date().getTime() + 86409000)};`
+            }
+            
         }
         
         var request = http.request(options, (res) => {
             res.setEncoding('utf8');
             res.on('data', (chunk) => {
+                console.log(res.headers);
                 callback(chunk);
             })
         });
