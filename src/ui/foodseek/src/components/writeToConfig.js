@@ -16,10 +16,13 @@ class writeToConfig {
 
     //reads from the config file and prints it to the display
     displayConfig(){
-        this.fs.readFile('config.txt',  (err, data) => {
-            if (err) console.log('error', err);
-            console.log(data.toString());
-        });
+        try {
+            let data = this.fs.readFileSync('config.txt');
+            let json = JSON.parse(data.toString());
+            console.log(json);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     //edit parameter, if the parameter exists
@@ -50,8 +53,3 @@ class writeToConfig {
         }
     }
 }
-
-let butt = new writeToConfig();
-butt.editValue("name2", "MORE PROBdsdfasdfasdEEEMS");
-butt.displayConfig();
-console.log(butt.getValue("name2"));
