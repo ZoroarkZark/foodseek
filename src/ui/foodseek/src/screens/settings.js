@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
+import { writeToConfig } from '../components/writeToConfig';
 
 export const SettingsScreen = ({ navigation }) => {
     const [allegiance, setAllegiance] = useState('an eater');

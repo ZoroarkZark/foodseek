@@ -26,8 +26,7 @@ class writeToConfig {
     }
 
     //edit parameter, if the parameter exists
-    //creates the parameter if it doesn't NOT YET
-    //does nothing if it doesnt exist
+    //creates the parameter if it doesn't
     editValue(key, value){
         try {
             let data = this.fs.readFileSync('config.txt');
