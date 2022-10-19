@@ -32,7 +32,6 @@ export const EatSignupScreen = ({ navigation }) => {
   const addressInputRef = createRef();
   const passwordInputRef = createRef();
 
-  
   const handleButton = () => {
     setErrortext('');
     //Errors if fields not filled in. In order, username, email, created password.
@@ -124,33 +123,28 @@ export const EatSignupScreen = ({ navigation }) => {
               blurOnSubmit={false}
             />
           </View>
-            {errortext != '' ? (
-            <Text style={styles.errorTextStyle}>
-              {errortext}
-            </Text>
-            ) : null}
           <TouchableOpacity
             style={styles.buttonStyle}
-            activeOpacity={0.5}
             onPress={handleButton}>
             <Text style={styles.buttonTextStyle}>REGISTER</Text>
           </TouchableOpacity>
-            </KeyboardAvoidingView>
+           </KeyboardAvoidingView>
           </ScrollView>
         </View>
-};
+}
 
 const styles = StyleSheet.create({
-    SectionStyle: {
+    SectionStyle: {     
       flexDirection: 'row',
+      backgroundColor: '#FFFFFF',
       height: 40,
-      marginTop: 20,
+      marginTop: 40,
       marginLeft: 35,
       marginRight: 35,
       margin: 10,
     },
     buttonStyle: {
-      backgroundColor: '#7DE24E',
+      backgroundColor: '#000000',
       borderWidth: 0,
       color: '#FFFFFF',
       borderColor: '#7DE24E',
@@ -169,7 +163,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
       flex: 1,
-      color: 'white',
+      color: 'black',
       paddingLeft: 15,
       paddingRight: 15,
       borderWidth: 1,
