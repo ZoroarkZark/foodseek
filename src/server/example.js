@@ -9,8 +9,8 @@ rid = Math.floor(rid*100000);
 var userid = `user${rid}`;
 
 var user_credentials = {
-    email: userid,
-    pass: "password",
+    email: "nico",
+    pass: "test",
     vendor: 0
 }
 

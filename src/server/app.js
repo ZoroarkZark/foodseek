@@ -15,6 +15,7 @@ const { isNull } = require('underscore');
 
 const bodyParser    = require('body-parser');
 const { on } = require('./memstore.js');
+const e = require('express');
 
 
 // Server Constants
@@ -204,8 +205,9 @@ app.post('/login', (req, res) => {
 						response_obj.user = body.email;
 						
 						//create token to send back to user
+						const user = {id: body.email}
 						const token = jwt.sign({
-							id: body.email,
+							user,
 							vendor: result["vendor"]
 
 						}, jwt_secret, {
@@ -291,8 +293,62 @@ app.post('/foodlist', (req, res) => {
 
 })
 
-function validateJWT(token){
+let checkToken = (req, res , next) => {
+	const resp_obj = {
+		issues: 0,
+		populated: 0,
+		user: ""
+	};
 
+	let token = req.cookie.jwt
+
+	  if (token) {
+		jwt.verify(token, jwt.secret, (err, decoded) => {
+			if (err) {
+				resp_obj.issues =2;
+				res.end(JSON.stringify(resp_obj));
+				throw err;
+			}
+
+			resp_obj.user = decoded.id;
+			console.log(decoded);
+			if(decoded.vendor == 1){ // decoded user is a vendor
+				resp_obj.populated = 1;
+				res.end(JSON.stringify(resp_obj));
+			}
+			else{ // decoded user is not a vendor
+				resp_obj.populated = 1;
+				res.end(JSON.stringify(resp_obj));
+			}
+		});
+};
+
+
+function validateJWT(token){
+	
+	
+	
+	/*
+	try {
+		const verified = jwt.verify(token , jwt_secret);
+		if(verified){
+			return res.send("Successfully Verified");
+		} else {
+			return res.status(401).send(error)
+		}
+	} catch (error) {
+		return res.status(401).send(error)
+	}
+	
+	const authHeader = req.headers['authorization']
+	const token = authHeader && authHeader.split('')[1]
+	if(token == null) return res.sendStatus(401)
+
+	jwt.verify(toke, process.env.jwt_secret, (err, user) =>{
+		req.user = user
+		next()
+	})
+	*/
 }
 
 // keeps this app open on the specifed port
