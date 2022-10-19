@@ -65,8 +65,6 @@ function buildURL(base = "http://localhost:3000", url, params = null){
 }
 
 
-const ServerInterface = require('../../../../server/serverhandler.js');
-const SI = new ServerInterface({host: "localhost", port: 3000});
 
 //const def_root = "http://localhost:3000";
 const def_root = "http://localhost:3000";
@@ -91,24 +89,6 @@ export const LoginScreen = () => {
       email: email,
       pass: password
     }
-
-    SI.loginUser(creds, (body) => {
-      body = JSON.parse(body);
-      if(body.issue == 0){
-        // successful login
-        navigation.navigate("SucessfulLoginScreen")
-      }
-      if(body.issue == 1) // no email found for acc
-      {
-        navigation.navigate("Re-enter Email/ signup")
-      }
-      if(body.issue ==2 ){
-        // password recovery
-      }
-      else {
-        // big issues just 
-      }
-    })
 
     navigation.navigate("Response");
   }
