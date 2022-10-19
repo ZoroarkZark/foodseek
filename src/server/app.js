@@ -293,20 +293,19 @@ app.post('/foodlist', (req, res) => {
 
 })
 
-let checkToken = (req, res , next) => {
+let checkToken = (token) => {
 	const resp_obj = {
 		issues: 0,
 		populated: 0,
 		user: ""
 	};
 
-	let token = req.cookie.jwt
+	const token = req.cookie.jwt;
 
 	  if (token) {
 		jwt.verify(token, jwt.secret, (err, decoded) => {
 			if (err) {
 				resp_obj.issues =2;
-				res.end(JSON.stringify(resp_obj));
 				throw err;
 			}
 
@@ -314,11 +313,11 @@ let checkToken = (req, res , next) => {
 			console.log(decoded);
 			if(decoded.vendor == 1){ // decoded user is a vendor
 				resp_obj.populated = 1;
-				res.end(JSON.stringify(resp_obj));
+
 			}
 			else{ // decoded user is not a vendor
 				resp_obj.populated = 1;
-				res.end(JSON.stringify(resp_obj));
+
 			}
 		});
 };
