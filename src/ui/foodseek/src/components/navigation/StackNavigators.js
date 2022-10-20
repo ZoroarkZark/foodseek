@@ -45,13 +45,38 @@ export const LoginStackNavigator = () => {
 // Returns a stack navigator for the home screen  
 export const HomeStackNavigator = () => {
     return(
-        <Stack.Navigator> 
-            <Stack.Screen
-                name="Home" //HOME PAGE SCREEN
-                component={HomeScreen}
-                options={{ title: 'Home Screen' }}
-            />
-        </Stack.Navigator>
+    <Drawer.Navigator>
+    <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ header: false }}
+    />
+    <Drawer.Screen
+        name="User"
+        component={UserScreen}
+        options={{ title: 'User Screen'}}
+    />
+    <Drawer.Screen
+        name="Settings" //SETTINGS PAGE SCREEN
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
+    />
+    <Drawer.Screen
+        name="SignUp" //SIGNUP DECISION PAGE
+        component={SignupScreen}
+        options={{ header: false }}
+    />
+    <Drawer.Screen
+        name="EaterSignup" //EATER SIGNUP SCREEN
+        component={EatSignupScreen}
+        options={{ title: 'Eater Signup'}}
+    />
+    <Drawer.Screen
+        name="VendorSignup" //EATER SIGNUP SCREEN
+        component={VenSignupScreen}
+        options={{ title: 'Vendor Signup'}}
+    />
+    </Drawer.Navigator>
     );  
 }
 

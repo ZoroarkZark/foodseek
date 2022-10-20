@@ -14,24 +14,17 @@ import {
   themeColor, 
 } from 'react-native-rapi-ui';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
-const textStyles = StyleSheet.create({
-  input: {
-    height: 40, 
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
 
+/*
+----------------------------------------------------------------------------------------
+URL BUILDING
+*/
+
+//Create the URL for the form. 
+// - url: given url
+// - email: given email to append to URL
+// - password: given password to append to URL
 function formUrl(url,email,password) {
     const emailKey="email";
     const passKey="pass";
@@ -64,9 +57,11 @@ function buildURL(base = "http://localhost:3000", url, params = null){
 
 }
 
+/*
+----------------------------------------------------------------------------------------
+LOGIN SCREEN
+*/
 
-
-//const def_root = "http://localhost:3000";
 const def_root = "http://localhost:3000";
 export const LoginScreen = () => {
     const [email, setEmail] = useState("");
@@ -145,3 +140,25 @@ export const LoginScreen = () => {
   );
 };
 
+/*
+----------------------------------------------------------------------------------------
+STYLES
+*/
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+const textStyles = StyleSheet.create({
+  input: {
+    height: 40, 
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
