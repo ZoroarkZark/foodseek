@@ -8,7 +8,7 @@ import {
   PostsStackNavigator, 
   SettingsStackNavigator, 
   UserStackNavigator 
-} from '.'; // import all stack navigators for nesting
+} from './StackNavigators'; // import all stack navigators for nesting
 
 
 // add bottom tab navigation to the application

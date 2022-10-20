@@ -4,15 +4,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // import individual screens for stack navigators
-import { LoginScreen } from '../../screens/login';
+import { LoginScreen } from '../../screens/authentication/login';
 import { HomeScreen } from '../../screens/home';
 import { UserScreen } from '../../screens/user';
-import { SignupScreen } from '../../screens/signup';
+import { SignupScreen } from '../../screens/authentication/signup';
 import { SettingsScreen } from '../../screens/settings';
-import { EatSignupScreen } from '../../screens/eatersignup';
-import { VenSignupScreen } from '../../screens/vendorsignup';
+import { EatSignupScreen } from '../../screens/authentication/eatersignup';
+import { VenSignupScreen } from '../../screens/authentication/vendorsignup';
 import { PostsScreen } from '../../screens/posts';
-import { ForgotPasswordScreen } from '../../screens/forgotpassword';
+import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
 
 
 const Stack = createNativeStackNavigator();     // Create stack navigator component
