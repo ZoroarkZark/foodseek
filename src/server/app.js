@@ -79,6 +79,23 @@ function testCall(obj){
 	return;
 }
 
+app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
+app.use(session({
+	store: Store,
+	secret: "testsecret", // session secret between client and server 
+	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
+	resave: false//  wanna see if I can make my own store 
+})); // call the session in each method 
+app.use(express.json());
+
+app.use( (req, res, next) => {
+	console.log("req recieved");
+	console.log(req);
+	next();
+})
+
+
+
 // Basic test
 // responds with a json of the passed query items
 app.post('/test_post', (req,res) => {
@@ -103,19 +120,6 @@ app.get('/test_get', (req,res) => {
 		})
 	);
 });
-
-
-
-
-app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
-app.use(session({
-	store: Store,
-	secret: "testsecret", // session secret between client and server 
-	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
-	resave: false//  wanna see if I can make my own store 
-})); // call the session in each method 
-app.use(express.json());
-
 
 
 // Create new user
