@@ -64,6 +64,7 @@ export const EatSignupScreen = ({ navigation }) => {
       //We now have a pretty valid JSON string, made with the key and value given.
       //What we should do with this JSON string is to utilize it to sign up a user.
     };
+    return (
     <View style={{flex: 1, backgroundColor: '#307ecc'}}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -131,6 +132,7 @@ export const EatSignupScreen = ({ navigation }) => {
            </KeyboardAvoidingView>
           </ScrollView>
         </View>
+    );
 }
 
 const styles = StyleSheet.create({

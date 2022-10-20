@@ -85,7 +85,7 @@ export const LoginScreen = () => {
       pass: password
     }
 
-    navigation.navigate("Response");
+    navigation.navigate("Home");
   }
   return (
     <ThemeProvider theme="light">

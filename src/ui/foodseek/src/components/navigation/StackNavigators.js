@@ -42,14 +42,15 @@ export const LoginStackNavigator = () => {
     );  
 }
 
-// Returns a stack navigator for the home screen  
+// Returns a stack navigator for the home screen
+// Attempting to add Drawer Navigation to the Home Screen, once it is navigated to.  
 export const HomeStackNavigator = () => {
     return(
     <Drawer.Navigator>
     <Drawer.Screen
         name="Home"
         component={HomeScreen}
-        options={{ header: false }}
+        options={{ title: 'Home Screen' }}
     />
     <Drawer.Screen
         name="User"
@@ -64,7 +65,7 @@ export const HomeStackNavigator = () => {
     <Drawer.Screen
         name="SignUp" //SIGNUP DECISION PAGE
         component={SignupScreen}
-        options={{ header: false }}
+        options={{ title: 'Signup Screen' }}
     />
     <Drawer.Screen
         name="EaterSignup" //EATER SIGNUP SCREEN
@@ -118,42 +119,4 @@ export const PostsStackNavigator = () => {
         </Stack.Navigator>
     );  
 }
-
-// Response drawer (currently not in use TODO: add option in drawer navigation for logout)
-const ResponseDrawer = () => (
-    <Drawer.Navigator>
-    <Drawer.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ header: false }}
-    />
-    <Drawer.Screen
-        name="User"
-        component={UserScreen}
-        options={{ title: 'User Screen'}}
-    />
-    <Drawer.Screen
-        name="Settings" //SETTINGS PAGE SCREEN
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
-    />
-    <Drawer.Screen
-        name="SignUp" //SIGNUP DECISION PAGE
-        component={SignupScreen}
-        options={{ header: false }}
-    />
-    <Drawer.Screen
-        name="EaterSignup" //EATER SIGNUP SCREEN
-        component={EatSignupScreen}
-        options={{ title: 'Eater Signup'}}
-    />
-    <Drawer.Screen
-        name="VendorSignup" //EATER SIGNUP SCREEN
-        component={VenSignupScreen}
-        options={{ title: 'Vendor Signup'}}
-    />
-    </Drawer.Navigator>
-)
-
-
 
