@@ -90,7 +90,6 @@ app.use(express.json());
 
 app.use( (req, res, next) => {
 	console.log("req recieved");
-	console.log(req);
 	next();
 })
 
@@ -105,6 +104,10 @@ app.post('/test_post', (req,res) => {
 	res.end(JSON.stringify({
 		test: "Test Post Worked"
 	}));
+
+	req.on('data', (chunk) => {
+		console.log(chunk);
+	})
 	
 
 });
