@@ -8,6 +8,7 @@ import { LoginScreen } from '../../screens/authentication/login';
 import { HomeScreen } from '../../screens/home';
 import { UserScreen } from '../../screens/user';
 import { SignupScreen } from '../../screens/authentication/signup';
+import { CameraScreen } from '../../screens/camera';
 import { SettingsScreen } from '../../screens/settings';
 import { EatSignupScreen } from '../../screens/authentication/eatersignup';
 import { VenSignupScreen } from '../../screens/authentication/vendorsignup';
@@ -107,12 +108,26 @@ export const SettingsStackNavigator = () => {
     );  
 }
 
+// Returns a stack navigator for the settings screen
+export const CameraStackNavigator = () => {
+    return(
+        <Stack.Navigator> 
+            <Stack.Screen
+            name="Camera" 
+            component={CameraScreen}
+            options={{ title: 'Camera' }}
+            />
+        </Stack.Navigator>
+    );  
+}
+
+
 // Returns a stack navigator for the post listing screens 
 export const PostsStackNavigator = () => {
     return(
         <Stack.Navigator> 
             <Stack.Screen
-            name="Settings" //RESPONSE PAGE SCREEN
+            name="Posts" //RESPONSE PAGE SCREEN
             component={PostsScreen}
             options={{ title: 'Posts' }}
             />

@@ -7,7 +7,8 @@ import {
   LoginStackNavigator, 
   PostsStackNavigator, 
   SettingsStackNavigator, 
-  UserStackNavigator 
+  UserStackNavigator,
+  CameraStackNavigator,
 } from './StackNavigators'; // import all stack navigators for nesting
 
 
@@ -50,6 +51,12 @@ const BottomTabsNavigator = () => {
         <BottomTab.Screen name="Settings" component={ SettingsStackNavigator }
         options={{
           tabBarLabel: "Settings",
+          tabBarIcon: () => (<Ionicons name="options-outline" />),
+        }}
+        />
+        <BottomTab.Screen name="Camera" component={ CameraStackNavigator }
+        options={{
+          tabBarLabel: "Camera",
           tabBarIcon: () => (<Ionicons name="options-outline" />),
         }}
         />
