@@ -27,17 +27,17 @@ export const LoginStackNavigator = () => {
             <Stack.Screen
                 name="Login" //LOGIN PAGE SCREEN
                 component={LoginScreen}
-                options={{ title: 'Login' }}
+                options={{ title: 'Login', headerShown: false }}
             />
             <Stack.Screen
                 name="Signup" //SIGNUP PAGE SCREEN
                 component={SignupScreen}
-                options={{ title: 'Signup' }}
+                options={{ title: 'Signup', headerShown: false }}
             />
             <Stack.Screen
                 name="Forgot Password" //FORGOT PASSWORD PAGE SCREEN
                 component={ForgotPasswordScreen}
-                options={{ title: 'Forgot Password' }}
+                options={{ title: 'Forgot Password', headerShown: false }}
             />
         </Stack.Navigator>
     );  
