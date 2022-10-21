@@ -2,10 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
+import { Image } from 'react-native';
 
 export const CameraScreen = ({ navigation }) => {
   const [direction, setDirection] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [pictureTaken, setTaken] = useState(false);
 
   if (!permission) {
     return <View />;
@@ -19,26 +21,33 @@ export const CameraScreen = ({ navigation }) => {
       </View>
     );
   }
-
-  const takePicture = async () => {
-    const options = {quality: 1, base64: true};
-    const photo = await Camera.takePictureAsync();
-    console.log(photo);
-    setPreviewVisible(true);
-    setCapturedImage(photo);
+  
+  snap = async () => {
+    if (this.camera){
+      this.photo = await this.camera.takePictureAsync();
+      console.log(this.photo.uri);
+      setTaken(true);
+    }
   }
 
-  return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} type={direction}>
-        <View styles={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.text}>Take Picture!!!</Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
-    </View>
-  );
+  if (!pictureTaken){
+    return (
+      <View style={styles.container}>
+        <Camera style={styles.camera} type={direction} ref={ref => { this.camera = ref }}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={snap}>
+              <Text style={styles.text}>Take Picture!!!</Text>
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      </View>
+    );
+  }
+  else {
+    return (
+      <Image source = {{uri: this.photo.uri}} style = {{width: 400, height: 400}} />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   camera: {
-    flex: 2,
+    flex: 1,
     width: '100%',
   },
   buttonContainer: {
