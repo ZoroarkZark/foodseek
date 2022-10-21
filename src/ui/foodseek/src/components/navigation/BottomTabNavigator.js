@@ -24,7 +24,7 @@ const BottomTabsNavigator = () => {
           backgroundColor: "#fff",
         },
       }}>
-        <BottomTab.Screen name="Login" component={ LoginStackNavigator }
+        <BottomTab.Screen name="AuthenticationScreens" component={ LoginStackNavigator }
         options={{
           tabBarLabel: "Login",
           tabBarIcon: () => (<Ionicons name="log-in-outline"/>),
