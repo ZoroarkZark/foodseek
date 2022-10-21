@@ -4,7 +4,6 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 export const SettingsScreen = ({ navigation }) => {
     const [allegiance, setAllegiance] = useState('an eater');
     const [email, setEmail] = useState('loading email');
-    let wr = new writeToConfig();
 
     function allegianceHandler() {
         if (allegiance == 'an eater') {

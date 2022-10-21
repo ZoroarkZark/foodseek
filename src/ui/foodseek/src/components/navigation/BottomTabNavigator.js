@@ -47,7 +47,7 @@ const BottomTabsNavigator = () => {
           tabBarIcon: () => (<Ionicons name="person-outline" />),
         }}
         />
-        <BottomTab.Screen name="Search" component={ SettingsStackNavigator }
+        <BottomTab.Screen name="Settings" component={ SettingsStackNavigator }
         options={{
           tabBarLabel: "Settings",
           tabBarIcon: () => (<Ionicons name="options-outline" />),
