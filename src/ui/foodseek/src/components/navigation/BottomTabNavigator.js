@@ -24,40 +24,40 @@ const BottomTabsNavigator = () => {
           backgroundColor: "#fff",
         },
       }}>
-        <BottomTab.Screen name="AuthenticationScreens" component={ LoginStackNavigator }
+        <BottomTab.Screen name="LoginTab" component={ LoginStackNavigator }
         options={{
           tabBarLabel: "Login",
           tabBarIcon: () => (<Ionicons name="log-in-outline"/>),
         }}
         />
-        <BottomTab.Screen name="Home" component={ HomeStackNavigator }
+        <BottomTab.Screen name="HomeTab" component={ HomeStackNavigator }
         options={{
           tabBarLabel: "Home",
           tabBarIcon: () => (<Ionicons name="home-outline"/>),
         }}
         />
-        <BottomTab.Screen name="Posts" component={ PostsStackNavigator }
+        <BottomTab.Screen name="PostsTab" component={ PostsStackNavigator }
         options={{
           tabBarLabel: "Posts",
           tabBarIcon: () => (<Ionicons name="document-text-outline" />),
         }}
         />
-        <BottomTab.Screen name="User" component={ UserStackNavigator }
+        <BottomTab.Screen name="UserTab" component={ UserStackNavigator }
         options={{
           tabBarLabel: "User",
           tabBarIcon: () => (<Ionicons name="person-outline" />),
         }}
         />
-        <BottomTab.Screen name="Settings" component={ SettingsStackNavigator }
+        <BottomTab.Screen name="SettingsTab" component={ SettingsStackNavigator }
         options={{
           tabBarLabel: "Settings",
           tabBarIcon: () => (<Ionicons name="options-outline" />),
         }}
         />
-        <BottomTab.Screen name="Camera" component={ CameraStackNavigator }
+        <BottomTab.Screen name="CameraTab" component={ CameraStackNavigator }
         options={{
           tabBarLabel: "Camera",
-          tabBarIcon: () => (<Ionicons name="options-outline" />),
+          tabBarIcon: () => (<Ionicons name="camera-outline" />),
         }}
         />
       </BottomTab.Navigator>
