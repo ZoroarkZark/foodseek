@@ -90,6 +90,8 @@ app.use(express.json());
 
 app.use( (req, res, next) => {
 	console.log("req recieved");
+	console.log(req.url);
+	console.log(req.body);
 	next();
 })
 
@@ -98,19 +100,20 @@ app.use( (req, res, next) => {
 // Basic test
 // responds with a json of the passed query items
 app.post('/test_post', (req,res) => {
-
-
-	console.log("test post");
-	res.end(JSON.stringify({
-		test: "Test Post Worked"
-	}));
-
-	req.on('data', (chunk) => {
-		console.log(chunk);
-	})
-	
-
+	if(req.body){
+		console.log(req.body);
+		
+		res.end( JSON.stringify({
+			test: "Nico sucks dick"
+		}));
+	}
 });
+
+// XHR Sends the body immediatley before any response is sent so we are actually in the money
+// We should be bale to add some extra clauses to ensure we get body data before moving forward even if they dont send the body data immedialy but turns out we were just overcomplicating it
+
+
+
 
 // test get from server
 app.get('/test_get', (req,res) => {
