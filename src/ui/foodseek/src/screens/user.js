@@ -13,7 +13,7 @@ export const UserScreen = ({ navigation, route }) => {
             <Text>User Details 12334</Text>
             <Button text="Continue" onPress={() => {
                 console.log("button clicked")
-                let a = SI.xmlT2((body) => {
+                let a = SI.xmlTest((body) => {
                     console.log(body);
                     setTest(body.test);
                 });
