@@ -5,11 +5,14 @@ import { TextInputMask } from "react-native-paper";
 import { TextInput, Text, Picker } from 'react-native-rapi-ui';
 
 
+
 const validator = (text="") => {
     return true;
 }
 
-export const PhoneNumberInput = ({label, valid=validator, style}) => {
+
+// phone input field which is not yet in use... will be added/tested later for input
+export const PhoneNumberInput = ({label, style}) => {
     const [text, setText] = React.useState("");
 
 
@@ -24,30 +27,16 @@ export const PhoneNumberInput = ({label, valid=validator, style}) => {
     )
 }
 
-export const CustomTextInputSample = ({label, style, keyboardType, valid=validator}) => {
-    const [text, setText] = React.useState("");
-
-
-    return (
-        <TextInput 
-            value={text}
-            onChangeText={text => setText(text)}
-            style={style.item}
-            keyboardType={keyboardType}
-        />
-    );
-};
-
+// creates a Title for the Auth flow screens
 export const Title = ({style, label="Email"}) => (
         <>
             <Text fontWeight='bold' style={{ alignSelf: "center", padding: 30, }} size="h3" >
             {label}
             </Text>
         </>
-    );
+);
 
-
-
+// adds an email field to the form along with a text label for it
 export const EmailInput = ({value, style, onChangeText, label="Email"}) => {
     const [text, setText] = React.useState("");
 
@@ -75,6 +64,7 @@ export const EmailInput = ({value, style, onChangeText, label="Email"}) => {
     )
 }
 
+// adds a password field to the form as well as a label for it
 export const PasswordInput = ({value, style, onChangeText, placeholder="Please enter a password...", label="Password"}) => {
 
     return (<>
@@ -94,7 +84,7 @@ export const PasswordInput = ({value, style, onChangeText, placeholder="Please e
     </>)
 }
 
-
+// creates a picker (dropdown selection tool) field for selecting the role of the user
 export const PickerInput = ({value, style, onValueChange, placeholder, label="Picker"}) => {
     const options = [
         {label: 'Seeker', value: 'USR_SEEK'},
