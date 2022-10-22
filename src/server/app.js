@@ -186,7 +186,7 @@ app.post('/login', (req, res) => {
 	}
 
 	if(req.body){
-		body = JSON.parse(req.body);
+		//body = JSON.parse(req.body);
 
 		if(body.email && body.pass){ // have required fields
 			DB.getUser(body.email, (err, result) => {

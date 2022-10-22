@@ -114,14 +114,14 @@ class ServerInterface{
     signup(){}
     // login to an existing acc given credentials
     login(credentials, cb){
-        let request = XMLHttpRequest();
+        let request = new XMLHttpRequest();
 
-        request.open("POST", `${thi.host}/login`,true)
+        request.open("POST", `${this.host}/login`,true)
         request.responseType = "json"; // what we expect to recieve
         request.setRequestHeader('Content-type', 'application/json; charset=utf-8'); // what we intend to send
         request.timeout = 3000;
 
-        request.send(credentials); // send the users credentials to the server
+        request.send(JSON.stringify(credentials)); // send the users credentials to the server
 
         // Let UI handle getting the JWT token, we may want a convient way to package that for them here tho
         request.onload = () => {

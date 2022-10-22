@@ -128,14 +128,14 @@ export const LoginScreen = () => {
           <Button
             text={loading ? "Loading" : "Continue"}
             onPress={() => {
-                credentials = {
+                let credentials = {
                   email: email,
                   pass: password
                 }
                 
-                SI.login(credentials, (data) => {
+                let a = SI.login(credentials, (data) => {
                   console.log(data);
-                })
+                });
 
             }}
             style={{
