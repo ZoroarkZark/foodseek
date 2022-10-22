@@ -185,11 +185,8 @@ app.post('/login', (req, res) => {
 		vend: 0
 	}
 
-	// get the body of the request
-	req.setEncoding('utf8');
-	req.on('data', (body) => {
-		body = JSON.parse(body);
-		console.log('ACTION-------LOGIN');
+	if(req.body){
+		body = JSON.parse(req.body);
 
 		if(body.email && body.pass){ // have required fields
 			DB.getUser(body.email, (err, result) => {
@@ -240,7 +237,14 @@ app.post('/login', (req, res) => {
 			response_obj.issue = 3; // no args 
 			res.end(JSON.stringify(response_obj));
 		}
-	});
+	}
+	else{
+		req.on('data', (chunk)=>{
+			console.log(`Recieved ${chunk} hella late`);
+		})
+	}
+
+	
 });
 
 // logs out the user by destroying the session
