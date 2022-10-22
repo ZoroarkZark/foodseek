@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import {  
-  ThemeProvider,
-  Layout,
-  TopNav,
-  Text,
-  TextInput,
-  Button,
-  useTheme, 
-  themeColor, 
-} from 'react-native-rapi-ui';
+import { ThemeProvider,  Layout, Text, Button, } from 'react-native-rapi-ui';
+import { TextButton, Title, PasswordInput, EmailInput } from '../../components/common';
 
 
 
@@ -97,42 +87,15 @@ export const LoginScreen = () => {
             paddingBottom: 20,
           }}
         >
-          <Text
-              fontWeight='bold'
-              style={{
-                alignSelf: "center",
-                padding: 30,
-              }}
-              size="h3"
-              >Log-in</Text>
+          <Title>Login</Title>
           <Text>Email</Text>
-          <TextInput
-            style={textStyles.input}
-            value={email}
-            keyboardType="email-address"
-            placeholder="enter your email"
-            multiline={true}
-            numberOfLines={3}
-            onChangeText={(text) => setEmail(text)}
-            />
+          <EmailInput value={email} onChangeText={(text) => setEmail(text)}>Enter email...</EmailInput>
           <Text style={{ marginTop: 15 }}>Password</Text>
-          <TextInput
-            style={textStyles.input}
-            value={password}
-            placeholder="enter your password"
-            secureTextEntry={true}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <Button
-            text={loading ? "Loading" : "Continue"}
-            onPress={() => {
-                login();
-            }}
-            style={{
-              marginTop: 20,
-            }}
-            disabled={loading}
-          />
+          <PasswordInput value={password} onChangeText={(text) => setPassword(text)}>Enter password...</PasswordInput>
+
+          <Button text={loading ? "Loading" : "Continue"} onPress={() => { login();}} style={{ marginTop: 20, marginBottom: 20, }} disabled={loading} /> 
+          <TextButton style={styles.textButton} onPress={() => navigation.navigate("Signup")}>Create Account</TextButton>
+          <TextButton style={styles.textButton} onPress={() => navigation.navigate("Forgot Password")}>Forgot Password?</TextButton>
 
       </View> 
       </Layout>
@@ -151,6 +114,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textButton: {
+    color: 'black',
   },
 });
 
