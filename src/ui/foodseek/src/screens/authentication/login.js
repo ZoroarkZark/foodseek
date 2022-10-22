@@ -15,6 +15,8 @@ import {
 } from 'react-native-rapi-ui';
 
 
+import { SI } from '../../scripts/serverinterface.js'
+
 
 /*
 ----------------------------------------------------------------------------------------
@@ -126,7 +128,15 @@ export const LoginScreen = () => {
           <Button
             text={loading ? "Loading" : "Continue"}
             onPress={() => {
-                login();
+                credentials = {
+                  email: email,
+                  pass: password
+                }
+                
+                SI.login(credentials, (data) => {
+                  console.log(data);
+                })
+
             }}
             style={{
               marginTop: 20,
