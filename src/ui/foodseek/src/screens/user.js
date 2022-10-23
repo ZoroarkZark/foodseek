@@ -1,27 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { useContext } from 'react';
 import { Text, View } from 'react-native';
-import { Button } from 'react-native-rapi-ui'
-import { SI } from '../scripts/serverinterface.js'
-
-
-
+import { AuthContext } from '../components/caching/CreateAccountContext';
 export const UserScreen = ({ navigation, route }) => {
-    const [test, setTest] = useState("");
-
+    const {user} = useContext(AuthContext);
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>User Details 12334</Text>
-            <Button text="Continue" onPress={() => {
-                console.log("button clicked")
-                let a = SI.xmlTest((body) => {
-                    console.log(body);
-                    setTest(body.test);
-                });
+            <Text>User Details:</Text>
+            <Text>Email:{user.Email}</Text>
+            <Text>Password:{user.Pass}</Text>
 
-                
-            
-                }}/>
-            <Text>{test}</Text>
         </View>
     );
 };

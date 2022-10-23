@@ -1,138 +1,108 @@
 import React, { useState } from 'react';
+import { useContext } from 'react';
 import { StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import { PasswordInput, EmailInput, Title, PickerInput } from '../../components/text/TextInput.js';
+import { AuthContext } from '../../components/caching/CreateAccountContext.js';
+import { ThemeProvider, Layout, Button } from 'react-native-rapi-ui';
+import { useNavigation } from '@react-navigation/native';
 
 /*
 Intended functionality: To ask first whether or not you want to be an "Eater" or "Vendor". 
                         Leads into respective pages. One for "Eater signup" and another for "Vendor signup".
 
 */
+
+
+
 export const SignupScreen = ({ navigation }) => {
-    const [isVendor, setIsVendor] = useState(false);
-    const [selected, setSelected] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [userEmail, setUserEmail] = useState('');
-    const [userPassword, setUserPassword] = useState('');
+    const {loading, user, setLoading, setUser, createAccount, logout, printUser} = useContext(AuthContext);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [role, setRole] = useState("");
+    const [prefTravel, setPrefTravel] = useState("");
+    const [location, setLocation] = useState("");
+    const [next, setNext] = useState(false);
+    const [complete, setComplete] = useState(false);
+    const [businessEmail, setBusinessEmail] = useState("");
+    const [endResponse, setEndResponse] = useState("");
+    const completeHandler = () => {
+      setComplete(true);
+      setUser({
+        Email: email,
+        Pass: password,
+        Role: role,
+        PrefTravel: prefTravel,
+        BusinessEmail: businessEmail,
+      });
+      console.log("Create account completed... here is what it looks like...");
+      console.log(user);
 
-    //BUTTON TO ASK WHETHER OR NOT THEY ARE AN EATER OR VENDOR. IF EATER, FALSE. IF VENDOR, TRUE.
-    //Now have information on that.
-    
-    
-
-    
-
-    //FIELDS FOR NAME, EMAIL, AND PASSWORD. 
+    }
 
     return (
-        /*VIEW CONTAINER*/
-        <View style={{flex: 1, backgroundColor: '#307ecc'}}> 
-
-        /*SCROLL VIEW, TO ALLOW FOR SCREEN TO BE SCROLLED.*/
-          <ScrollView 
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignContent: 'center',
-            }}>
-
-            /*SEPERATED VIEWS FOR DIFFERENT USER, EMAIL, PASSWORD FIELDS.*/
-            /*KeyboardAvoidingView used to allow the scrolled screen to move upwards when needed.*/
-
-            /*ADD BUTTON FOR EATER OR VENDOR HERE. HIDE EVERYTHING ELSE.*/
-            <Pressable
-                style={styles.buttonStyle}
-                onPress={setIsVendor(false)}>
-                <Text style={styles.buttonTextStyle}>EATER</Text>
-            </Pressable>
-
-            <Pressable
-                style={styles.buttonStyle}
-                onPress={setIsVendor(true)}>
-                <Text style={styles.buttonTextStyle}>VENDOR</Text>
-            </Pressable>
-
-            <KeyboardAvoidingView enabled>
-
-                /*VIEW CONTAINER FOR USERNAME.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserName) => setUserName(UserName)}
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Name"
-                  placeholderTextColor="#8b9cb5"
-                  autoCapitalize="sentences"
-                  returnKeyType="next"
-                  onSubmitEditing={() =>
-                    emailInputRef.current && emailInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*VIEW CONTAINER FOR EMAIL.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Email"
-                  placeholderTextColor="#8b9cb5"
-                  keyboardType="email-address"
-                  ref={emailInputRef}
-                  returnKeyType="next"
-                  onSubmitEditing={() =>
-                    passwordInputRef.current &&
-                    passwordInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*VIEW CONTAINER FOR PASSWORD.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserPassword) =>
-                    setUserPassword(UserPassword)
-                  }
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Password"
-                  placeholderTextColor="#8b9cb5"
-                  ref={passwordInputRef}
-                  returnKeyType="next"
-                  secureTextEntry={true}
-                  onSubmitEditing={() =>
-                    ageInputRef.current &&
-                    ageInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*INTERFACE FOR BUTTON TO FINISH REGISTRATION.*/
-              <Pressable
-                style={styles.buttonStyle}
-                onPress={handleButton}>
-                <Text style={styles.buttonTextStyle}>REGISTER</Text>
-              </Pressable>
-
-
-               </KeyboardAvoidingView>
-              </ScrollView>
-            </View>
-        );
+      <ThemeProvider theme="light">
+      <Layout>  
+        <View 
+          style={styles.container}
+        >
+        <Title label="Create Account" />
+        {(!next && (role === "") ) &&
+          <>
+          <EmailInput value={email} onChangeText={(e) => setEmail(e)} style={{label: styles.input, item: styles.input}}/>
+          <PasswordInput value={password} onChangeText={(e) => setPassword(e)} style={{label: styles.input, item: styles.input}}/>
+          <PickerInput value={role} onValueChange={(e) => setRole(e)} placeholder="Please select a role..." label="User Role" style={{label: styles.input, item: styles.input}}/>
+          <Button text={loading ? "Loading" : "Continue"}  onPress={(email,password,role,location) =>  {email && password && role && !next ? setNext(!next) : console.log("There are still empty fields...")} } style={{ marginTop: 20, }} />
+          </>
+        }
+        {(!next && (role === "USR_VEND") ) &&
+          <>
+          <EmailInput value={businessEmail} label="Business/Work Email" onChangeText={(e) => setBusinessEmail(e)} style={{label: styles.input, item: styles.input}}/>
+          <Button text={loading ? "Loading" : "Submit"}  onPress={(businessEmail) =>  {businessEmail ? completeHandler() : console.log("There are still empty fields...")} } style={{ marginTop: 20, }} />
+          </>
+        }
+        {(!next && (role === "USR_SEEK") ) &&
+          <>
+          <PickerInput value={prefTravel} onValueChange={(e) => setPrefTravel(e)} placeholder="Please select your favorite method of travel..." label="Preferred Travel" style={{label: styles.input, item: styles.input}} options={[{label: 'Seeker', value: 'USR_SEEK'},{label: 'Vendor', value: 'USR_VEND'}]}/>
+          <Button text={loading ? "Loading" : "Submit"}  onPress={(prefTravel) =>  {prefTravel ? completeHandler() : console.log("There are still empty fields...")} } style={{ marginTop: 20, }} />
+          </>
+        }
+        {(complete && !loading) && 
+        <>
+        <Text>{endResponse}</Text>
+        </>}
+        
+      </View>
+      </Layout>
+      </ThemeProvider>
+    )
+}
 
 
 
-    //DEPENDING IF EATER OR VENDOR, DISPLAY DIFFERENT THINGS OUT.
-    //FOR EATER, DISPLAY INCOME.
-    //FOR VENDOR, DISPLAY BUSINESS NAME.
-
-
-
-
-    //HAVE ALL NECESSARY INFORMATION. ONCE DONE, SIGNUP SHOULD BE COMPLETE. LAY OUT ALL OF THE DATA TO USE.
-    //TAKE TO HOME SCREEN.
-
-
-};
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+    },
+    label: {
+      flex: 1,
+      alignSelf: 'flex-start',
+      marginTop: 15,
+      marginLeft: 15,
+      padding: 5,
+    },
+    link:{
+      flex: 1,
+      color: 'black',
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      size: 'sm',
+    },
+    input: {
+      flex: 1,
+      borderWidth: 1,
+      marginLeft: 15,
+      padding: 10,
+    },
+  });
