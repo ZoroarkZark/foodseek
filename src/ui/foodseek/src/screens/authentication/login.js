@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View } from 'react-native';
 import { ThemeProvider,  Layout, Text, Button, } from 'react-native-rapi-ui';
-import { TextButton, Title, PasswordInput, EmailInput } from '../../components/common';
+import { TextButton, Title, PasswordInput, EmailInput, DismissKeyboard } from '../../components/common';
 
 
 
@@ -80,24 +80,26 @@ export const LoginScreen = () => {
   return (
     <ThemeProvider theme="light">
       <Layout>  
-        <View 
-          style={{
-            flex: 3,
-            paddingHorizontal: 20,
-            paddingBottom: 20,
-          }}
-        >
-          <Title>Login</Title>
-          <Text>Email</Text>
-          <EmailInput value={email} onChangeText={(text) => setEmail(text)}>Enter email...</EmailInput>
-          <Text style={{ marginTop: 15 }}>Password</Text>
-          <PasswordInput value={password} onChangeText={(text) => setPassword(text)}>Enter password...</PasswordInput>
+        <DismissKeyboard>
+          <View 
+            style={{
+              flex: 3,
+              paddingHorizontal: 20,
+              paddingTop: 30,
+            }} >
+              <Title>Login</Title>
+              <Text>Email</Text>
+              <EmailInput value={email} onChangeText={(text) => setEmail(text)}>Enter email...</EmailInput>
+              <Text style={{ marginTop: 15 }}>Password</Text>
+              <PasswordInput value={password} onChangeText={(text) => setPassword(text)}>Enter password...</PasswordInput>
 
-          <Button text={loading ? "Loading" : "Continue"} onPress={() => { login();}} style={{ marginTop: 20, marginBottom: 20, }} disabled={loading} /> 
-          <TextButton style={styles.textButton} onPress={() => navigation.navigate("Signup")}>Create Account</TextButton>
-          <TextButton style={styles.textButton} onPress={() => navigation.navigate("Forgot Password")}>Forgot Password?</TextButton>
+              <Button text={loading ? "Loading" : "Continue"} onPress={() => { login();}} style={{ marginTop: 20, marginBottom: 20, }} disabled={loading} /> 
+              <TextButton style={styles.textButton} onPress={() => navigation.navigate("Signup")}>Create Account</TextButton>
+              <TextButton style={styles.textButton} onPress={() => navigation.navigate("Forgot Password")}>Forgot Password?</TextButton>
+          </View>
 
-      </View> 
+        </DismissKeyboard>
+         
       </Layout>
     </ThemeProvider>
   );

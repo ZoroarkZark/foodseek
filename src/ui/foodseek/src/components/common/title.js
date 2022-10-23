@@ -5,7 +5,7 @@ const Title = ({
     children, 
     style={
     alignSelf: 'center',
-    padding: 30,
+    paddingTop: 40,
     fontWeight:'bold',
     fontSize: 40,
     size:'h3',
