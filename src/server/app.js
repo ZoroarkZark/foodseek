@@ -140,8 +140,7 @@ app.post('/signup', (req,res) => {
 	}
 	
 	// Lets get the data out of the body
-	req.setEncoding('utf8'); 
-	req.on('data', (body) => { // need to get something in the body before we do anything
+	if(req.body) { // need to get something in the body before we do anything
 		body = JSON.parse(body); // parse the object as a json (we need to make sure this is enforced i don't wanna have to deal with non json lmao)
 		console.log('ACTION-------SIGNUP');
 
@@ -171,7 +170,7 @@ app.post('/signup', (req,res) => {
 			res.end(JSON.stringify(response_obj));
 
 		}
-	});
+	}
 });
 
 // Code to get user information here
