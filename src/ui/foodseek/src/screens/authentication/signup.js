@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, Pressable } from 'react-native';
 import { PasswordInput, EmailInput, Title, PickerInput } from '../../components/text/TextInput.js';
 import { AuthContext } from '../../components/caching/CreateAccountContext.js';
 import { ThemeProvider, Layout, Button } from 'react-native-rapi-ui';
@@ -75,13 +75,8 @@ export const SignupScreen = ({ navigation }) => {
       </Layout>
       </ThemeProvider>
     )
-    
-    
-
-
-
-
 }
+
 
 
 const styles = StyleSheet.create({

@@ -9,6 +9,7 @@ export const UserScreen = ({ navigation, route }) => {
             <Text>User Details:</Text>
             <Text>Email:{user.Email}</Text>
             <Text>Password:{user.Pass}</Text>
+
         </View>
     );
 };

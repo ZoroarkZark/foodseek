@@ -7,6 +7,8 @@ import { ThemeProvider, Layout, Text, TextInput, Button } from 'react-native-rap
 import TextButton from '../../components/buttons/textbutton';
 
 
+import { SI } from '../../scripts/serverinterface.js'
+
 
 /*
 ----------------------------------------------------------------------------------------
@@ -114,7 +116,15 @@ export const LoginScreen = () => {
           <Button
             text={loading ? "Loading" : "Continue"}
             onPress={() => {
-                login();
+                let credentials = {
+                  email: email,
+                  pass: password
+                }
+                
+                let a = SI.login(credentials, (data) => {
+                  console.log(data);
+                });
+
             }}
             style={{
               marginTop: 20,
