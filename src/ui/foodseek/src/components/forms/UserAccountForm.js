@@ -2,7 +2,7 @@ import React from "react";
 import { Button, View} from "react-native";
 import { TextInput } from "react-native-paper";
 import { Text } from "react-native";
-import { CustomTextInput, PickerInput, SingleSelectButton} from "../common";
+import { CustomTextInput, PickerInput, TransitPickerInput} from "../common";
 
 const options = [
     {label: 'monthly', value: 'monthly'},
@@ -30,9 +30,8 @@ const UserAccountForm = ({props}) => {
             </View>
         </View>
         <Text>Prefered Travel Method</Text>
-        <SingleSelectButton value={props.pTravel} setPTravel={props.setPTravel} />
+        <TransitPickerInput value={props.pTravel} onValueChange={props.setPTravel}>Choose one...</TransitPickerInput>
     </>
-
     );
 }
 export default UserAccountForm;

@@ -13,54 +13,27 @@ import {UserForm, VendorForm, BaseForm} from '../../components/forms';
 //             return <Text>User here...</Text>;
 //     }
 // }
-// const usr={
-//     fn : "",        // first name
-//     ln : "",        // last name
-//     phone: "",      // phone number
-//     un: "",         // username
-//     loc: "",        // location
-//     email: "",      // email
-//     pwd: "",        // password
-//     acc: "",        // account type (vendor/seeker)
-//     bn : "",        // business name
-//     ba: "",         // business address
-//     bphone: "",     // business phone number
-//     bemail: "",     // business email
-//     inc: "",        // income or earnings
-//     period: "",     // pay period
-//     pTravel: "",    // travel preference
-
-// };
-
-const usr = () => {
-    const [fn , setFn] = useState("");          // first name
-    const [ln , setLn] = useState("");          // last name
-    const [phone, setPhone] = useState("");     // phone number
-    const [un, setUn] = useState("");           // username
-    const [loc, setLoc] = useState("");         // location
-    const [email, setEmail] = useState("");     // email
-    const [pwd, setPwd] = useState("");         // password
-    const [acc, setAcc] = useState("");         // account type (vendor/seeker)
-    const [bn , setBn] = useState("");          // business name
-    const [ba, setBa] = useState("");           // business address
-    const [bphone, setBPhone] = useState("");   // business phone number
-    const [bemail, setBEmail] = useState("");   // business email
-    const [inc, setInc] = useState("");         // income or earnings
-    const [period, setPeriod] = useState("");   // pay period
-    const [pTravel, setPTravel] = useState(""); // travel preference
+const usr={
+    fn : "",        // first name
+    ln : "",        // last name
+    phone: "",      // phone number
+    un: "",         // username
+    loc: "",        // location
+    email: "",      // email
+    pwd: "",        // password
+    acc: "",        // account type (vendor/seeker)
+    bn : "",        // business name
+    ba: "",         // business address
+    bphone: "",     // business phone number
+    bemail: "",     // business email
+    inc: "",        // income or earnings
+    period: "",     // pay period
+    pTravel: "",    // travel preference
 
 };
 
-const renderSwitch = (state) => {
-    switch(state){
-        case 'Base':
-            return <BaseForm props={usr}/>;
-        case 'Vendor':
-            return <VendorForm props={usr}/>;
-        case 'User':
-            return <UserForm props={usr}/>;
-    }
-}
+
+
 /*
 Intended functionality: To ask first whether or not you want to be an "Eater" or "Vendor". 
                         Leads into respective pages. One for "Eater signup" and another for "Vendor signup".
@@ -69,6 +42,46 @@ Intended functionality: To ask first whether or not you want to be an "Eater" or
 const SignupScreen = ({ navigation }) => {
 
 const [state, setState] = useState('Base');
+const [prev, setPrev] = useState('Base');
+
+const renderSwitch = (state) => {
+    switch(state){
+        case 'Base':
+            return <BaseForm fn={fn} ln={ln} phone={phone} email={email} pwd={pwd} acc={acc} setFn={(firstName) => setFn(firstName)} setLn={(lastName) => setLn(lastName)} setPhone={(phonenumber) => setPhone(phonenumber)} setEmail={(email) => setEmail(email)} setPwd={(password) => setPwd(password)} setAcc={(accountType) => setAcc(accountType)}
+            />;
+        case 'Vendor':
+            return <VendorForm bn={bn} ba={ba} bphone={bphone} bemail={bemail} setBn={(businessName) => setBn(businessName)} setBa={(businessAddress) => setBa(businessAddress)} setBPhone={(businessPhone) => setBPhone(businessPhone)} setBEmail={(businessEmail) => setBEmail(businessEmail)}
+            />;
+        case 'User':
+             return <UserForm un={un} loc={loc} inc={inc} period={period} ptravel={ptravel} setUn={(username) => setUn(username)} setLoc={(local) => setLoc(local)} setInc={(income) => setInc(income)} setPeriod={(payperiod) => setPeriod(payperiod)} setPTravel={(travelPreference) => setPTravel(travelPreference)}
+             />;
+    }
+}
+
+
+
+
+
+{ // block contains: form variables and mutators
+    const [fn ,     setFn] = useState("");          // first name
+    const [ln ,     setLn] = useState("");          // last name
+    const [phone,   setPhone] = useState("");     // phone number
+    const [un,      setUn] = useState("");           // username
+    const [loc,     setLoc] = useState("");         // location
+    const [email,   setEmail] = useState("");     // email
+    const [pwd,     setPwd] = useState("");         // password
+    const [acc,     setAcc] = useState("");         // account type (vendor/seeker)
+    const [bn ,     setBn] = useState("");          // business name
+    const [ba,      setBa] = useState("");           // business address
+    const [bphone,  setBPhone] = useState("");   // business phone number
+    const [bemail,  setBEmail] = useState("");   // business email
+    const [inc,     setInc] = useState("");         // income or earnings
+    const [period,  setPeriod] = useState("");   // pay period
+    const [ptravel, setPTravel] = useState(""); // travel preference
+}
+
+
+
 
 
 
