@@ -13,12 +13,42 @@ import {UserForm, VendorForm, BaseForm} from '../../components/forms';
 //             return <Text>User here...</Text>;
 //     }
 // }
-const usr={
-    fn : "",
-    ln : "",
-    phone: "",
-    un: "",
-    loc: "",
+// const usr={
+//     fn : "",        // first name
+//     ln : "",        // last name
+//     phone: "",      // phone number
+//     un: "",         // username
+//     loc: "",        // location
+//     email: "",      // email
+//     pwd: "",        // password
+//     acc: "",        // account type (vendor/seeker)
+//     bn : "",        // business name
+//     ba: "",         // business address
+//     bphone: "",     // business phone number
+//     bemail: "",     // business email
+//     inc: "",        // income or earnings
+//     period: "",     // pay period
+//     pTravel: "",    // travel preference
+
+// };
+
+const usr = () => {
+    const [fn , setFn] = useState("");          // first name
+    const [ln , setLn] = useState("");          // last name
+    const [phone, setPhone] = useState("");     // phone number
+    const [un, setUn] = useState("");           // username
+    const [loc, setLoc] = useState("");         // location
+    const [email, setEmail] = useState("");     // email
+    const [pwd, setPwd] = useState("");         // password
+    const [acc, setAcc] = useState("");         // account type (vendor/seeker)
+    const [bn , setBn] = useState("");          // business name
+    const [ba, setBa] = useState("");           // business address
+    const [bphone, setBPhone] = useState("");   // business phone number
+    const [bemail, setBEmail] = useState("");   // business email
+    const [inc, setInc] = useState("");         // income or earnings
+    const [period, setPeriod] = useState("");   // pay period
+    const [pTravel, setPTravel] = useState(""); // travel preference
+
 };
 
 const renderSwitch = (state) => {

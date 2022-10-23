@@ -2,7 +2,7 @@ import React from "react";
 import { TextInput } from "react-native-paper";
 import { Button } from "react-native";
 import { Text } from "react-native";
-import { CustomTextInput, EmailInput, PasswordInput } from "../common";
+import { CustomTextInput, EmailInput, PasswordInput, PickerInput } from "../common";
 const BaseAccountForm = (props) => {
     return (
         <>
@@ -16,6 +16,8 @@ const BaseAccountForm = (props) => {
         <EmailInput value={props.email} onChangeText={props.setEmail}>Enter your email...</EmailInput>
         <Text>Password</Text>
         <PasswordInput value={props.pwd} onChangeText={props.setPwd}>Enter your password...</PasswordInput>
+        <Text>Are you a food seeker, or a food vendor?</Text>
+        <PickerInput value={props.acc} onValueChange={props.setAcc} >Select account type...</PickerInput>
 
         </>
 
