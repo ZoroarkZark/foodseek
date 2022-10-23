@@ -3,8 +3,16 @@ import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ThemeProvider, Layout, Text, TextInput, Button } from 'react-native-rapi-ui';
-import TextButton from '../../components/buttons/textbutton';
+import {  
+  ThemeProvider,
+  Layout,
+  TopNav,
+  Text,
+  TextInput,
+  Button,
+  useTheme, 
+  themeColor, 
+} from 'react-native-rapi-ui';
 
 
 import { SI } from '../../scripts/serverinterface.js'
@@ -85,9 +93,13 @@ export const LoginScreen = () => {
     <ThemeProvider theme="light">
       <Layout>  
         <View 
-          style={styles.container}
+          style={{
+            flex: 3,
+            paddingHorizontal: 20,
+            paddingBottom: 20,
+          }}
         >
-          <Text 
+          <Text
               fontWeight='bold'
               style={{
                 alignSelf: "center",
@@ -95,9 +107,9 @@ export const LoginScreen = () => {
               }}
               size="h3"
               >Log-in</Text>
-          <Text style={{...styles.label}}>Email</Text>
+          <Text>Email</Text>
           <TextInput
-            style={styles.input}
+            style={textStyles.input}
             value={email}
             keyboardType="email-address"
             placeholder="enter your email"
@@ -105,9 +117,9 @@ export const LoginScreen = () => {
             numberOfLines={3}
             onChangeText={(text) => setEmail(text)}
             />
-          <Text style={{...styles.label}}>Password</Text>
-          <TextInput 
-            style={{...styles.input}}
+          <Text style={{ marginTop: 15 }}>Password</Text>
+          <TextInput
+            style={textStyles.input}
             value={password}
             placeholder="enter your password"
             secureTextEntry={true}
@@ -129,12 +141,9 @@ export const LoginScreen = () => {
             style={{
               marginTop: 20,
             }}
+            disabled={loading}
           />
-          <View style={{flex: 1, flexDirection: "row", padding: 5}}>
-          <TextButton onPress={ () => navigation.navigate("Signup") } style={styles.link}>Create Account</TextButton>
-          <TextButton onPress={ () => navigation.navigate("Forgot Password") } style={styles.link}>Forgot Password?</TextButton>
-          </View>
-          
+
       </View> 
       </Layout>
     </ThemeProvider>
@@ -153,24 +162,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: {
-    alignSelf: 'flex-start',
-    marginTop: 15,
-    marginLeft: 15,
-    padding: 5,
-  },
-  link:{
-    flex: 1,
-    color: 'black',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    size: 'sm',
-  },
+});
+
+const textStyles = StyleSheet.create({
   input: {
-    flex: 1,
+    height: 40, 
+    margin: 12,
     borderWidth: 1,
-    marginLeft: 15,
     padding: 10,
   },
 });
-
