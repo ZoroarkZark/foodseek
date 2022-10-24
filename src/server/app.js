@@ -16,8 +16,8 @@ const coreRouter = require('./routes/core.js');
 const userRouter = require('./routes/user.js');
 
 // Server Constants
-const port = 80;
-const hostname = "0.0.0.0";
+const port = 3000;
+const hostname = "localhost";
 
 // Express app 
 const app = express();
@@ -29,29 +29,6 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 const jwt_secret = process.env.JWT_SECRET; // store the secret
 
-// SQL connection structure
-// Gets sql login info from the ./env file
-// Switched to using a pool connection for mulitple uploads
-// wont need the user to have a pool connection but our server can so it can upload to the database with out issue
-
-// Options object for DBHandler
-var db_handler_object = {
-	pool: db_pool,
-	user_table: "user_data",
-	email_col: "user_email",
-	pass_col: "password",
-	vend_col: "vendor"
-
-}
-
-// this is probably gonna leave here 
-const DB    = new DBHandler(db_handler_object);
-
-function testCall(obj){
-	console.log(Object.keys(obj));
-	console.log(Object.values(obj));
-	return;
-}
 
 app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method 
 app.use(express.json());
@@ -59,10 +36,14 @@ app.use(express.json());
 app.use( (req, res, next) => {
 	console.log("req recieved");
 	console.log(req.url);
-	console.log(req.body);
+	req.setEncoding('utf8');
+	req.on('data', (data) => { console.log(data)});
 	next();
 })
 
+
+app.use('/' ,coreRouter.CoreRouter); // mount core routes
+//app.use('/user', userRouter); // mount user routes
 
 
 // Basic test
@@ -95,7 +76,7 @@ app.get('/test_get', (req,res) => {
 	);
 });
 
-
+/*
 // Create new user
 // Changing this to '/signup'
 app.post('/signup', (req,res) => { 
@@ -226,13 +207,14 @@ app.get('/logout', (req, res) => {
 	}))
 	
 })
-
+*/
 // ____________________
 // | Food For Thought |
 // |__________________|
 /*
 	Food posting soon to come
 */
+/*
 // Not the actual thing just yet but gonna use this to test signed in users
 app.post('/foodlist', (req, res) => {
 	console.log('ACTION-------FOODLIST');
@@ -269,14 +251,13 @@ app.post('/foodlist', (req, res) => {
 
 });
 
-
+*/
 
 
 
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {
-	console.log(db_pool.prototype);
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
 	console.log(`listening to ${hostname} on port: ${port}`);
 	

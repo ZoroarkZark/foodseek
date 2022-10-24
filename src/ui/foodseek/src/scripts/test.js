@@ -1,3 +1,7 @@
 import {SI} from './serverinterface.js'
 
-SI.fetchTest();
+<HTML>
+    <body>
+        <p> Test 1234</p>
+    </body>
+</HTML>
