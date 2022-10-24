@@ -4,7 +4,7 @@ import { Button } from "react-native";
 import { Text } from "react-native";
 import { EmailInput, CustomTextInput} from "../common";
 
-const VendorAccountForm = ({props}) => {
+const VendorAccountForm = (props) => {
     return (
         <>
         <Text>Business Name</Text>
@@ -15,6 +15,8 @@ const VendorAccountForm = ({props}) => {
         <CustomTextInput value={props.bphone} onChangeText={props.setBPhone} keyboardType="numeric">Enter the business phone number...</CustomTextInput>
         <Text>Business Email</Text>
         <EmailInput value={props.bemail} onChangeText={props.setBEmail}>Enter the business email...</EmailInput>
+        <Text>Please enter your regular business hours below.</Text>
+        <Text>Monday:</Text>
 
 
         </>
@@ -22,3 +24,4 @@ const VendorAccountForm = ({props}) => {
 };
 
 export default VendorAccountForm;
+
