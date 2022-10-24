@@ -7,72 +7,72 @@ import { TimeInput } from "../common";
 const week = {
     monday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     tuesday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     wednesday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     thursday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     friday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     saturday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
-    }
+    },
     sunday : {
         value: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
         onChange: {
-            start: ,
-            end: ,
+            start: '',
+            end: ''
         },
     }
 }
@@ -116,7 +116,7 @@ const TimeRange = ({type="label", labelStart="Start", labelEnd="End", value, onC
 
 
 
-const HoursOfOperation = ({type="to", start: labelStart="Start", end: labelEnd="End", value, onChange}) => {
+export const HoursOfOperation = ({type="to", start: labelStart="Start", end: labelEnd="End", value, onChange}) => {
     return (
         <View>
                 <Text>Monday (leave blank if closed)</Text>

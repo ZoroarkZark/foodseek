@@ -14,6 +14,7 @@ import { EatSignupScreen } from '../../screens/review/eatersignup';
 import { VenSignupScreen } from '../../screens/review/vendorsignup';
 import { PostsScreen } from '../../screens/posts';
 import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
+import { HoursOfOperationScreen } from '../../screens/hours';
 
 
 const Stack = createNativeStackNavigator();     // Create stack navigator component
@@ -57,6 +58,11 @@ export const HomeStackNavigator = () => {
         name="User"
         component={UserScreen}
         options={{ title: 'User Screen'}}
+    />
+    <Drawer.Screen
+        name="Hours"
+        component={HoursOfOperationScreen}
+        options={{ title: 'Hours Screen'}}
     />
     <Drawer.Screen
         name="Settings" //SETTINGS PAGE SCREEN
