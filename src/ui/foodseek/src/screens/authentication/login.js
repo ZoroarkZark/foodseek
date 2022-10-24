@@ -5,6 +5,8 @@ import { ThemeProvider,  Layout, Text, Button, } from 'react-native-rapi-ui';
 import { TextButton, Title, PasswordInput, EmailInput, DismissKeyboard } from '../../components/common';
 
 
+import { SI } from '../../scripts/serverinterface.js'
+
 
 /*
 ----------------------------------------------------------------------------------------
