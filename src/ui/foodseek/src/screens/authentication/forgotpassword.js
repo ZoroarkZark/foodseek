@@ -19,6 +19,9 @@ Later functionality intended: find a way to send a vertification method, then le
 */
 
 export const ForgotPasswordScreen = ({ navigation }) => {
+  <View>
+<Text>why</Text>
+  </View>
     
 
 

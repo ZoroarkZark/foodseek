@@ -10,8 +10,8 @@ import { UserScreen } from '../../screens/user';
 import { SignupScreen } from '../../screens/authentication/signup';
 import { CameraScreen } from '../../screens/camera';
 import { SettingsScreen } from '../../screens/settings';
-import { EatSignupScreen } from '../../screens/authentication/eatersignup';
-import { VenSignupScreen } from '../../screens/authentication/vendorsignup';
+import { EatSignupScreen } from '../../screens/review/eatersignup';
+import { VenSignupScreen } from '../../screens/review/vendorsignup';
 import { PostsScreen } from '../../screens/posts';
 import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
 
@@ -23,7 +23,7 @@ const Drawer = createDrawerNavigator();         // TODO: see below
 // Returns a stack navigator for the screens Login/Register/Forgot Password related by authentication flow
 export const LoginStackNavigator = () => {
     return(
-        <Stack.Navigator> 
+        <Stack.Navigator screenOptions={{headerShown: false}}> 
             <Stack.Screen
                 name="Login" //LOGIN PAGE SCREEN
                 component={LoginScreen}

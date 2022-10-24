@@ -1,138 +1,105 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { TextButton, Title, PasswordInput, EmailInput } from '../../components/common';
+import {UserForm, VendorForm, BaseForm} from '../../components/forms';
 
-/*
-Intended functionality: To ask first whether or not you want to be an "Eater" or "Vendor". 
-                        Leads into respective pages. One for "Eater signup" and another for "Vendor signup".
 
-*/
-export const SignupScreen = ({ navigation }) => {
-    const [isVendor, setIsVendor] = useState(false);
-    const [selected, setSelected] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [userEmail, setUserEmail] = useState('');
-    const [userPassword, setUserPassword] = useState('');
 
-    //BUTTON TO ASK WHETHER OR NOT THEY ARE AN EATER OR VENDOR. IF EATER, FALSE. IF VENDOR, TRUE.
-    //Now have information on that.
-    
-    
+// Function returns the user registration screen as a component 
+const SignupScreen = ({ navigation }) => {
 
-    
+// variables used for conditional rendering vendor or user forms
+const [state, setState] = useState('Base');
+const [prev, setPrev] = useState('Base');
 
-    //FIELDS FOR NAME, EMAIL, AND PASSWORD. 
+ // block contains: form variables and mutators
+    const [fn ,     setFn] = useState("");          // first name
+    const [ln ,     setLn] = useState("");          // last name
+    const [phone,   setPhone] = useState("");     // phone number
+    const [un,      setUn] = useState("");           // username
+    const [loc,     setLoc] = useState("");         // location
+    const [email,   setEmail] = useState("");     // email
+    const [pwd,     setPwd] = useState("");         // password
+    const [acc,     setAcc] = useState("");         // account type (vendor/seeker)
+    const [bn ,     setBn] = useState("");          // business name
+    const [ba,      setBa] = useState("");           // business address
+    const [bphone,  setBPhone] = useState("");   // business phone number
+    const [bemail,  setBEmail] = useState("");   // business email
+    const [inc,     setInc] = useState("");         // income or earnings
+    const [period,  setPeriod] = useState("");   // pay period
+    const [ptravel, setPTravel] = useState(""); // travel preference
+    const [display, setDisplay] = useState(null);
 
-    return (
-        /*VIEW CONTAINER*/
-        <View style={{flex: 1, backgroundColor: '#307ecc'}}> 
 
-        /*SCROLL VIEW, TO ALLOW FOR SCREEN TO BE SCROLLED.*/
-          <ScrollView 
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignContent: 'center',
+// function applies logic behind conditionally displaying the form fields
+const renderSwitch = (state) => {
+    switch(state){
+        case 'Base':
+            return <BaseForm fn={fn} ln={ln} phone={phone} email={email} pwd={pwd} acc={acc} setFn={(firstName) => setFn(firstName)} setLn={(lastName) => setLn(lastName)} setPhone={(phonenumber) => setPhone(phonenumber)} setEmail={(email) => setEmail(email)} setPwd={(password) => setPwd(password)} setAcc={(accountType) => setAcc(accountType)}
+            />;
+        case 'Vendor':
+            return <VendorForm bn={bn} ba={ba} bphone={bphone} bemail={bemail} setBn={(businessName) => setBn(businessName)} setBa={(businessAddress) => setBa(businessAddress)} setBPhone={(businessPhone) => setBPhone(businessPhone)} setBEmail={(businessEmail) => setBEmail(businessEmail)}
+            />;
+        case 'User':
+             return <UserForm un={un} loc={loc} inc={inc} period={period} ptravel={ptravel} setUn={(username) => setUn(username)} setLoc={(local) => setLoc(local)} setInc={(income) => setInc(income)} setPeriod={(payperiod) => setPeriod(payperiod)} setPTravel={(travelPreference) => setPTravel(travelPreference)}
+             />;
+    }
+}
+
+// button triggered event: updates the state based on user input
+const updateState = () => {
+    if (!acc) {
+        alert("User must choose to be vendor or seeker...");
+    }else if ( acc === 'USR_SEEK') {
+        setPrev(state);
+        setState('User');
+    }else{
+        setPrev(state);
+        setState('Vendor');
+    }
+}
+
+// button triggered event: behavior for the back button
+const goBack = () => {
+    let temp = prev;
+    setPrev(state);
+    setState(temp);
+}
+
+// button triggered event: form submission behavior
+const onSubmit = () => {
+
+}
+
+// renders the title, a return to login button, and conditionally renders form fields and buttons based on user input
+return(
+<View
+            style={{
+                flex: 3,
+                paddingHorizontal: 20,
+                paddingTop: 30,
+
             }}>
+                <Title>Create Account</Title>
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{fontWeight:'400', fontSize: 14,}}>Already have an account?</Text>
+                <TextButton style={{color: 'green'}} onPress={() => navigation.navigate("Login")}>Login</TextButton>
+                </View>
+                {renderSwitch(state)}
+                {state !== 'Base'
+                ? <Button title="Submit" onPress={() => onSubmit()}>Insert submission behavior</Button>
+                : <></>
+                }
 
-            /*SEPERATED VIEWS FOR DIFFERENT USER, EMAIL, PASSWORD FIELDS.*/
-            /*KeyboardAvoidingView used to allow the scrolled screen to move upwards when needed.*/
+                {state === 'Base' 
+                ? <Button title="Continue" onPress={() => updateState()}>Advances to the secondary form pages</Button>
+                : <Button title="Back" onPress={() => goBack()}>Returns to previous page</Button>
+                }
+                
+                
 
-            /*ADD BUTTON FOR EATER OR VENDOR HERE. HIDE EVERYTHING ELSE.*/
-            <Pressable
-                style={styles.buttonStyle}
-                onPress={setIsVendor(false)}>
-                <Text style={styles.buttonTextStyle}>EATER</Text>
-            </Pressable>
+</View>
+);
+}
 
-            <Pressable
-                style={styles.buttonStyle}
-                onPress={setIsVendor(true)}>
-                <Text style={styles.buttonTextStyle}>VENDOR</Text>
-            </Pressable>
-
-            <KeyboardAvoidingView enabled>
-
-                /*VIEW CONTAINER FOR USERNAME.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserName) => setUserName(UserName)}
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Name"
-                  placeholderTextColor="#8b9cb5"
-                  autoCapitalize="sentences"
-                  returnKeyType="next"
-                  onSubmitEditing={() =>
-                    emailInputRef.current && emailInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*VIEW CONTAINER FOR EMAIL.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserEmail) => setUserEmail(UserEmail)}
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Email"
-                  placeholderTextColor="#8b9cb5"
-                  keyboardType="email-address"
-                  ref={emailInputRef}
-                  returnKeyType="next"
-                  onSubmitEditing={() =>
-                    passwordInputRef.current &&
-                    passwordInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*VIEW CONTAINER FOR PASSWORD.*/
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(UserPassword) =>
-                    setUserPassword(UserPassword)
-                  }
-                  underlineColorAndroid="#f000"
-                  placeholder="Enter Password"
-                  placeholderTextColor="#8b9cb5"
-                  ref={passwordInputRef}
-                  returnKeyType="next"
-                  secureTextEntry={true}
-                  onSubmitEditing={() =>
-                    ageInputRef.current &&
-                    ageInputRef.current.focus()
-                  }
-                  blurOnSubmit={false}
-                />
-              </View>
-
-                /*INTERFACE FOR BUTTON TO FINISH REGISTRATION.*/
-              <Pressable
-                style={styles.buttonStyle}
-                onPress={handleButton}>
-                <Text style={styles.buttonTextStyle}>REGISTER</Text>
-              </Pressable>
-
-
-               </KeyboardAvoidingView>
-              </ScrollView>
-            </View>
-        );
-
-
-
-    //DEPENDING IF EATER OR VENDOR, DISPLAY DIFFERENT THINGS OUT.
-    //FOR EATER, DISPLAY INCOME.
-    //FOR VENDOR, DISPLAY BUSINESS NAME.
-
-
-
-
-    //HAVE ALL NECESSARY INFORMATION. ONCE DONE, SIGNUP SHOULD BE COMPLETE. LAY OUT ALL OF THE DATA TO USE.
-    //TAKE TO HOME SCREEN.
-
-
-};
+export {SignupScreen};
