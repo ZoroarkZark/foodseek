@@ -12,7 +12,7 @@ const options = [
     {label: 'other', value: 'other'},
 ];
 
-const UserAccountForm = ({props}) => {
+const UserAccountForm = (props) => {
     return (
     <>
         <Text>Username</Text>

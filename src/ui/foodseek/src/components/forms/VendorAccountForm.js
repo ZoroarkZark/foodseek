@@ -4,7 +4,7 @@ import { Button } from "react-native";
 import { Text } from "react-native";
 import { EmailInput, CustomTextInput} from "../common";
 
-const VendorAccountForm = ({props}) => {
+const VendorAccountForm = (props) => {
     return (
         <>
         <Text>Business Name</Text>
