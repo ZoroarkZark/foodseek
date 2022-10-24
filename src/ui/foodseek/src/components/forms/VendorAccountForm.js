@@ -15,6 +15,8 @@ const VendorAccountForm = (props) => {
         <CustomTextInput value={props.bphone} onChangeText={props.setBPhone} keyboardType="numeric">Enter the business phone number...</CustomTextInput>
         <Text>Business Email</Text>
         <EmailInput value={props.bemail} onChangeText={props.setBEmail}>Enter the business email...</EmailInput>
+        <Text>Please enter your regular business hours below.</Text>
+        <Text>Monday:</Text>
 
 
         </>
