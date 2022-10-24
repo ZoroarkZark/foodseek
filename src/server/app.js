@@ -1,22 +1,19 @@
-// Required Packages
+// Core Modules 
 const express = require('express');
-const database = require('mysql');
-//const bcrypt = require('bcrypt');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
 
+// http helpers
+const cookieParser = require('cookie-parser');
+const bodyParser    = require('body-parser');
+
+//dot.env
+require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 //JWT
 const jwt = require('jsonwebtoken');
 
-
-const MyStore = require('./memstore.js');
-const DBHandler = require('./sqlhandler.js');
-const { isNull } = require('underscore');
-
-const bodyParser    = require('body-parser');
-const { on } = require('./memstore.js');
-const e = require('express');
-
+//our database talker (gonna honestly remove all db calls from here in a second)
+// routers
+const coreRouter = require('./routes/core.js');
+const userRouter = require('./routes/user.js');
 
 // Server Constants
 const port = 80;
@@ -29,7 +26,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 
-require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
 
 const jwt_secret = process.env.JWT_SECRET; // store the secret
 
@@ -37,14 +33,6 @@ const jwt_secret = process.env.JWT_SECRET; // store the secret
 // Gets sql login info from the ./env file
 // Switched to using a pool connection for mulitple uploads
 // wont need the user to have a pool connection but our server can so it can upload to the database with out issue
-var db_pool = database.createPool({
-	connectionLimit: 10,
-	host: process.env.DB_HOST,
-	port: process.env.DB_PORT,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_ACTIVE_DB
-});
 
 // Options object for DBHandler
 var db_handler_object = {
@@ -56,22 +44,8 @@ var db_handler_object = {
 
 }
 
-// Instance of MyStore
-const Store = new MyStore(db_pool);
+// this is probably gonna leave here 
 const DB    = new DBHandler(db_handler_object);
-
-/*	 CAPTAINS LOG 10/11/2022
-	It's cold outside. The fog has rolled in. 
-
-	I want to rewrite all of the SQL queries in here and take out all usage of the db_pool.escape function
-	We can rewrite all of em either with 
-	var sql_code = "INSERT INTO ?? ?? ..."
-	and then db_pool.format(sql_code, [values..])
-
-	or even just
-	db_pool.query(sql_code, [values..], callback)
-
-*/ 
 
 function testCall(obj){
 	console.log(Object.keys(obj));
@@ -79,13 +53,7 @@ function testCall(obj){
 	return;
 }
 
-app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method
-app.use(session({
-	store: Store,
-	secret: "testsecret", // session secret between client and server 
-	saveUninitialized: false, // these last two work on a store that we do not have set up / I don't wanna deal with it 
-	resave: false//  wanna see if I can make my own store 
-})); // call the session in each method 
+app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method 
 app.use(express.json());
 
 app.use( (req, res, next) => {

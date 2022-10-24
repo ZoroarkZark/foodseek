@@ -1,6 +1,6 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
-
-
+const database = require('mysql');
+require('dotenv').config();
 // DBHandler
 // Going to be the class handling the sql database
 // Want to come up with some reasonable functions to perform these queries
@@ -11,11 +11,19 @@ module.exports =
     class DBHandler {
         constructor(options){
             // set the connection pool object 
-            this.conn = options.pool;
+            this.conn = database.createPool({
+                connectionLimit: 10,
+                host: process.env.DB_HOST,
+                port: process.env.DB_PORT,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASS,
+                database: process.env.DB_ACTIVE_DB
+            });
+            
 
-            this.user_table = options.user_table;
-            this.email = options.email_col;
-            this.pass = options.pass_col;
+            this.user_table = "user_data"
+            this.email = "user_email";
+            this.pass = "password";
         }
 
         /*
