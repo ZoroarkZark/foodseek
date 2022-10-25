@@ -32,25 +32,7 @@ export const HoursOfOperationScreen = ({navigation}) => {
             <TimeInput value={mondayTime} onChange ={onChange}/>
             <Text>{monText}</Text>
 
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{monText}</Text>
-
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{monText}</Text>
-
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{monText}</Text>
-
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{monText}</Text>
-
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{monText}</Text>
+            
             {/*<Text>Tuesday</Text>
             <TimeInput value={new Date()} onChange ={new Date()}/>
             <Text>Wednesday</Text>
