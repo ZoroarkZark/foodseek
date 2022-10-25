@@ -53,6 +53,10 @@ class FakeUserStore
         return callback(err, null);
     }
 
+    deleteAll(){
+        this.user_data = [];
+    }
+
 }
 
 

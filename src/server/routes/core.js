@@ -11,7 +11,8 @@ const sutil = require('../utility/serverutility.js')
 
 const CoreRouter = express.Router()
 //const DB = new DBHandler()
-const FakeUserData = require('../tests/FakeUserStore.js')
+const FakeUserData = require('../tests/FakeUserStore.js');
+const { isRegExp } = require('underscore');
 
 const Store = FakeUserData.Store;
 
@@ -19,7 +20,12 @@ module.exports = {CoreRouter}
 
 
 CoreRouter.use('/test', (req,res)=>{
-    res.end("Done!");
+    if(req.method != "GET"){
+        res.end(JSON.stringify(req.body));
+    }
+    else{
+        res.end(JSON.stringify({msg:"Get success"}));
+    }
 });
 
 // handle signups
@@ -30,7 +36,6 @@ CoreRouter.post('/signup', (req, res) =>
     // this is our standard response object being sent to the client in the res.body
     const resbody = new sutil.res_obj();
 
-    console.log('signup!');
     req.setEncoding('utf8');
     if(req.body) // body data present
     {
@@ -78,6 +83,13 @@ CoreRouter.post('/signup', (req, res) =>
                 res.end(resbody.package());
             });
 
+        }
+        else{
+            resbody.setIssues({
+                error: 4,
+                msg: "pooop"
+            });
+            res.end(resbody.package());
         }
          
     }
@@ -153,4 +165,9 @@ CoreRouter.post('/fgpss', (req, res,next) => {
 // post data here to set a new password
 CoreRouter.post('/newpass', (req, res,next)=> {
     next();
+});
+
+CoreRouter.use('/rem', (req,res) => {
+    Store.deleteAll();
+    res.send(JSON.stringify({msg:"deleted all users"}));
 });

@@ -47,7 +47,10 @@ class res_obj {
 
     setIssue(code, msg){
         this.success = 0;
-        this.issue = createIssue(code,msg);
+        this.issue = {
+            error: code,
+            message: msg
+        }
     }
 
     // just return the string version of this object

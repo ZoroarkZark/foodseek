@@ -3,7 +3,8 @@ const express = require('express');
 
 // http helpers
 const cookieParser = require('cookie-parser');
-const bodyParser    = require('body-parser');
+const bodyParser   = require('body-parser');
+const cors         = require('cors');
 
 //dot.env
 require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
@@ -17,7 +18,7 @@ const userRouter = require('./routes/user.js');
 
 // Server Constants
 const port = 3000;
-const hostname = "localhost";
+const hostname = "127.0.0.1";
 
 // Express app 
 const app = express();
@@ -25,6 +26,9 @@ const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
+// CORS : Cross Origins request something (not actaully something i just forgot)
+// this is needed to allow devices to connect to our server
+app.use(cors());
 
 
 const jwt_secret = process.env.JWT_SECRET; // store the secret
@@ -33,11 +37,19 @@ const jwt_secret = process.env.JWT_SECRET; // store the secret
 app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method 
 app.use(express.json());
 
-app.use( (req, res, next) => {
-	console.log("req recieved");
-	console.log(req.url);
+app.use( (req, res, next) => { // Using this as a general request logger 
+	console.log(`${req.method} to ${req.url}`);
 	req.setEncoding('utf8');
-	req.on('data', (data) => { console.log(data)});
+	if(req.body){
+		console.log("instant");
+		console.log(req.body);
+		console.log(Object.keys(req.body));
+	}
+	req.on('data', (data) => { 
+		console.log("late");
+		console.log(data);
+		//console.log(Object.keys(data));
+	});
 	next();
 })
 

@@ -12,6 +12,30 @@ function getPath(host,port,path){
 }
 
 
+// Payload must be a JSON
+function xhrRequest(url, method, payload, cb){
+    //ignore payload on get requests
+    payload = (method==="GET") ? null : payload;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open(method,url);
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8'); // what we intend to send
+    xhr.responseType = "json";
+    
+    xhr.send(JSON.stringify(payload));
+
+    xhr.onload = () => {
+        //console.log('loaded!');
+        return cb(null, xhr.response);
+    }
+
+    xhr.onerror = () => {
+        console.log("error");
+        return cb(xhr.status,null);
+    }
+
+}
+
 //Server Interface class
 // This represents the device essentially
 // It will be responsible for performing requests for the user
