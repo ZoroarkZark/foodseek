@@ -5,16 +5,19 @@
 // Forgot Pass    : /fgpass
 
 const express = require('express')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const jwt_secret = "tempSecretDoNotUseForProduction";
 
 const sutil = require('../utility/serverutility.js')
 //const DBHandler = require('../utility/sqlhandler.js')
 
 const CoreRouter = express.Router()
 //const DB = new DBHandler()
-const FakeUserData = require('../tests/FakeUserStore.js');
-const { isRegExp } = require('underscore');
+const FakeStores = require('../tests/FakeUserStore.js');
 
-const Store = FakeUserData.Store;
+
+const Store = new FakeStores.UserStore();
 
 module.exports = {CoreRouter}
 
@@ -43,29 +46,10 @@ CoreRouter.post('/signup', (req, res) =>
         if(req.body.email && req.body.pass && req.body.vendor)
         {
             console.log("body__got");
-            /* Commented out for FakeStore Testing 
-            DB.insertUser(req.body.email, req.body.pass, (err) => {
-                if(err){ // issue on sign up
-                    issues = {
-                        error: err.name,
-                        msg: err.message
-                    };
-                    resbody.setIssues(issues);
-                    res.end(resbody.package());
-                    return;
-                }
-                
-                // successful signup 
-                data = {
-                    new_user: req.body.email,
-                    msg: "successfully created a new account"
-                }
-                resbody.setData(data);
-                res.end(resbody.package());
-            })*/
+            const hash = hashPassword(req.body.pass);
             let credentials = {
                 email: req.body.email,
-                pass: req.body.pass,
+                pass: hash,
                 vendor: req.body.vendor
             }
 
@@ -87,7 +71,7 @@ CoreRouter.post('/signup', (req, res) =>
         else{
             resbody.setIssues({
                 error: 4,
-                msg: "pooop"
+                msg: "invalid fields"
             });
             res.end(resbody.package());
         }
@@ -125,11 +109,21 @@ CoreRouter.post('/login', (req, res, next) => {
                 }
 
                 if(result){
-                    if(result.pass === req.body.pass){
+                    
+                    if(comparePassword(req.body.pass, result.pass)){
+
+                        const token = jwt.sign({
+							user: req.body.email,
+							vendor: result["vendor"]
+
+						}, jwt_secret, {
+							expiresIn: 8000000
+						});
+
                         data = {
                             user: req.body.email,
                             vendor: result.vendor,
-                            jwt: "temptoken",
+                            jwt: token,
                             message: "user signed in!"
                         }
 
@@ -152,11 +146,6 @@ CoreRouter.post('/login', (req, res, next) => {
 
 });
 
-//log user out (just set their token to null)
-CoreRouter.get('/logout', (req, res,next) => {
-    next();
-});
-
 // send an email to a user to let them reset their pass word
 CoreRouter.post('/fgpss', (req, res,next) => {
     next();
@@ -171,3 +160,32 @@ CoreRouter.use('/rem', (req,res) => {
     Store.deleteAll();
     res.send(JSON.stringify({msg:"deleted all users"}));
 });
+
+
+const hashPassword = async (password, saltRounds = 10) => {
+	try {
+	  // Generate a salt
+	  const salt = await bcrypt.genSalt(saltRounds)
+  
+	  // Hash password
+	  return await bcrypt.hash(password, salt)
+	} catch (error) {
+	  console.log(error)
+	}
+  
+	// Return null if error
+	return null
+  }
+
+
+const comparePassword = async (password, hash) => {
+  try {
+    // Compare password
+    return await bcrypt.compare(toString(password), toString(hash))
+  } catch (error) {
+    console.log(error)
+  }
+
+  // Return false if error
+  return false
+}

@@ -60,7 +60,34 @@ class res_obj {
     
 }
 
-module.exports = {
-    res_obj: res_obj
+class food_card{
+    constructor(foodData){
+        this.id = foodData.id; // probably will change to be generated as a rand key or that rand key is set here
+        this.image = foodData.image;
+        this.vendor = foodData.vendor;
+        this.favorite = foodData.favorite;
+        this.cuisine = foodData.cuisine;
+        this.item = foodData.item;
+        this.travel = foodData.travel;  
+        this.reserved = foodData.reserved;
+    }
 }
+
+function validate(fields, object){
+    for(x in fields){
+        if(fields[x] in object){
+            continue
+        }else{
+            return false;
+        }
+    }
+    return true;
+}
+
+module.exports = {
+    res_obj: res_obj,
+    food_card: food_card,
+    validate: validate
+}
+
 

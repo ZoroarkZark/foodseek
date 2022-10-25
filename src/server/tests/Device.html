@@ -34,9 +34,8 @@
                 out_str = "";
                 for(let x in response){
                     console.log(x);
-                    if(x==="data"){
-                        console.log("is data");
-                        out_str+="DATA: {";
+                    if(x==="data" || x == "issue"){
+                        out_str+= x+ ": {";
                         let substr = "";
                         for(field in response[x]){
                             substr+= field + ": " + response[x][field] +", "

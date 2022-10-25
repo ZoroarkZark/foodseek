@@ -1,4 +1,5 @@
 // Fake user Storage for testing 
+const sutils = require('../utility/serverutility.js');
 
 const validateFields = (obj) => {
     if(obj.email && obj.pass){
@@ -9,7 +10,7 @@ const validateFields = (obj) => {
 
 
 
-class FakeUserStore 
+class UserStore 
 {
     // initialize empty data table
     constructor(){
@@ -59,7 +60,50 @@ class FakeUserStore
 
 }
 
+// implemented callbackss bc that is what we will most likely be using for the SQL stuff
+class FoodStore {
+    constructor() {
+        this.foodlist = [];
+        
+    }
+    
+    uploadCard(fooddata, cb){
 
-const Store = new FakeUserStore();
+        const upload = new sutils.food_card(fooddata);
+        //check database for dup entry
+        //const found = this.foodlist.find(FoodCard.id => FoodCard.id = )
+        for(x in this.foodlist){
+            console.log(x);
+            if(upload.id === this.foodlist[x].id){
+                console.log("FoodCard alread in LIST");
+                return cb("Card in List");
+            }
+        }
+        
+        this.foodlist.push(upload);
+        console.log("FoodCard added to list");
+        return cb(null);
+    }
 
-module.exports = {Store};
+    getCardsAll(cb){
+        return cb(this.foodlist);
+    }
+
+    getCards(pos , [filters]){
+        //for(i = 0; i < this.foodlist.length(); i++){
+            //if(foodlist item in range)
+            //return list of all items in range       
+        //}
+    }
+
+
+
+}
+
+
+
+
+module.exports = {
+   UserStore: UserStore,
+   FoodStore: FoodStore
+};
