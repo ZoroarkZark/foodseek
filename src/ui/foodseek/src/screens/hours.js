@@ -5,6 +5,7 @@ import { TimeRange } from "../components/forms";
 
 export const HoursOfOperationScreen = ({navigation}) => {
     const [mondayTime, setMondayTime] = useState(new Date());
+    const [monText, setmonText] = useState('');
     const [tuesdayTime, settuesdayTime] = useState(new Date());
     const [weddayTime, setweddayTime] = useState(new Date());
     const [thursdayTime, setthursdayTime] = useState(new Date());
@@ -16,14 +17,40 @@ export const HoursOfOperationScreen = ({navigation}) => {
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setMondayTime(currentDate);
+        let monTexter = mondayTime.getHours() + ":"
+        if (mondayTime.getUTCMinutes() < 10){
+            monTexter = monTexter + "0";
+        }
+        monTexter = monTexter + mondayTime.getUTCMinutes();
+        setmonText(monTexter);
+        setShow(false);
     }
 
     return (
         <View>
-            <Text>Monday</Text>
+            <Button title ={"Monday"}/>
             <TimeInput value={mondayTime} onChange ={onChange}/>
-            <Text>{mondayTime.toLocaleTimeString('en-US', {timeStyle: 'short'})}</Text>
-            
+            <Text>{monText}</Text>
+
+            <Button title ={"Monday"}/>
+            <TimeInput value={mondayTime} onChange ={onChange}/>
+            <Text>{monText}</Text>
+
+            <Button title ={"Monday"}/>
+            <TimeInput value={mondayTime} onChange ={onChange}/>
+            <Text>{monText}</Text>
+
+            <Button title ={"Monday"}/>
+            <TimeInput value={mondayTime} onChange ={onChange}/>
+            <Text>{monText}</Text>
+
+            <Button title ={"Monday"}/>
+            <TimeInput value={mondayTime} onChange ={onChange}/>
+            <Text>{monText}</Text>
+
+            <Button title ={"Monday"}/>
+            <TimeInput value={mondayTime} onChange ={onChange}/>
+            <Text>{monText}</Text>
             {/*<Text>Tuesday</Text>
             <TimeInput value={new Date()} onChange ={new Date()}/>
             <Text>Wednesday</Text>
