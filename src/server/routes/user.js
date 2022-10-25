@@ -84,8 +84,6 @@ UserRouter.get('/list', (req, res)=>{
             items: str
         });
         res.end(resbody.package());
-
-
     })
 
     

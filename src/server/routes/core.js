@@ -70,7 +70,7 @@ CoreRouter.post('/signup', (req, res) =>
         }
         else{
             resbody.setIssues({
-                error: 4,
+                error: 2,
                 msg: "invalid fields"
             });
             res.end(resbody.package());
@@ -130,6 +130,14 @@ CoreRouter.post('/login', (req, res, next) => {
                         resbody.setData(data);
                         res.end(resbody.package());
                     }
+                    else{
+                        resbody.setIssue(4, "Passwords did not match!");
+                        res.end(resbody.package());
+                    }
+                }
+                else{
+                    resbody.setIssue(3, "No Account Found!");
+                    res.end(resbody.package());
                 }
             })
         }
