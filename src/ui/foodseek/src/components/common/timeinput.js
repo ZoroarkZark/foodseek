@@ -5,4 +5,4 @@ const TimeInput = ({value, onChange}) => {
     return <RNDateTimePicker mode="time" display="spinner" onChange={onChange} value={value} />
 }
 
-export default TimeInput;
+export default TimeInput; 
