@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html>
+    <!--This is our postman but pretending to be the device. Shoud be able to take this code and use it for our actual device-->
+    <head>
+        <title>Device Simulator</title>
+        <script>
+            const host = "127.0.0.1";
+            const port = 3000;
+
+            //build the payload object
+            function buildObj(payload_string){
+                /* payload should be of form
+                    "key=val;key1=val1..."
+                */
+               //console.log(`converting ${payload_string} to obj`);
+
+                out_obj = {};
+
+                let items = payload_string.split(",");
+
+                console.log(items);
+                for(item in items){
+                    let fields = items[item].split("=");
+                    out_obj[fields[0]] = fields[1];
+                }
+
+                console.log(out_obj);
+                return out_obj;
+            }
+
+
+            function renderResponse(response){
+                out_str = "";
+                for(let x in response){
+                    console.log(x);
+                    if(x==="data" || x == "issue"){
+                        out_str+= x+ ": {";
+                        let substr = "";
+                        for(field in response[x]){
+                            substr+= field + ": " + response[x][field] +", "
+                        }
+
+                        out_str+= substr + "},";
+                        
+                    }
+                    else{
+                    out_str += x +": "+ response[x] +", "
+                    
+                    }
+                }
+                return out_str;
+            }
+
+            function xhrRequest(url, method, payload, cb){
+                //ignore payload on get requests
+                payload = (method==="GET") ? null : payload;
+
+                let xhr = new XMLHttpRequest();
+                xhr.open(method,url);
+                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8'); // what we intend to send
+                xhr.responseType = "json";
+                
+                xhr.send(JSON.stringify(payload));
+
+                xhr.onload = () => {
+                    //console.log('loaded!');
+                    return cb(null, xhr.response);
+                }
+
+                xhr.onerror = () => {
+                    console.log("error");
+                    return cb(xhr.status,null);
+                }
+
+            }
+
+            function formToReq(){
+               //console.log("building request");
+                let url = document.forms['reqForm']['url1'].value;
+                let method = document.forms['reqForm']['method'].value;
+                let data   = document.forms['reqForm']['payload'].value;
+
+                let loc = document.getElementById('result_landing');
+
+                url = `http://${host}:${port}${url}`;
+                //console.log(url);
+
+                data = buildObj(data);
+                xhrRequest(url,method,data, (err,results) => {
+                    if(err){
+                        console.error(err);
+                        loc.innerHTML = "error!"
+                        return;
+                    }
+                    //console.log(results);
+                    loc.innerHTML = renderResponse(results);
+                })
+               
+            }
+
+            
+            function updateSettings(){
+                let newHost = document.forms['settings']['host'].value;
+                let newport = document.forms['settings']['port'].value;
+
+                host = newHost;
+                port = newport;
+
+                document.forms['settings']['host'].placeholder = host;
+                document.forms['settings']['host'].placeholder = host;
+            }
+        </script>
+
+        <style>
+            body {
+                background-color: lightblue;
+                font-family: "Lucida Console", "Courier New", monospace;
+            }
+
+            div{
+                background-color: lightcyan;
+                border: 3px;
+                border-style: solid;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            h1{
+                color: white;
+            }
+
+            h2 h3{
+                color: rgb(19, 8, 8);
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Device Simulator / XHR Request</h1>
+        <div id="settings">
+            <h3>Settings</h3>
+            <form name ="settings">
+                <label for="host">Hostname</label>
+                <input type="text" id="host" name="host" placeholder="127.0.0.1" value="127.0.0.1">
+                <label for="port">Port</label>
+                <input type="number" id="port" name="port" placeholder="3000" value="3000">
+                <input type="button" onclick="updateSettings()" value="Update">
+            </form>
+        </div>
+        <br>
+        <div id="request_container">
+            <h2>Request API</h2>
+            <form name="reqForm">
+                <label for="url">URL</label>
+                <input type="text" id="url" name="url1" placeholder="/login or /test">
+                <br><br>
+                <input type = "radio" id="post" name="method" value="POST">
+                <label for="post">Post</label>
+                <input type = "radio" id="get" name="method" value="GET">
+                <label for="get">Get</label>
+                <br><br>
+                <label for="payload">Body</label>
+                <input type="text" id="payload" name="payload" placeholder="<key>=<value>,<key>=<value>,...">
+                <br><br>
+                <input type="reset">
+                <input type="button" onclick="formToReq()" value="Make Request">
+            </form>
+        </div>
+        <br>
+        <div id="result_container">
+            <h2>Response</h2>
+            <span id="result_landing"></span>
+        </div>
+        <br>
+        <div id="usage_guide">
+            <h2>Usage</h2>
+            <p>By Default the host is set to http://127.0.0.1:3000 which is what your local server should be</p>
+            <p>Settings are not currently working lmao</p>
+            <p>pass /path to the url field to access a given url</p>
+            <p></p>Then select a method, body data is ignored for GET requests</p>
+            <em>Using the body data</em>
+            <ul>
+                <li>To set an element type key=value</li>
+                <li>To use mutliple place the ; character for the delimiter</li>
+                <ul>
+                        <li>key1=value1,key2=value2</li>
+                        <li>turns into {key1: value1, key2: value2}</li>
+                </ul>
+            </ul>
+            <p>Check the src/server/routes files for supported routes and params</p>
+            <p>Technically if I can get the settings to work this is just postman but with XHR requests and a lot less features</p>
+        </div>
+        <p>Made by Ya Boi - Cal Blanco</p>
+    </body>
+    
+</html>

@@ -12,6 +12,30 @@ function getPath(host,port,path){
 }
 
 
+// Payload must be a JSON
+function xhrRequest(url, method, payload, cb){
+    //ignore payload on get requests
+    payload = (method==="GET") ? null : payload;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open(method,url);
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8'); // what we intend to send
+    xhr.responseType = "json";
+    
+    xhr.send(JSON.stringify(payload));
+
+    xhr.onload = () => {
+        //console.log('loaded!');
+        return cb(null, xhr.response);
+    }
+
+    xhr.onerror = () => {
+        console.log("error");
+        return cb(xhr.status,null);
+    }
+
+}
+
 //Server Interface class
 // This represents the device essentially
 // It will be responsible for performing requests for the user
@@ -20,7 +44,7 @@ class ServerInterface{
     constructor(options = {}){
         this.state = "stateful"; // temp var just to show we have access to this instantiated class in multiple pages
         
-        this.host = "http://108.90.204.32:80"; // these two should most likely become .env variables or what ever .env == in mobile app dev
+        this.host = "http://localhost:3000"; // these two should most likely become .env variables or what ever .env == in mobile app dev
 
         this.auth = ""; // auth cookie (initially null until a user signs in)
 
@@ -30,7 +54,7 @@ class ServerInterface{
     setHost(host){
         this.opt.host = host;
     }
-    setPot(port){
+    setPort(port){
         this.opt.port = port;
     }
 
@@ -107,12 +131,40 @@ class ServerInterface{
 
     }
 
-    xmlT2(cb){
-        return xmlProm(cb);
-    }
     //create a new account given credentials
-    signup(){}
+    // callback (err, result)
+    signup(credentials, cb){
+        let request = new XMLHttpRequest();
+
+        request.open('POST', `${this.host}/signup`, true );
+        request.responseType = "json";
+        request.settimeout = 3000;
+
+        request.send(JSON.stringify(credentials));
+
+        request.onload = () => {
+            console.log(`Loaded ${request.response}`);
+            return cb(request.response);
+        }
+
+        // this is just bulky bc we cant import the res_obj here 
+        request.onerror = () => {
+            console.log(`Error ${request.status}`);
+            return cb(JSON.stringify({
+                success: 0,
+                data: null,
+                issues: {
+                    error: request.status,
+                    msg: "network issue"
+                }
+            }));
+        }
+
+    }
+
+
     // login to an existing acc given credentials
+    // cb 
     login(credentials, cb){
         let request = new XMLHttpRequest();
 
@@ -131,11 +183,19 @@ class ServerInterface{
 
         request.onerror = () => {
             console.error(`Network err ${request.status}`);
-            return cb({issues: 1});
+            return cb(JSON.stringify({
+                success: 0,
+                data: null,
+                issues: {
+                    error: request.status,
+                    msg: "network issue"
+                }
+            }));
         } // rock nation
 
     }
     // logout of an existing acc
+    // I don't even think we need this lol
     logout(){}
     // display a food list : should only work for users or something
     foodlist(){}
@@ -147,4 +207,4 @@ class ServerInterface{
 }
 
 
-export const SI = new ServerInterface();
+//export const SI = new ServerInterface();
