@@ -11,11 +11,11 @@ import PostCard from './PostCard';
 
             <FlatList
                 data={props.DATA}
-                renderItem={({ item, expandPost, setFavorite }) => 
+                renderItem={({ item, expandPost}) => 
                     <PostCard 
                     data={item} 
                     expandPost={expandPost} 
-                    setFavorite={setFavorite} />
+                     />
                 }
                 keyExtractor={(data) => data.id}
                 extraData={selectedId}
@@ -23,46 +23,4 @@ import PostCard from './PostCard';
     );
 }
 
-const styles = StyleSheet.create({
-    column: {
-        flex: 1,
-        flexDirection: 'column', 
-        alignContent: 'center'
-    },
-    row: {
-        flex:1,
-        flexDirection: 'row', 
-        alignContent:'space-between'
-    },
-    title: {
-        flex: 1,
-        fontSize: 18,
-        textAlign: 'left',
-        fontWeight: 'bold',
-        paddingVertical: 4
-    },
-    favorite: {
-        flex: 1,
-        color: 'grey',
-        backgroundColor: '#fff',
-        fontSize: 16,
-        textAlign: 'right',
-        alignSelf: 'flex-end',
-        justifyContent: 'flex-end',
-        paddingVertical: 4,
-      },
-    subtextLeft: {
-        flex: 1,
-        fontSize: 16,
-        color: 'grey',
-        textAlign: 'left',
-    },
-    subtextRight: {
-        flex: 1,
-        fontSize: 16,
-        color: 'grey',
-        textAlign: 'right',
-      },
-  });
-
-  export default PostList;
+export default PostList;
