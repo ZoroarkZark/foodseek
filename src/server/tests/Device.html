@@ -5,8 +5,18 @@
     <head>
         <title>Device Simulator</title>
         <script>
-            const host = "127.0.0.1";
-            const port = 3000;
+
+            // setting host data on the html
+            function getHostData(){
+                let host = document.getElementById('hosttar').innerHTML;
+                let port = document.getElementById('porttar').innerHTML;
+                return `http://${host}:${port}`
+            }
+
+            function setHostData(host,port){
+                document.getElementById('hosttar').innerHTML = host;
+                document.getElementById('porttar').innerHTML = port;
+            }
 
             //build the payload object
             function buildObj(payload_string){
@@ -70,7 +80,7 @@
 
                 xhr.onerror = () => {
                     console.log("error");
-                    return cb(xhr.status,null);
+                    return cb({status:xhr.status},null);
                 }
 
             }
@@ -83,14 +93,14 @@
 
                 let loc = document.getElementById('result_landing');
 
-                url = `http://${host}:${port}${url}`;
+                url = `${getHostData()}${url}`;
                 //console.log(url);
 
                 data = buildObj(data);
                 xhrRequest(url,method,data, (err,results) => {
                     if(err){
-                        console.error(err);
-                        loc.innerHTML = "error!"
+                        console.log(err);
+                        loc.innerHTML = `error with request Status_code = ${err.status}`
                         return;
                     }
                     //console.log(results);
@@ -104,11 +114,7 @@
                 let newHost = document.forms['settings']['host'].value;
                 let newport = document.forms['settings']['port'].value;
 
-                host = newHost;
-                port = newport;
-
-                document.forms['settings']['host'].placeholder = host;
-                document.forms['settings']['host'].placeholder = host;
+                setHostData(newHost,newport);
             }
         </script>
 
@@ -133,12 +139,25 @@
             h2 h3{
                 color: rgb(19, 8, 8);
             }
+
+            #settings ul{
+                background-color: aliceblue;
+                list-style: none;
+                border-radius: 5px;
+                border-style: solid;
+                padding: 5px;
+                color: black;
+            }
         </style>
     </head>
     <body>
         <h1>Device Simulator / XHR Request</h1>
         <div id="settings">
             <h3>Settings</h3>
+            <ul>Live Settings
+                <li id="hosttar">127.0.0.1</li>
+                <li id="porttar">3000</li>
+            </ul>
             <form name ="settings">
                 <label for="host">Hostname</label>
                 <input type="text" id="host" name="host" placeholder="127.0.0.1" value="127.0.0.1">
