@@ -1,7 +1,7 @@
 // Required Packages
 const express = require('express');
 const database = require('mysql');
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -13,14 +13,20 @@ const MyStore = require('./memstore.js');
 const DBHandler = require('./sqlhandler.js');
 const { isNull } = require('underscore');
 
+//food store / card import
+const Food = require('./food.js');
+//var FoodCardInstance = new Food.FoodCard();
+var FoodStoreInstance = new Food.FoodStore();
+
 const bodyParser    = require('body-parser');
 const { on } = require('./memstore.js');
 const e = require('express');
+const { FoodStore } = require('./food.js');
 
 
 // Server Constants
-const port = 80;
-const hostname = "0.0.0.0";
+const port = 3000;
+const hostname = "localhost";
 
 // Express app 
 const app = express();
@@ -141,7 +147,7 @@ app.post('/signup', (req,res) => {
 	
 	// Lets get the data out of the body
 	req.setEncoding('utf8'); 
-	req.on('data', (body) => { // need to get something in the body before we do anything
+	req.on('data', async (body) => { // need to get something in the body before we do anything
 		body = JSON.parse(body); // parse the object as a json (we need to make sure this is enforced i don't wanna have to deal with non json lmao)
 		console.log('ACTION-------SIGNUP');
 
@@ -149,7 +155,8 @@ app.post('/signup', (req,res) => {
 			//var isVendor = (body.isVendor) ? body.isVendor : 0; // if we have the field make it the field else make it 0
 
 			var vendStatus = (body.vendor) ? body.vedor : 0;
-			DB.insertUser(body.email, body.pass, vendStatus, (err) => { // attempt to insert the user into the database
+			const hash = await hashPassword(body.pass)
+			DB.insertUser(body.email, hash, vendStatus, (err) => { // attempt to insert the user into the database
 				if(err){ // error on insertion
 					if(err.errno == 1062){ // duplicate entry
 						response_obj.issue =1;
@@ -188,8 +195,8 @@ app.post('/login', (req, res) => {
 	if(req.body){
 		body = JSON.parse(req.body);
 
-		if(body.email && body.pass){ // have required fields
-			DB.getUser(body.email, (err, result) => {
+		if(body.email && body.pass){ // have required field
+			DB.getUser(body.email, async (err, result) => {
 				console.log(result);
 				if(err){ // issue probably SQL related
 					response_obj.issue = 3;
@@ -201,7 +208,8 @@ app.post('/login', (req, res) => {
 					res.end(JSON.stringify(response_obj));
 				}
 				else{ // we got the password back
-					if( body.pass == result["password"] ){ // matched password to a user
+					const isValidPass = await comparePassword(body.pass, result["password"])
+					if(isValidPass){ // matched password to a user
 						response_obj.issue = 0;
 						response_obj.user = body.email;
 						
@@ -301,6 +309,61 @@ app.post('/foodlist', (req, res) => {
 
 });
 
+
+
+
+app.post('/food', (req, res) => {
+	console.log('ACTION-------FOOD');
+
+	const foodcardData = {
+		id: '1',            // unique id 
+		image: 'none', //require('../../../assets/icons/beer-outline.png'),          // vendor provided image of the food
+		vendor: 'wok this way',         // name of the vendor
+		favorite: false,    // denotes if the user has set this vendor as a favorite
+		cuisine: 'chinese',        // genre/category of vendor menu
+		item: 'chow mein',           // name of the food item being posted 
+		travel: '1 mi / 18 min',          // computed travel distance and time, string format: 1.7 mi / 16 min
+		reserved: false
+	}
+	
+	const resp_obj = {
+		issues: 0
+	};
+
+	var inserted = FoodStoreInstance.uploadCard(foodcardData);
+	if(inserted){
+		console.log("seems like i didnt fuck up!!")
+		res.end(JSON.stringify(resp_obj));
+	}
+})
+
+const hashPassword = async (password, saltRounds = 10) => {
+	try {
+	  // Generate a salt
+	  const salt = await bcrypt.genSalt(saltRounds)
+  
+	  // Hash password
+	  return await bcrypt.hash(password, salt)
+	} catch (error) {
+	  console.log(error)
+	}
+  
+	// Return null if error
+	return null
+  }
+
+
+const comparePassword = async (password, hash) => {
+  try {
+    // Compare password
+    return await bcrypt.compare(password, hash)
+  } catch (error) {
+    console.log(error)
+  }
+
+  // Return false if error
+  return false
+}
 
 
 
