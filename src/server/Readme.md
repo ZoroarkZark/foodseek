@@ -59,6 +59,7 @@ The core routes of the server include (* items mean not included yet):
 ### routes/user.js
 User Actions (have to be signed in to use) are all mounted on `/food/` as of right now
 So a foodcard route would be `food/upl`
+
 `/upl`: upload food card
 * Must POST
 * There are a lot of fields for the foodcards I have slimmed down the number of input fields required.
