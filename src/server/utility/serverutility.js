@@ -68,6 +68,8 @@ class food_card{
         this.favorite = foodData.favorite;
         this.cuisine = foodData.cuisine;
         this.item = foodData.item;
+        //this.lat = foodData.lat
+        //this,long = foodData.long
         this.travel = foodData.travel;  
         this.reserved = foodData.reserved;
     }
@@ -84,10 +86,27 @@ function validate(fields, object){
     return true;
 }
 
+function getDistance(lat1, lon1, lat2, lon2){
+    let dLat = (lat2 - lat1) * Math.PI / 180.0;
+    let dLon = (lon2 - lon1) * Math.PI / 180.0;
+    // convert to radians
+    lat1 = (lat1) * Math.PI / 180.0;
+    lat2 = (lat2) * Math.PI / 180.0;
+    // apply formula
+    let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+    let rad = 6371;
+    let dist_km = 2 * Math.asin(Math.sqrt(a));
+    // conversion factor
+    const factor = 0.621371
+    const miles = dist_km * factor;
+    return miles;
+}
+
 module.exports = {
     res_obj: res_obj,
     food_card: food_card,
-    validate: validate
+    validate: validate,
+    getDistance : getDistance
 }
 
 
