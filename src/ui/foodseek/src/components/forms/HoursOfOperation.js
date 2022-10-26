@@ -7,32 +7,32 @@ import { TimeInput } from "../common";
 const week = {
     monday : {
         value: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
         onChange: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
     },
     tuesday : {
         value: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
         onChange: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
     },
     wednesday : {
         value: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
         onChange: {
-            start: '',
-            end: ''
+            start: new Date(),
+            end: new Date()
         },
     },
     thursday : {

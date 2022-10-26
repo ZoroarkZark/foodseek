@@ -45,4 +45,29 @@ export const TransitPickerInput = ({children, value, style, onValueChange, place
     )
 }
 
+export const DayPickerInput = ({children, value, style, onValueChange, placeholder, label="Picker", options=[
+    {label: 'Monday', value: 'monday'},
+    {label: 'Tuesday', value: 'tuesday'},
+    {label: 'Wednesday', value: 'wednesday'},
+    {label: 'Thursday', value: 'thursday'},
+    {label: 'Friday', value: 'friday'},
+    {label: 'Saturday', value: 'saturday'},
+    {label: 'Sunday', value: 'sunday'},
+]}) => {
+
+
+    return (
+
+    <Picker
+        items={options}
+        value={value}
+        style={style}
+        placeholder={children ? children : placeholder}
+        onValueChange={onValueChange}>
+    </Picker>
+
+
+    )
+}
+
 export default PickerInput;
