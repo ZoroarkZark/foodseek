@@ -200,7 +200,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles2.buttonStyle} onPress ={() => setMondayShow(true)}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
-                    <Text style={styles2.buttonTextStyle}>Start Time: {mondayTime.toLocaleTimeString()}</Text>
+                    <Text style={styles2.buttonTextStyle}>Start Time: {mondayTime.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit"})}</Text>
                     <TouchableOpacity style={styles2.buttonStyle} onPress ={() => setMondayEndShow(true)}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text style={styles2.buttonTextStyle}>End Time: {mondayEndTime.toLocaleTimeString()}</Text>
                 {
