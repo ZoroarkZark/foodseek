@@ -89,11 +89,33 @@ class FoodStore {
         return cb(this.foodlist);
     }
 
-    getCards(pos , [filters]){
-        //for(i = 0; i < this.foodlist.length(); i++){
-            //if(foodlist item in range)
-            //return list of all items in range       
-        //}
+    getCards(pos , maxdist_m){
+        // assuming we have pos.lat , pos.long
+        var lat1 = pos.lat;
+        var lan2 = pos.long;
+        let in_range = []
+        for(x in this.foodlist){
+            console.log(x);
+            var lat2 = this.foodlist[x].travel[0];
+            var lon2 = this.foodlist[x].travel[1];
+            // distance between latitudes and longitudes
+            let dLat = (lat2 - lat1) * Math.PI / 180.0;
+            let dLon = (lon2 - lon1) * Math.PI / 180.0;
+            // convert to radians
+            lat1 = (lat1) * Math.PI / 180.0;
+            lat2 = (lat2) * Math.PI / 180.0;
+            // apply formula
+            let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+            let rad = 6371;
+            let dist_km = 2 * Math.asin(Math.sqrt(a));
+            // conversion factor
+            const factor = 0.621371
+            const miles = dist_km * factor;
+            if(miles <= maxdist_m){
+                in_range.push(x)
+                console.log("in range foodcard added to list")
+            }
+        }
     }
 
 
