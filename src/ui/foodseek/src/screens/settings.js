@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
+import { AuthenticationContext } from '../context/AuthenticationContext';
 
 export const SettingsScreen = ({ navigation }) => {
+    const {user} = useContext(AuthenticationContext);
     const [allegiance, setAllegiance] = useState('an eater');
     const [email, setEmail] = useState('loading email');
 
@@ -16,9 +18,9 @@ export const SettingsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Edit Display Name {">"}</Text>
+            <Text style={styles.text}>Username: {user.un}{">"}</Text>
             <Text style={styles.text}>Email: {email}</Text>
-            <Text style={styles.text}>I am {allegiance}</Text>
+            <Text style={styles.text}>type: {user.type}</Text>
             <View style={styles.buttonContainer}>
                 <Button title='Change allegiance' onPress={allegianceHandler}/>
             </View>

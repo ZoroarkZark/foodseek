@@ -22,7 +22,7 @@ const UserAccountForm = (props) => {
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <View style={{flex: 1}}>
                 <Text>Average Earnings</Text>
-                <CustomTextInput value={props.inc} onChangeText={props.setLoc} keyboardType="numeric">Enter earnings...</CustomTextInput>
+                <CustomTextInput value={props.inc} onChangeText={props.setInc} keyboardType="numeric">Enter earnings...</CustomTextInput>
             </View>
             <View style={{flex: 1}}>
                 <Text>Pay Period</Text>
