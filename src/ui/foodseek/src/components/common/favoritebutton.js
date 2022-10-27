@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { FavoritesContext } from '../../context/FavoritesContext';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 // favorite button toggles to empty or full based on if the corresponding vendor is a user favorite, defaults to style for the food cards
 const FavoriteButton = ({vendor, style={
