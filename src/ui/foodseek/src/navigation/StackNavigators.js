@@ -4,17 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // import individual screens for stack navigators
-import { LoginScreen } from '../../screens/authentication/login';
-import { HomeScreen } from '../../screens/home';
-import { UserScreen } from '../../screens/user';
-import { SignupScreen } from '../../screens/authentication/signup';
-import { CameraScreen } from '../../screens/camera';
-import { SettingsScreen } from '../../screens/settings';
-import { EatSignupScreen } from '../../screens/review/eatersignup';
-import { VenSignupScreen } from '../../screens/review/vendorsignup';
-import { PostsScreen } from '../../screens/posts';
-import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
-import Favorites from '../../screens/favorites';
+import { LoginScreen } from '../screens/authentication/login';
+import { HomeScreen } from '../screens/home';
+import { UserScreen } from '../screens/user';
+import { SignupScreen } from '../screens/authentication/signup';
+import { CameraScreen } from '../screens/camera';
+import { SettingsScreen } from '../screens/settings';
+import { EatSignupScreen } from '../screens/review/eatersignup';
+import { VenSignupScreen } from '../screens/review/vendorsignup';
+import { PostsScreen } from '../screens/posts';
+import { ForgotPasswordScreen } from '../screens/authentication/forgotpassword';
+import Favorites from '../screens/favorites';
 
 import CustomDrawerContent from './CustomDrawerContent';
 

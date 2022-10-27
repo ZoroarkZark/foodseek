@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { View, Text, Image } from "react-native";
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navigation/drawer";
-import { AuthenticationContext } from "../../context/AuthenticationContext";
+import { AuthenticationContext } from "../context/AuthenticationContext";
 import { FontAwesome } from "@expo/vector-icons";
-import { Avatar } from "../common";
+import { Avatar } from "../components/common";
 import { TouchableOpacity } from "react-native-gesture-handler";
 const CustomDrawerContent = ( props, {navigation}) => {
     const {user, onLogout} = useContext(AuthenticationContext);
@@ -21,7 +21,7 @@ const CustomDrawerContent = ( props, {navigation}) => {
                     <DrawerItem label="Logout" icon={() => <FontAwesome name="power-off" size={20} color="grey" />} onPress={() => onLogout()} labelStyle={{fontSize:20, alignSelf: 'flex-start'}}/>
                 </> 
             :   <>
-                    <DrawerItem label="" icon={() => <><Image style={{width: 120, height: 120}}source={require('../../../assets/splash.png')} /></>} style={{alignSelf:'center', flexDirection: "column", paddingLeft: '20%'}}/>
+                    <DrawerItem label="" icon={() => <><Image style={{width: 120, height: 120}}source={require('../../assets/splash.png')} /></>} style={{alignSelf:'center', flexDirection: "column", paddingLeft: '20%'}}/>
                     <DrawerItem label="" icon={() => <><Text>Well that's awkward... please create account or login to access settings...</Text></>} style={{alignSelf:'center', flexDirection: "column", paddingLeft: '10%',paddingRight: '10%'}}/>
 
                 </>}

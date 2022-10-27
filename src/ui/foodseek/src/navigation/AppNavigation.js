@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { BottomTabsNavigator } from './BottomTabNavigator';
-import { AuthenticationContextProvider } from '../../context/AuthenticationContext';
-import { FavoritesContextProvider } from '../../context/FavoritesContext';
+import { AuthenticationContextProvider } from '../context/AuthenticationContext';
+import { FavoritesContextProvider } from '../context/FavoritesContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Returns a navigation container for the top-level navigator in the application.

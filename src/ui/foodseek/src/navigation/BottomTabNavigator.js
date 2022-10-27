@@ -12,7 +12,7 @@ import {
   SettingsNav
 } from './StackNavigators'; // import all stack navigators for nesting
 
-import { AuthenticationContext } from '../../context/AuthenticationContext';
+import { AuthenticationContext } from '../context/AuthenticationContext';
 
 
 // add bottom tab navigation to the application
