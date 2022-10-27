@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons'; // used for tab icons
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -12,12 +12,15 @@ import {
   SettingsNav
 } from './StackNavigators'; // import all stack navigators for nesting
 
+import { AuthenticationContext } from '../../context/AuthenticationContext';
+
 
 // add bottom tab navigation to the application
 const BottomTab = createBottomTabNavigator(); 
 
 // function returns a bottom tab navigator component with (nested stack navigators in) tabs: login, home, posts, user and settings
 const BottomTabsNavigator = () => {
+    const {user} = useContext(AuthenticationContext);
     return (
       <BottomTab.Navigator screenOptions={{
         headerShown: false,
@@ -25,12 +28,17 @@ const BottomTabsNavigator = () => {
           backgroundColor: "#fff",
         },
       }}>
-        <BottomTab.Screen name="LoginTab" component={ LoginStackNavigator }
-        options={{
-          tabBarLabel: "Login",
-          tabBarIcon: () => (<Ionicons name="log-in-outline"/>),
-        }}
-        />
+
+        {!user 
+          ? <>
+              <BottomTab.Screen name="LoginTab" component={ LoginStackNavigator }
+              options={{
+              tabBarLabel: "Login",
+              tabBarIcon: () => (<Ionicons name="log-in-outline"/>),
+              }}
+              />
+            </>
+          : <></>}
         <BottomTab.Screen name="HomeTab" component={ HomeStackNavigator }
         options={{
           tabBarLabel: "Home",
