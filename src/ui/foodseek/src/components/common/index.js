@@ -8,5 +8,6 @@ import PickerInput from "./pickerinput";
 import { TransitPickerInput } from "./pickerinput";
 import TimeInput from "./timeinput";
 import FavoriteButton from "./favoritebutton";
+import Avatar from "./avatar";
 
-export {Title, TextButton, PasswordInput, EmailInput, DismissKeyboard, CustomTextInput, PickerInput, TransitPickerInput, TimeInput, FavoriteButton};
+export {Title, TextButton, PasswordInput, EmailInput, DismissKeyboard, CustomTextInput, PickerInput, TransitPickerInput, TimeInput, FavoriteButton, Avatar};

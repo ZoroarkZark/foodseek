@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View } from 'react-native';
 import { ThemeProvider,  Layout, Text, Button, } from 'react-native-rapi-ui';
 import { TextButton, Title, PasswordInput, EmailInput, DismissKeyboard } from '../../components/common';
-
+import { AuthenticationContext } from '../../context/AuthenticationContext';
 
 import { SI } from '../../scripts/serverinterface.js'
 
@@ -55,11 +55,11 @@ LOGIN SCREEN
 */
 
 const def_root = "http://localhost:3000";
-export const LoginScreen = () => {
+export const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const navigation = useNavigation();
+    const {onLogin} = useContext(AuthenticationContext);
 
   async function login(){
     setLoading(true);
@@ -76,8 +76,8 @@ export const LoginScreen = () => {
       email: email,
       pass: password
     }
-
-    navigation.navigate("Home");
+    onLogin(email,password);
+    navigation.navigate("HomeTab");
   }
   return (
     <ThemeProvider theme="light">
