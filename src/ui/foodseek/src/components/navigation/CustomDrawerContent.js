@@ -18,7 +18,7 @@ const CustomDrawerContent = ( props, {navigation}) => {
                     <DrawerItem label="" icon={() => <Avatar user={user} />}  labelStyle={{flex: 0, textAlign: 'center', }} style={{alignSelf:'center', flexDirection: "column", paddingTop: '10%', paddingBottom: '2%'}}/>
                     <DrawerItem label={user.un} labelStyle={{paddingTop: 20, fontWeight: '500' }} style={{alignSelf:'center', flexDirection: "column"}}/>
                     <DrawerItemList {...props} />
-                    <DrawerItem label="Logout" icon={() => <FontAwesome name="power-off" size={20} color="grey" />} onPress={() => onLogout()} labelStyle={{fontSize:20, alignSelf: 'left'}}/>
+                    <DrawerItem label="Logout" icon={() => <FontAwesome name="power-off" size={20} color="grey" />} onPress={() => onLogout()} labelStyle={{fontSize:20, alignSelf: 'flex-start'}}/>
                 </> 
             :   <>
                     <DrawerItem label="" icon={() => <><Image style={{width: 120, height: 120}}source={require('../../../assets/splash.png')} /></>} style={{alignSelf:'center', flexDirection: "column", paddingLeft: '20%'}}/>
