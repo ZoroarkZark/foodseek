@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { BottomTabsNavigator } from './BottomTabNavigator';
 import { AuthenticationContextProvider } from '../../context/AuthenticationContext';
 import { FavoritesContextProvider } from '../../context/FavoritesContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Returns a navigation container for the top-level navigator in the application.
 export const AppNavigation = () => {
@@ -11,7 +12,9 @@ export const AppNavigation = () => {
     <NavigationContainer>
       <AuthenticationContextProvider>
         <FavoritesContextProvider>
-          < BottomTabsNavigator />    
+          <GestureHandlerRootView style={{flex: 1 }}>
+          < BottomTabsNavigator /> 
+          </GestureHandlerRootView>
         </FavoritesContextProvider>
       </AuthenticationContextProvider>
     </NavigationContainer>

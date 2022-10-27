@@ -1,5 +1,6 @@
 // App.js: Application entry file.
 import React from 'react';
+
 import { AppNavigation } from './src/components/navigation/AppNavigation';
 
 
