@@ -14,6 +14,9 @@ import { EatSignupScreen } from '../../screens/review/eatersignup';
 import { VenSignupScreen } from '../../screens/review/vendorsignup';
 import { PostsScreen } from '../../screens/posts';
 import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
+import Favorites from '../../screens/favorites';
+
+import CustomDrawerContent from './CustomDrawerContent';
 
 
 const Stack = createNativeStackNavigator();     // Create stack navigator component
@@ -82,6 +85,34 @@ export const HomeStackNavigator = () => {
     );  
 }
 
+
+export const SettingsNav = () => {
+    return(
+    <Drawer.Navigator 
+    screenOptions={{headerShown: false}}
+    drawerContent={(props) => <CustomDrawerContent {...props} />}
+    defaultStatus='open'
+    detachInactiveScreens={false}
+    >
+    <Drawer.Screen
+        name="Settings"
+        component={SettingsScreen}
+    />
+    <Drawer.Screen
+        name="User"
+        component={UserScreen}
+        options={{ title: 'User Screen'}}
+    />
+    <Drawer.Screen
+        name="Favorites" 
+        component={Favorites}
+    />
+    </Drawer.Navigator>
+    );  
+}
+
+
+
 // Returns a stack navigator for the User screen
 export const UserStackNavigator = () => {
     return(
@@ -98,7 +129,7 @@ export const UserStackNavigator = () => {
 // Returns a stack navigator for the settings screen
 export const SettingsStackNavigator = () => {
     return(
-        <Stack.Navigator> 
+        <Stack.Navigator screenOptions={{headerShown: false}}> 
             <Stack.Screen
             name="Settings" 
             component={SettingsScreen}

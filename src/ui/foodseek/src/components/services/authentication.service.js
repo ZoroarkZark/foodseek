@@ -6,7 +6,7 @@ export const loginRequest = (email, password) => {
 
     // temporary placeholder for promise
     const promise = new Promise((resolve, reject) => {
-        resolve({email: email, uid: '123'});
+        resolve({email: email, id: '123', type: 'vendor', un:'LoggedInUser', avatar: require('../../../assets/avatar_expanded.png')});
     }) 
 
     return promise;
@@ -19,7 +19,7 @@ export const signupRequest = (email, password, data) => {
 
     // temporary placeholder for promise
     const promise = new Promise((resolve, reject) => {
-        resolve({email: email, uid: '123'});
+        resolve({email: email, id: '123', type: data.acc, un:(data.bn) ? data.bn : data.un, avatar: require('../../../assets/avatar_expanded.png')});
     }) 
 
     return promise;

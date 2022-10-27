@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { TextButton, Title, PasswordInput, EmailInput } from '../../components/common';
 import {UserForm, VendorForm, BaseForm} from '../../components/forms';
 
-
+import { AuthenticationContext } from '../../context/AuthenticationContext';
 
 // Function returns the user registration screen as a component 
 const SignupScreen = ({ navigation }) => {
+    const { onSignup } = useContext(AuthenticationContext);
 
-// variables used for conditional rendering vendor or user forms
-const [state, setState] = useState('Base');
-const [prev, setPrev] = useState('Base');
-
- // block contains: form variables and mutators
-    const [fn ,     setFn] = useState("");          // first name
-    const [ln ,     setLn] = useState("");          // last name
-    const [phone,   setPhone] = useState("");     // phone number
-    const [un,      setUn] = useState("");           // username
-    const [loc,     setLoc] = useState("");         // location
-    const [email,   setEmail] = useState("");     // email
-    const [pwd,     setPwd] = useState("");         // password
-    const [acc,     setAcc] = useState("");         // account type (vendor/seeker)
-    const [bn ,     setBn] = useState("");          // business name
-    const [ba,      setBa] = useState("");           // business address
-    const [bphone,  setBPhone] = useState("");   // business phone number
-    const [bemail,  setBEmail] = useState("");   // business email
-    const [inc,     setInc] = useState("");         // income or earnings
-    const [period,  setPeriod] = useState("");   // pay period
-    const [ptravel, setPTravel] = useState(""); // travel preference
+    // variables used for conditional rendering vendor or user forms
+    const [state, setState] = useState('Base');
+    const [prev, setPrev] = useState('Base');
     const [display, setDisplay] = useState(null);
+
+    // block contains: form variables and mutators
+    const [fn ,     setFn] = useState("");              // first name
+    const [ln ,     setLn] = useState("");              // last name
+    const [phone,   setPhone] = useState("");           // phone number
+    const [un,      setUn] = useState("");              // username
+    const [loc,     setLoc] = useState("");             // location
+    const [email,   setEmail] = useState("");           // email
+    const [pwd,     setPwd] = useState("");             // password
+    const [acc,     setAcc] = useState("");             // account type (vendor/seeker)
+    const [bn ,     setBn] = useState("");              // business name
+    const [ba,      setBa] = useState("");              // business address
+    const [bphone,  setBPhone] = useState("");          // business phone number
+    const [bemail,  setBEmail] = useState("");          // business email
+    const [inc,     setInc] = useState("");             // income or earnings
+    const [period,  setPeriod] = useState("");          // pay period
+    const [ptravel, setPTravel] = useState("");         // travel preference
+    
 
 
 // function applies logic behind conditionally displaying the form fields
@@ -68,7 +70,24 @@ const goBack = () => {
 
 // button triggered event: form submission behavior
 const onSubmit = () => {
-
+    data={
+        fn : fn,
+        ln : ln,
+        phone : phone,
+        un : un,
+        loc : loc,
+        email : email,
+        pwd : pwd,
+        acc : acc,
+        bn : bn,
+        ba : ba,
+        bphone : bphone,
+        bemail : bemail,
+        inc : inc,
+        period : period,
+        ptravel : ptravel,
+    }
+    onSignup(email, pwd, data);
 }
 
 // renders the title, a return to login button, and conditionally renders form fields and buttons based on user input

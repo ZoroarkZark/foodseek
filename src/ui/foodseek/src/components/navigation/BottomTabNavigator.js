@@ -9,6 +9,7 @@ import {
   SettingsStackNavigator, 
   UserStackNavigator,
   CameraStackNavigator,
+  SettingsNav
 } from './StackNavigators'; // import all stack navigators for nesting
 
 
@@ -48,16 +49,16 @@ const BottomTabsNavigator = () => {
           tabBarIcon: () => (<Ionicons name="person-outline" />),
         }}
         />
-        <BottomTab.Screen name="SettingsTab" component={ SettingsStackNavigator }
-        options={{
-          tabBarLabel: "Settings",
-          tabBarIcon: () => (<Ionicons name="options-outline" />),
-        }}
-        />
         <BottomTab.Screen name="CameraTab" component={ CameraStackNavigator }
         options={{
           tabBarLabel: "Camera",
           tabBarIcon: () => (<Ionicons name="camera-outline" />),
+        }}
+        />
+        <BottomTab.Screen name="SettingsTab" component={ SettingsNav }
+        options={{
+          tabBarLabel: "Settings",
+          tabBarIcon: () => (<Ionicons name="options-outline" />),
         }}
         />
       </BottomTab.Navigator>

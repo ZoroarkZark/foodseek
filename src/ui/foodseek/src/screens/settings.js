@@ -1,47 +1,53 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-
+import React, { useContext, useState } from 'react';
+import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
+import { AuthenticationContext } from '../context/AuthenticationContext';
+import { Avatar } from '../components/common';
+import { Image } from 'react-native';
+const image= require('../../assets/avatar_sized.png');
 export const SettingsScreen = ({ navigation }) => {
-    const [allegiance, setAllegiance] = useState('an eater');
-    const [email, setEmail] = useState('loading email');
+    const {user} = useContext(AuthenticationContext);
 
-    function allegianceHandler() {
-        if (allegiance == 'an eater') {
-            setAllegiance('a vendor');
-        }
-        else {
-            setAllegiance('an eater');
-        }
-    }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Edit Display Name {">"}</Text>
-            <Text style={styles.text}>Email: {email}</Text>
-            <Text style={styles.text}>I am {allegiance}</Text>
-            <View style={styles.buttonContainer}>
-                <Button title='Change allegiance' onPress={allegianceHandler}/>
-            </View>
-            <Text style={styles.text}>Style {">"}</Text>
-            <Text style={styles.text}>Barcode Goes Here!</Text>
-            <View style={styles.buttonContainer}>
-                <Button title='Log Out'/>
-            </View>
-        </View>
-    );
+
+        return (
+            
+
+                <View style={styles.container}>
+                    
+            {user
+                ?   <>
+                    <View flex={1} flexDirection="column" paddingTop='20%'>
+                    <Avatar user={user} />
+                    <Text style={{paddingTop: 20, fontWeight: '500' }}>user: {user.un}</Text>
+                    </View>
+                    <View flex={1} flexDirection="column">
+                    
+                    <Text>Email: {user.email}</Text>
+                    <Text>type: {user.type}</Text>
+                    
+
+                    </View>
+                    </>
+                : 
+                    <Text>Please login or create account to access settings...</Text>}
+                    
+                
+
+                </View>
+
+            
+        );
+    
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#E6E6E3',
-        alignItems: 'left',
-        justifyContent: 'left',
-    },
-    text: {
-        padding: 10,
-        fontSize: 25,
-    },
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+      },
     buttonContainer: {
         padding: 10,
         fontSize: 25,
