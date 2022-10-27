@@ -13,7 +13,7 @@ This README is only a partial description of the overall application FoodSeek. A
 # Background
 > *The U.S. sends about 63 million tons of food to landfills each year... At the same time, 11 percent of U.S. households were food insecure in 2018. *(The Global Food Donation Policy Atlas. mapping the barriers to food donation. 2020)
 
-Food retailers struggle with logistical and communicational barriers which may impede or prevent donations of their unsold food items. Risks associated with concerns for liability, transportation costs, and additional labor costs incurred in order to furnish the donation process further discourages food retailers from donating. Design and implementation for this application must address these concerns by reducing risk for vendors and providing incentives for use wherever possible.
+Food retailers struggle with logistical and communicational barriers which may impede or prevent donations of their unsold food items. Risks associated with concerns for liability, transportation costs, and additional labor costs incurred to accomadate the donation process further discourages food retailers from donating. Design and implementation for this application must address these concerns by reducing risk for vendors and providing incentives for use wherever possible.
 ---
 
 # Goal
