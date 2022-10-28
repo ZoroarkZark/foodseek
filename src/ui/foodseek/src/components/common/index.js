@@ -9,6 +9,7 @@ import { TransitPickerInput } from './pickerinput'
 import TimeInput from './timeinput'
 import FavoriteButton from './favoritebutton'
 import Avatar from './avatar'
+import ViewMap from './map'
 
 export {
     Title,
@@ -22,4 +23,5 @@ export {
     TimeInput,
     FavoriteButton,
     Avatar,
+    ViewMap
 }
