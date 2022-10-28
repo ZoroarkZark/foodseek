@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 
 // Placeholder: Create a home screen possibly containing a search bar and not much else
 const styles2 = StyleSheet.create({
@@ -102,3 +102,17 @@ export const styles = StyleSheet.create({
 })
 
 export default styles2
+
+export const map = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    component: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+    },
+} )
+  

@@ -11,13 +11,16 @@ export const AppNavigation = () => {
     return (
         // container wraps top-level navigator (BottomTabsNavigator), linking it to the app environment
         <NavigationContainer>
-            <AuthenticationContextProvider>
-                <FavoritesContextProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                        <BottomTabsNavigator />
-                    </GestureHandlerRootView>
-                </FavoritesContextProvider>
-            </AuthenticationContextProvider>
+
+                <AuthenticationContextProvider>
+                    <FavoritesContextProvider>
+                        <GestureHandlerRootView style={{ flex: 1 }}>
+                            <BottomTabsNavigator />
+                        </GestureHandlerRootView>
+                    </FavoritesContextProvider>
+                </AuthenticationContextProvider>
+
+            
         </NavigationContainer>
     )
 }
