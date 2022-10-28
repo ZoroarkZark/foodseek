@@ -16,7 +16,7 @@ const userRouter = require('./routes/user.js').UserRouter;
 
 // Server Constants
 const port = 3000;
-const hostname = "127.0.0.1";
+const hostname = "0.0.0.0";
 
 // Express app 
 const app = express();

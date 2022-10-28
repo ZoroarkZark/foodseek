@@ -11,13 +11,6 @@
 }
 */
 
-function createIssue(code, msg){
-    return ({
-        error: code,
-        message: msg
-    })
-}
-
 class res_obj {
     // defualt constructor
     // all fields set to uninitilized
@@ -47,7 +40,7 @@ class res_obj {
 
     setIssue(code, msg){
         this.success = 0;
-        this.issue = {
+        this.issues = {
             error: code,
             message: msg
         }

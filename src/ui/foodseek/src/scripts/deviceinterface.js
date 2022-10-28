@@ -1,3 +1,4 @@
+
 function createIssue(code, msg){
     return ({
         error: code,
@@ -74,6 +75,7 @@ function xhrRequest(url, method, payload, cb){
 }
 
 function buildURL(root,path){
+    alert(`Attmepting on ${root}`);
     return `http://${root}/${path}`;
 }
 
@@ -83,6 +85,18 @@ class Device {
         this.root = `${host}:${port}`;
     }
 
+
+    test(meth,payload, callback){
+        let path = buildURL(this.root,"test");
+
+        xhrRequest(path, meth, payload, (err, response) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            return callback(null,response);
+        } )
+    }
 
     signup(payload, callback ){
         let path = buildURL(this.root,'signup');
@@ -115,8 +129,37 @@ class Device {
         this.token = "";
     }
 
-    
+    uploadCard(card_data, callback){
+        let path = buildURL(this.root,'food/upl');
+
+        payload = card_data;
+        payload.jwt = this.token;
+
+        xhrRequest(path,"POST", payload, (err, response) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            return callback(null,response);
+        });
+    }
 
 
+    getCards(payload, callback){
+        let path = buildURL(this.root,'food/list');
+
+        payload.jwt = this.token;
+
+        xhrRequest(path,"POST",payload, (err,response) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            return callback(null,response);
+        })
+        
+    }
 
 }
+
+export const DeviceInstance = new Device("127.0.0.1", "3000");
