@@ -1,15 +1,5 @@
-import React, {useState, createRef} from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  Image,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import React from 'react'
+import { View, Text } from 'react-native'
 
 /*
 Try to prompt the user for their email.
@@ -19,11 +9,7 @@ Later functionality intended: find a way to send a vertification method, then le
 */
 
 export const ForgotPasswordScreen = ({ navigation }) => {
-  <View>
-<Text>why</Text>
-  </View>
-    
-
-
-
-};
+    ;<View>
+        <Text>why</Text>
+    </View>
+}

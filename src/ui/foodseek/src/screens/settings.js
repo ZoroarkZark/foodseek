@@ -1,44 +1,34 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
-import { AuthenticationContext } from '../context/AuthenticationContext';
-import { Avatar } from '../components/common';
-import { Image } from 'react-native';
-const image= require('../../assets/avatar_sized.png');
+import React, { useContext } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { AuthenticationContext } from '../context/AuthenticationContext'
+import { Avatar } from '../components/common'
+
 export const SettingsScreen = ({ navigation }) => {
-    const {user} = useContext(AuthenticationContext);
+    const { user } = useContext(AuthenticationContext)
 
-
-
-        return (
-            
-
-                <View style={styles.container}>
-                    
-            {user
-                ?   <>
-                    <View flex={1} flexDirection="column" paddingTop='20%'>
-                    <Avatar user={user} />
-                    <Text style={{paddingTop: 20, fontWeight: '500' }}>user: {user.un}</Text>
+    return (
+        <View style={styles.container}>
+            {user ? (
+                <>
+                    <View flex={1} flexDirection="column" paddingTop="20%">
+                        <Avatar user={user} />
+                        <Text style={{ paddingTop: 20, fontWeight: '500' }}>
+                            user: {user.un}
+                        </Text>
                     </View>
                     <View flex={1} flexDirection="column">
-                    
-                    <Text>Email: {user.email}</Text>
-                    <Text>type: {user.type}</Text>
-                    
-
+                        <Text>Email: {user.email}</Text>
+                        <Text>type: {user.type}</Text>
                     </View>
-                    </>
-                : 
-                    <Text>Please login or create account to access settings...</Text>}
-                    
-                
-
-                </View>
-
-            
-        );
-    
-};
+                </>
+            ) : (
+                <Text>
+                    Please login or create account to access settings...
+                </Text>
+            )}
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -46,12 +36,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-
-      },
+    },
     buttonContainer: {
         padding: 10,
         fontSize: 25,
         backgroundColor: 'blue',
     },
-}
-)
+})
