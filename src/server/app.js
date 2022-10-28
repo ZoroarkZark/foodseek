@@ -15,8 +15,8 @@ const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 
 // Server Constants
-const port = 3000;
-const hostname = "0.0.0.0";
+const port = (process.env.PORT == null || process.env.PORT == "") ? 3000 : process.env.PORT;
+
 
 // Express app 
 const app = express();
@@ -48,7 +48,7 @@ app.use('/' ,coreRouter); // mount core routes
 app.use('/food/', userRouter); // mount user routes
 
 // keeps this app open on the specifed port
-app.listen(port,hostname, () => {
+app.listen(port, () => {
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
 	console.log(`listening to ${hostname} on port: ${port}`);
 	
