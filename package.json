@@ -4,6 +4,7 @@
   "description": "*A Food Social Media Platform*",
   "main": "index.js",
   "scripts": {
+    "start": "src/server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
