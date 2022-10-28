@@ -302,7 +302,6 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                     <Text>Start Time: {sundayTime.toLocaleTimeString()}</Text>
                     <Button title ={"End Time"} onPress ={() => setSundayEndShow(true)}/>
                     <Text>End Time: {sundayEndTime.toLocaleTimeString()}</Text>
-
                 {
                 sundayShow &&
                 <TimeInput value={sundayTime} onChange ={onSunChange}/>
@@ -318,26 +317,6 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
     return (
     <View>
         {renderSwitch(day)}
-        
-            {/*<DayPickerInput value={props.day} onValueChange={props.setDay}>DAY</DayPickerInput>
-            <Text>{props.day}</Text>
-            <Button title ={"Monday"}/>
-            <TimeInput value={mondayTime} onChange ={onChange}/>
-    <Text>{mondayTime.toLocaleTimeString()}</Text>*/}
-
-            
-            {/*<Text>Tuesday</Text>
-            <TimeInput value={new Date()} onChange ={new Date()}/>
-            <Text>Wednesday</Text>
-            <TimeInput value={new Date()} onChange ={new Date()}/>
-            <Text>Thursday</Text>
-            <TimeInput value={new Date()} onChange ={new Date()}/>
-            <Text>Friday</Text>
-            <TimeInput value={new Date()} onChange ={new Date()}/>
-            <Text>Saturday</Text>
-            <TimeInput value={new Date()} onChange ={new Date()}/>
-            <Text>Sunday</Text>
-    <TimeInput value={new Date()} onChange ={new Date()}/>*/}
 
        </View>
     );
