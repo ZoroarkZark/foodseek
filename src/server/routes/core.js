@@ -9,15 +9,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const jwt_secret = "tempSecretDoNotUseForProduction";
 
-const sutil = require('../utility/serverutility.js')
+const sutil = require('../utility/serverutility.js');
 //const DBHandler = require('../utility/sqlhandler.js')
 
 const CoreRouter = express.Router()
 //const DB = new DBHandler()
-const FakeStores = require('../tests/FakeUserStore.js');
 
 
-const Store = new FakeStores.UserStore();
+const Store = new sutil.UserStore();
 
 module.exports = {CoreRouter}
 
@@ -34,7 +33,7 @@ CoreRouter.use('/test', (req,res)=>{
 // handle signups
 // Checking for fields in the body { email, pass, vendor}
 // returns a response_object 
-CoreRouter.post('/signup', (req, res) => 
+CoreRouter.post('/signup', async (req, res) => 
 {
     // this is our standard response object being sent to the client in the res.body
     const resbody = new sutil.res_obj();
@@ -46,27 +45,37 @@ CoreRouter.post('/signup', (req, res) =>
         if(req.body.email && req.body.pass && req.body.vendor)
         {
             console.log("body__got");
-            const hash = hashPassword(req.body.pass);
-            let credentials = {
-                email: req.body.email,
-                pass: hash,
-                vendor: req.body.vendor
-            }
-
-            Store.insertUser(credentials, (err) => {
-                if(err) {
-                    console.error(err);
-                    resbody.setIssues(err);
+            
+            bcrypt.hash(req.body.pass, 10, (err, hash)=>{
+                if(err){
+                    resbody.setIssue(999,"Problem hashing pass");
                     res.end(resbody.package());
+                    return;
                 }
 
-                resbody.setData({
-                    message: "Succsesful signup"
+                let credentials = {
+                    email: req.body.email,
+                    pass: hash,
+                    vendor: req.body.vendor
+                }
+    
+                Store.insertUser(credentials, (err) => {
+                    if(err) {
+                        console.error(err);
+                        resbody.setIssues(err);
+                        res.end(resbody.package());
+                    }
+    
+                    resbody.setData({
+                        message: "Succsesful signup"
+                    });
+    
+                    res.end(resbody.package());
+                    return;
                 });
+    
 
-                res.end(resbody.package());
             });
-
         }
         else{
             resbody.setIssues({
@@ -74,6 +83,7 @@ CoreRouter.post('/signup', (req, res) =>
                 msg: "invalid fields"
             });
             res.end(resbody.package());
+            return;
         }
          
     }
@@ -106,49 +116,60 @@ CoreRouter.post('/login', (req, res, next) => {
                     console.error(err);
                     resbody.setIssues(err);
                     res.end(resbody.package());
+                    return;
                 }
 
                 if(result){
-                    
-                    if(comparePassword(req.body.pass, result.pass)){
-
-                        const token = jwt.sign({
-							user: req.body.email,
-							vendor: result["vendor"]
-
-						}, jwt_secret, {
-							expiresIn: 8000000
-						});
-
-                        data = {
-                            user: req.body.email,
-                            vendor: result.vendor,
-                            jwt: token,
-                            message: "user signed in!"
+                    bcrypt.compare(req.body.pass, result.pass, (error, hash) => {
+                        if(error){
+                            resbody.setIssue(999,"problem de-hashing pass");
+                            res.end(resbody.package());
+                            return;
                         }
 
-                        resbody.setData(data);
-                        res.end(resbody.package());
-                    }
-                    else{
-                        resbody.setIssue(4, "Passwords did not match!");
-                        res.end(resbody.package());
-                    }
+                        if(hash){
+                            const token = jwt.sign({
+                                user: req.body.email,
+                                vendor: result.vendor
+    
+                            }, jwt_secret, {
+                                expiresIn: 8000000
+                            });
+    
+                            data = {
+                                user: req.body.email,
+                                jwt: token,
+                                message: "user signed in!"
+                            }
+    
+                            resbody.setData(data);
+                            res.end(resbody.package());
+                            return;
+                        }
+                        else{
+                            resbody.setIssue(4, "Passwords did not match!");
+                            res.end(resbody.package());
+                            return;
+                        }
+                    });
                 }
                 else{
                     resbody.setIssue(3, "No Account Found!");
                     res.end(resbody.package());
+                    return;
                 }
             })
         }
         else{
             resbody.setIssue(2,`${Object.keys(req.body)} passed : no email or pass found`);
             res.end(resbody.package());
+            return;
         }
     }
     else{
         resbody.setIssue(1, "no body");
         res.end(resbody.package());
+        return;
     }
 
 
@@ -189,6 +210,7 @@ const hashPassword = async (password, saltRounds = 10) => {
 const comparePassword = async (password, hash) => {
   try {
     // Compare password
+
     return await bcrypt.compare(toString(password), toString(hash))
   } catch (error) {
     console.log(error)

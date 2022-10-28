@@ -49,6 +49,9 @@
                         let substr = "";
                         for(field in response[x]){
                             substr+= field + ": " + response[x][field] +", "
+                            if(field == "jwt"){
+                                document.getElementById("jwttar").innerHTML = response[x][field];
+                            }
                         }
 
                         out_str+= substr + "},";
@@ -65,6 +68,9 @@
             function xhrRequest(url, method, payload, cb){
                 //ignore payload on get requests
                 payload = (method==="GET") ? null : payload;
+                if(payload){
+                    payload.jwt = document.getElementById("jwttar").innerHTML;
+                }
 
                 let xhr = new XMLHttpRequest();
                 xhr.open(method,url);
@@ -116,6 +122,11 @@
 
                 setHostData(newHost,newport);
             }
+
+            function logout(){
+                document.getElementById("jwttar").innerHTML = "";
+            }
+
         </script>
 
         <style>
@@ -165,6 +176,12 @@
                 <input type="number" id="port" name="port" placeholder="3000" value="3000">
                 <input type="button" onclick="updateSettings()" value="Update">
             </form>
+
+            <ul>JWT
+                <li><span id="jwttar"></span></li>
+                <input type="button" onClick="logout()" value="Logout">
+            </ul>
+
         </div>
         <br>
         <div id="request_container">

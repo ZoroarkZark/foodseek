@@ -33,13 +33,8 @@ app.use(cookieParser()); // app.use is called on any method to any url : basical
 app.use(express.json());
 
 app.use( (req, res, next) => { // Using this as a general request logger 
-	console.log(`${req.method} to ${req.url}`);
 	req.setEncoding('utf8');
-	if(req.body){
-		console.log("instant");
-		console.log(req.body);
-		console.log(Object.keys(req.body));
-	}
+	console.log(`${req.method} to path: ${req.path} @ ${Date.now()}`);
 	req.on('data', (data) => { 
 		console.log("late");
 		console.log(data);
