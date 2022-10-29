@@ -53,3 +53,7 @@ app.listen(port, () => {
 	console.log(`listening to ${hostname} on port: ${port}`);
 	
 });
+
+app.get('/favicon.ico', (req,res)=>{
+	res.end();
+})
