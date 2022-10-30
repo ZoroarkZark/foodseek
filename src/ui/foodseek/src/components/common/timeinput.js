@@ -12,8 +12,4 @@ const TimeInput = ({ value, onChange }) => {
     )
 }
 
-<<<<<<< HEAD
 export default TimeInput; 
-=======
-export default TimeInput
->>>>>>> main
