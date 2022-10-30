@@ -3,6 +3,86 @@ import React from 'react'
 import { View, Text} from 'react-native'
 import { TimeInput } from '../common'
 
+<<<<<<< HEAD
+
+const week = {
+    monday : {
+        value: {
+            start: new Date(),
+            end: new Date()
+        },
+        onChange: {
+            start: new Date(),
+            end: new Date()
+        },
+    },
+    tuesday : {
+        value: {
+            start: new Date(),
+            end: new Date()
+        },
+        onChange: {
+            start: new Date(),
+            end: new Date()
+        },
+    },
+    wednesday : {
+        value: {
+            start: new Date(),
+            end: new Date()
+        },
+        onChange: {
+            start: new Date(),
+            end: new Date()
+        },
+    },
+    thursday : {
+        value: {
+            start: '',
+            end: ''
+        },
+        onChange: {
+            start: '',
+            end: ''
+        },
+    },
+    friday : {
+        value: {
+            start: '',
+            end: ''
+        },
+        onChange: {
+            start: '',
+            end: ''
+        },
+    },
+    saturday : {
+        value: {
+            start: '',
+            end: ''
+        },
+        onChange: {
+            start: '',
+            end: ''
+        },
+    },
+    sunday : {
+        value: {
+            start: '',
+            end: ''
+        },
+        onChange: {
+            start: '',
+            end: ''
+        },
+    }
+}
+
+
+
+export const TimeRange = ({type="label", labelStart="Start", labelEnd="End", value, onChange}) => {
+    if (type === "label") {
+=======
 // this is just a sample of a data structure, delete when necessary
 // const week = {
 //     monday : {
@@ -81,6 +161,7 @@ import { TimeInput } from '../common'
 
 const TimeRange = ({type='label', labelStart='Start', labelEnd='End', value, onChange}) => {
     if (type === 'label') {
+>>>>>>> main
         return (
             <>
                 <View style={{flex: 1}}>
@@ -116,6 +197,9 @@ const TimeRange = ({type='label', labelStart='Start', labelEnd='End', value, onC
 
 
 
+<<<<<<< HEAD
+
+=======
 const HoursOfOperation = ({type='to', start: labelStart='Start', end: labelEnd='End', value, onChange}) => {
     return (
         <View>
@@ -151,3 +235,4 @@ const HoursOfOperation = ({type='to', start: labelStart='Start', end: labelEnd='
 
     )
 }
+>>>>>>> main
