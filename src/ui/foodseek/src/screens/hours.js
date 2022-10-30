@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 import React, {useState} from "react";
 import { StyleSheet, Text, View, Button, Pressable, TouchableOpacity } from 'react-native';
 import { DayPickerInput } from "../components/common/pickerinput";
 import { TimeInput } from "../components/common";
 import { TimeRange } from "../components/forms";
 import styles2, { styles } from "../components/styleSheet";
-=======
-import React from 'react'
-import { TextInput } from 'react-native'
->>>>>>> main
 
 export const HoursOfOperationScreen = ({navigation}, props) => {
     const [day, setDay] = useState("monday");
@@ -261,8 +256,3 @@ Done Button
 
 */
 
-<<<<<<< HEAD
-=======
-
-*/
->>>>>>> main
