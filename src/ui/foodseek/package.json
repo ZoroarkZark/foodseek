@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
+    "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.2.0",
     "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/drawer": "^6.5.0",
@@ -25,6 +26,7 @@
     "react": "18.0.0",
     "react-native": "0.69.6",
     "react-native-gesture-handler": "~2.5.0",
+    "react-native-maps": "0.31.1",
     "react-native-paper": "^4.12.5",
     "react-native-rapi-ui": "^0.2.1",
     "react-native-reanimated": "~2.9.1",
@@ -32,11 +34,12 @@
     "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
     "react-navigation": "^4.4.4",
-    "react-navigation-drawer": "^2.7.2"
+    "react-navigation-drawer": "^2.7.2",
+    "expo-location": "~14.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
   },
   "private": true,
-  "proxy": "http://108.90.204.32:80"
+  "proxy": "http://127.0.0.1:3000"
 }

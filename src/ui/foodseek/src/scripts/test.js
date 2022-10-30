@@ -1,3 +1,6 @@
-import {SI} from './serverinterface.js'
-
-SI.fetchTest();
+import { SI } from './serverinterface.js'
+;<HTML>
+    <body>
+        <p> Test 1234</p>
+    </body>
+</HTML>
