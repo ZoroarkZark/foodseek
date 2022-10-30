@@ -13,7 +13,7 @@ Connect our users with food suppliers that are voiding or wasting some food. Get
 
 ---
 
-# Generally
+# General Structure
 In order to implement our goal with our method. We will need
   - A UI for both the User's and Suppliers. (front end react)
   - A shared data structure for them to read and write to. (back end in Node)
@@ -23,9 +23,55 @@ In order to implement our goal with our method. We will need
 
 ---
 
-# UI
+# UI/Frontend
 
-React or Expo
+In order to create our UI for the app that we'll be making, we have decided to use React Native alongside Expo; this will allow us to create a project to put in all of our components.
+In other words, we are using Expo for our front-end.
+
+---
+
+## App.js
+
+Our wrapper file for our AppNavigation component, to allow for navigation between screens. 
+
+---
+
+# Caching
+
+Our category here consists of our component to be able to write to the config.txt file located in the app itself.
+
+## writeToConfig.js
+
+Intended purpose: Create a class that allows easy access to the config.txt file and allow for edits to occur in said file. Intended to be used by other components.
+
+---
+
+# Common 
+
+Our category here consists of various files that contain reusable sets of code for the rest of the application. These are intended to be used as sets of JSX objects, typically. This includes:
+avatar.js
+emailinput.js / pickerinput.js / timeinput.js / passwordinput.js / textinput.js
+favoritebutton.js
+textbutton.js
+dismisskeyboard.js
+
+index.js is intended for use to import functions and export them, keeping them tidy by doing all of the importing and exporting outside of the original files.
+
+---
+
+# Forms
+
+Our category here is to give frameworks for various fields that will be used throughout the app.
+This includes:
+BaseAccountForm.js - signup, 1st page
+UserAccountForm.js - signup, 2nd (Eater) page
+VendorAccountForm.js - signup, 2nd (Vendor) page
+HoursOfOperation.js - TimeInput + TimeRange JSX objects, used to filling in time.
+
+index.js is intended to import functions and export them, keeping them tidy. For this, in our exports, we also renmaed the forms into simpler names to be used throughout the program.
+BaseAccountForm -> BaseForm
+UserAccountForm -> UserForm 
+etc.
 
 ---
 
