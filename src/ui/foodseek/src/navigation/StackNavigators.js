@@ -14,6 +14,7 @@ import {
     Favorites,
     SettingsScreen,
     CameraScreen,
+    HoursOfOperationScreen
 } from '../screens'
 import CustomDrawerContent from './CustomDrawerContent'
 
@@ -67,6 +68,11 @@ export const HomeStackNavigator = () => {
                 name="SignUp" //SIGNUP DECISION PAGE
                 component={SignupScreen}
                 options={{ title: 'Signup Screen' }}
+            />
+            <Drawer.Screen
+                name="Hours" //HOURS OF OPERATION PAGE
+                component={HoursOfOperationScreen}
+                options={{ title: 'Hours Screen'}}
             />
         </Drawer.Navigator>
     )

@@ -4,6 +4,7 @@ import { HomeScreen } from './home'
 import { PostsScreen } from './posts'
 import { SettingsScreen } from './settings'
 import { UserScreen } from './user'
+import { HoursOfOperationScreen } from './hours'
 import {
     ForgotPasswordScreen,
     LoginScreen,
@@ -20,4 +21,5 @@ export {
     PostsScreen,
     SettingsScreen,
     UserScreen,
+    HoursOfOperationScreen
 }
