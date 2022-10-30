@@ -49,10 +49,15 @@ Intended purpose: Create a class that allows easy access to the config.txt file 
 # Common 
 
 Our category here consists of various files that contain reusable sets of code for the rest of the application. These are intended to be used as sets of JSX objects, typically. This includes:
+
 avatar.js
+
 emailinput.js / pickerinput.js / timeinput.js / passwordinput.js / textinput.js
+
 favoritebutton.js
+
 textbutton.js
+
 dismisskeyboard.js
 
 index.js is intended for use to import functions and export them, keeping them tidy by doing all of the importing and exporting outside of the original files.
@@ -63,9 +68,13 @@ index.js is intended for use to import functions and export them, keeping them t
 
 Our category here is to give frameworks for various fields that will be used throughout the app.
 This includes:
+
 BaseAccountForm.js - signup, 1st page
+
 UserAccountForm.js - signup, 2nd (Eater) page
+
 VendorAccountForm.js - signup, 2nd (Vendor) page
+
 HoursOfOperation.js - TimeInput + TimeRange JSX objects, used to filling in time.
 
 index.js is intended to import functions and export them, keeping them tidy. For this, in our exports, we also renmaed the forms into simpler names to be used throughout the program.
