@@ -21,6 +21,9 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
+            "NSAppTransportSecurity": {
+                "NSAllowsArbitraryLoads": true
+            },
             "infoPlist": {
                 "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location",
                 "NSLocationAlwaysUsageDescription": "Allow $(PRODUCT_NAME) to use your location",
