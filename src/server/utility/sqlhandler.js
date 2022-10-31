@@ -1,88 +1,103 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
 require('dotenv').config();
-// DBHandler
-// Going to be the class handling the sql database
-// Want to come up with some reasonable functions to perform these queries
-// Inserts look like : INSERT INTO <table_name> ([columns]) VALUES ([vals])
-// Selects look like : SELECT [Fields] FROM <table> WHERE <column> = <value> 
-// Deletes           : DELETE FROM <table> WHERE <column> = <value>
-module.exports = 
-    class DBHandler {
-        constructor(options){
-            // set the connection pool object 
-            this.conn = database.createPool({
-                connectionLimit: 10,
-                host: process.env.DB_HOST,
-                port: process.env.DB_PORT,
-                user: process.env.DB_USER,
-                password: process.env.DB_PASS,
-                database: process.env.DB_ACTIVE_DB
-            });
-            
 
-            this.user_table = "user_data"
-            this.email = "user_email";
-            this.pass = "password";
-        }
 
-        /*
-            Insertions:
-                take in a table name, pass a dict {column: value} for the items to be inserted
-                going to need to build the string
-        */
-       // Insert a new user into the database
-       // given an email and passwword
-       // The callback is to handle redirection in app.js (and errors)
-       // callback should be callback(error)
-        insertUser(email, password, callback){
-            var sql = "INSERT INTO ?? (??, ??) VALUES (?, ?)"; // get the sql code
-            var parameters = [
-                this.user_table,
-                this.email,
-                this.pass,
-                email,
-                password
-            ];
-            
-            this.conn.query(sql, parameters, (err) => {
-                if(err){
-                    console.log(`Error inserting user ${email} - sqlhandler`);
-                    return callback(err);
-                }
-                console.log(`Successfully created user ${email} with password: ${password} - sqlhandler`);
-                return callback(null); // no error
-            });
+// Refactored from the DBHandler class
+// Cleaned up some of the functions
+// Added a deleteUser in case some one wants to remove their acc
+class UserStore {
+    constructor(){
 
-        }
+        // Create Connection Pool
+        this.conn = database.createPool( {
+            connectionLimit: 10,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_ACTIVE_DB
+        });
 
-        // Get an existing user from the table
-        // if the user is found it will return their password
-        // if no user is found it will return a null
-        // callback will be -> callback(err, result)
-        getUser(email, callback){
-            var sql = "SELECT * FROM ?? WHERE ?? = ?";
-            var parameters = [
-                this.user_table,
-                this.email,
-                email
-            ];
-
-            this.conn.query(sql, parameters, (err, results) => {
-                if(err){
-                    console.log(`Error finding user ${email} - sqlhandler`);
-                    console.log(err);
-                    return callback(err, null);
-                }
-
-                var result = (results[0]) ? results[0] : null;
-                if(!result){
-                    console.log("null result - sqlhandler");
-                    return callback(null, null); // no error but no result
-                }
-                console.log("found - sqlhandler");
-                return callback(null, result[this.pass]);
-            });
-        }
-
+        // Define table and column names
+        this.table = "user_data";
+        this.col = {
+            email: "user_email",
+            pass: "password",
+            vend: "vendor",
+            data: "Data"
+        };
     }
+
+    // pass credentials with keys [email, pass, vendor]
+    createUser(credentials, callback){
+
+        // SQL query
+        let SQL = "INSERT INTO ?? (?? ?? ??) VALUES (? ? ?)";
+        let parameters = [
+            this.table,
+            this.col.email,
+            this.col.pass,
+            this.col.vend,
+            credentials.email,
+            credentials.pass,
+            credentials.vendor
+        ]
+
+        // query the database
+        this.conn.query(SQL, parameters, (err) => {
+            if(err){
+                return callback(err); // we have an error return it to the callback
+            }
+
+            return callback(null); // no error 
+        })
+    }
+
+    //pass credentials [email] to find a user with that associated email
+    findUser(email, callback){
+
+        //SQL query
+        let SQL = "SELECT * FROM ?? WHERE ?? = ?";
+        let parameters = [
+            this.table,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL, parameters, (err, results) => {
+            if(err){
+                return callback(err, null);
+            }
+
+            let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
+            if(!result){
+                return callback(null, null); // no error but no result
+            }
+            return callback(null, result);
+        });
+    }
+
+    deleteUser(email, callback){
+        let SQL = "DELETE FROM ?? WHERE ?? = ?";
+        let parameters = [
+            this.table,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL,parameters, (err,results) => {
+            if(err){
+                return callback(err,null); // could not delete
+            }
+            return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
+        });
+    }
+
+
+}
+
+
+module.exports = {
+    UserStore: UserStore
+}
