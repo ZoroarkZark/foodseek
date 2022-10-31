@@ -15,7 +15,7 @@ const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 
 // Server Constants
-const port = 3000;
+const port = 80;
 const hostname = "0.0.0.0";
 
 // Express app 
