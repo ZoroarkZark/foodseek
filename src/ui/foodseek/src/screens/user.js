@@ -47,13 +47,11 @@ export const UserScreen = ({ navigation, route }) => {
                     onPress={() => {
 
                         alert("button hit");
-                        console.log( 'button clicked' )
                         DeviceInstance.test("GET",null, (err, response) => {
                             if(err){
                                 setTest(err);
                                 return;
                             }
-                            
                             setTest(response);
                             
                         })

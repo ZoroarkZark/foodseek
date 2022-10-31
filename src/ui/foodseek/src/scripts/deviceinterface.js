@@ -75,7 +75,7 @@ function xhrRequest(url, method, payload, cb){
 }
 
 function buildURL(root,path){
-    alert(`Attmepting on ${root}`);
+    
     return `http://${root}/${path}`;
 }
 
@@ -162,4 +162,4 @@ class Device {
 
 }
 
-export const DeviceInstance = new Device("127.0.0.1", "3000");
+export const DeviceInstance = new Device("108.90.204.32", "80");
