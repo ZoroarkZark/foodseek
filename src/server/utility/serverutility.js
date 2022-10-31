@@ -68,10 +68,10 @@ class food_card{
         this.favorite = foodData.favorite;
         this.cuisine = foodData.cuisine;
         this.item = foodData.item;
-        //this.lat = foodData.lat
-        //this,long = foodData.long
         this.travel = foodData.travel;  
         this.reserved = foodData.reserved;
+        this.lat = foodData.lat
+        this,long = foodData.lon
     }
 }
 
@@ -84,6 +84,15 @@ function validate(fields, object){
         }
     }
     return true;
+}
+
+
+function getKM(miles){
+    return miles * 1.609344;
+}
+
+function getM(Km){
+    return Km * 0.62137119;
 }
 
 function getDistance(lat1, lon1, lat2, lon2){
@@ -106,7 +115,9 @@ module.exports = {
     res_obj: res_obj,
     food_card: food_card,
     validate: validate,
-    getDistance : getDistance
+    getDistance : getDistance,
+    getM: getM,
+    getKm: getKM,
 }
 
 

@@ -6,7 +6,8 @@
 
 const express = require('express')
 
-const FakeStore = require('../tests/FakeUserStore.js')
+const FakeStore = require('../tests/FakeUserStore.js');
+const { res_obj } = require('../utility/serverutility.js');
 const sutils    = require('../utility/serverutility.js')
 
 const Store = new FakeStore.FoodStore(); // create a fake foodstore
@@ -28,6 +29,30 @@ function ezCard(id,item){
         reserved: "f",
     }
 }
+
+UserRouter.use('/', function(req, res, next) {
+    const resbody =  new sutils.res_obj();
+    req.setEncoding('utf-8')
+    if(req.body){
+        if(sutils.validate(['jwt'], req.body)){
+            jwt.verify(req.body.jwt, jwt_secret, (err, results)=> {
+                if(err){
+                    resbody.setIssue(4, "Non-Valid JWT");
+                    res.end(resbody.package());
+                    return;
+                }          
+                next();    
+            });
+            
+        }
+        else {
+            resbody.setIssue(2,'No JWT Field Found');
+            res.end(resbody.package());
+            return;
+        }
+    } 
+    
+})
 
 //Upload food card to foodstore
 UserRouter.post('/upl', (req,res) => {
@@ -89,8 +114,37 @@ UserRouter.get('/list', (req, res)=>{
     
 });
 
+UserRouter.post('/reserve', (req, res) => {
+    let resbody = new res_obj();
+    if(req.body){
+        
+    }
+})
+
+UserRouter.get('/list', (req, res) => {
+    
+    //decode jwt token
+    if( vendor == 1) {
+        //select from food_store where food_Card[i].vendor == this vendors name
+        
+
+    }
+    else {
+        //select from food_store where distance(userPos, food_Card[i].pos) < userPrefDistance && food_card[i].reserved == false
+        
+    }
+    
+
+})
+
 // implement a JWT  check here by verifiying JWT header on UserRouter.use()
 // the Device simulator cant do this yet so im not doing this yet (stink?)
+
+function unpackFoodcard(food_card){
+    out_str = "";
+    out_str = "[ id: " + food_card.id +", item: " + food_card.item +"], ";
+    return out_str;
+}
 
 function unpackFoodList(food_list){
     out_str = "";
