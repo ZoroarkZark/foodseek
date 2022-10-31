@@ -1,11 +1,4 @@
 
-function createIssue(code, msg){
-    return ({
-        error: code,
-        message: msg
-    })
-}
-
 class res_obj {
     // defualt constructor
     // all fields set to uninitilized
