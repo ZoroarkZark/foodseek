@@ -26,7 +26,15 @@
                 "NSLocationAlwaysUsageDescription": "Allow $(PRODUCT_NAME) to use your location",
                 "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location",
                 "NSAppTransportSecurity": {
-                    "NSAllowsArbitraryLoads": true
+                    "NSAllowAbritrayLoads": true,
+                    "NSExceptionDomans": {
+                        "108.90.204.3": {
+                            "NSExceptionAllowInsecureHTTPLoads": true
+                        },
+                        "localhost" : {
+                            "NSExceptionAllowInsecureHTTPLoads": true
+                        }
+                    }
                 }
             }
         },
