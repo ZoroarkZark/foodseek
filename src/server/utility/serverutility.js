@@ -290,6 +290,13 @@ function verifytoken(token, callback){
     });
 }
 
+function getKM(miles){
+    return miles * 1.609344;
+}
+
+function getM(Km){
+    return Km * 0.62137119;
+}
 
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
@@ -302,7 +309,9 @@ module.exports = {
     UserStore: US,
     FoodStore: FS,
     sign: signtoken,
-    verify: verifytoken
+    verify: verifytoken,
+    getKM: getKM,
+    getM: getM,
 
 }
 

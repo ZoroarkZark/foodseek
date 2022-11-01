@@ -2,6 +2,9 @@
 const database = require('mysql');
 require('dotenv').config('../');
 
+const { getKM } = require('../utility/serverutility.js');
+const { getM } = require('../utility/serverutility.js');
+
 // Refactored from the DBHandler class
 // Cleaned up some of the functions
 // Added a deleteUser in case some one wants to remove their acc
@@ -99,20 +102,20 @@ class FoodStore {
     constructor(options) {
         this.conn = database.createPool({
             connectionLimit: 10,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_ACTIVE_DB
+            host: "localhost",
+            port: 3306,
+            user: "newuser",
+            password: "AiroldI.1998",
+            database: "foodseek"
        });
 
        this.table = "food_cards"
        this.col = {
-        id: "id",
-        lat: "lat",
-        lon: "lon",
-        data: "data",
-        res: "res",
+        id: "ID",
+        lat: "Lat",
+        lon: "Lon",
+        data: "Data",
+        res: "Reserved",
         vendor: "vendor"
        }
 
@@ -137,8 +140,8 @@ class FoodStore {
             this.col.data,
             this.col.vendor,
             //fooddata.id,
-            fooddata.pos[0],
-            fooddata.pos[1],
+            fooddata.lat,
+            fooddata.lon,
             data, 
             fooddata.vendor,
         ]
@@ -159,19 +162,39 @@ class FoodStore {
         
     }
 
-    getCardsByRange(pos , maxdist_m, cb){
+    getCardsByRange(pos , maxdist_m, callback){
         // assuming we have pos.lat , pos.long
-        let Km = getKm(maxdist_m);
-        console.log(km);
+        let Km = getKM(maxdist_m);
+        console.log(Km);
         let rounded_km = Math.round(Km);
         console.log(rounded_km)
         
-        lat_min = pos.lat - (rounded_km * 0.045);
-        lat_max = pos.lat + (rounded_km * 0.045);
-        lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-        lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+        let lat_min = pos.lat - (rounded_km * 0.045);
+        let lat_max = pos.lat + (rounded_km * 0.045);
+        let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+        let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
         
-       
+        let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+        let params = [
+            this.table,
+            this.col.lat,
+            lat_min,
+            lat_max,
+            this.col.lon,
+            lon_min, 
+            lon_max,
+        ]
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                return callback(err, null);
+            }
+
+            
+            if(!results){
+                return callback(null, null); // no error but no result
+            }
+            return callback(null, results);
+        });
     }
 
     getCardsVendor(vendor_id, callback){
@@ -239,8 +262,6 @@ class FoodStore {
             username,
             this.col.id,
             id,
-            this.col.res,
-            ""
         ];
 
         this.conn.query(SQL, params, (err, results) => {
@@ -248,11 +269,10 @@ class FoodStore {
                 return callback(err, null);
             }
 
-            var result = (results[0]) ? results[0] : null;
-            if(!result){
+            if(!results){
                 return callback(null, null); // no error but no result
             }
-            return callback(null, result);
+            return callback(null, results);
         });
 
 
@@ -269,3 +289,88 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+
+
+
+ let food = {
+    image : "some string" ,
+    vendor : "Cals burweeedos", 
+    favorite : "none",
+    cuisine : "DANK",
+    item : "Burritos, Tacos",
+    travel : "",  
+    reserved : "",
+    lat : 36.974117,
+    lon : -122.030792
+}
+
+let wats_pos = {
+    lat: 36.910231,
+    lon: -121.7568946
+}
+
+
+
+
+const store = new FoodStore();
+
+store.uploadCard(food, (err, res) => {
+    if(err){
+        console.log("issues upload");
+        console.log(err);
+    }
+    else {
+        console.log("working upload")
+        console.log(res);
+    }
+});
+
+let vendor = "Cals burweeedos";
+store.getCardsVendor(vendor, (err,res) => {
+    if(err){
+        console.log("issues GCV");
+        console.log(err);
+    }
+    else {
+        console.log("working GCV");
+        console.log(res);
+    }
+})
+
+let user = "hungry_boi@gmail.com"
+let card_id = 0;
+
+store.reserveCard(card_id, user , (err, res) =>{
+    if(err){
+        console.log("issues Reserve");
+        console.log(err);
+    }
+    else {
+        console.log("working Reserve")
+        console.log(res);
+    }
+})
+
+let miles = 5;
+store.getCardsByRange(wats_pos, miles, (err, res) => {
+    if(err){
+        console.log("issues Range");
+        console.log(err);
+    }
+    else {
+        console.log("working Range");
+        console.log(res);
+    }
+})
+
+
+store.deleteCardsById(card_id, (err,res) => {
+    if(err){
+        console.log("issues Delete");
+        console.log(err);
+    }
+    else {
+        console.log("working Delete");
+        console.log(res);
+    }
+})
