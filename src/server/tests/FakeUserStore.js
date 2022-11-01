@@ -64,62 +64,32 @@ class UserStore
 
 // implemented callbackss bc that is what we will most likely be using for the SQL stuff
 
-class FoodStore {
-    constructor(options) {
-        this.conn = database.createPool({
-            connectionLimit: 10,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_ACTIVE_DB
-       });
-       this.food_table = "food_cards";
-       this.food_ID = "ID";
-       this.food_Lat = "Lat";
-       this.food_Lon = "Lon";
-       this.food_Data = "Data";
-       this.food_Reserved = "Reserved";
-       this.food_vendor = "Vendor"
 
-    }
-    
-    uploadCard(fooddata, callback){
-        let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
-        let data = JSON.stringify({
-            image : fooddata.image,
-            favorite : fooddata.favorite,
-            cuisine : fooddata.cuisine,
-            item : fooddata.item,
-            travel : fooddata.travel
-        })
-        var params = [
-            this.food_table,
-            //this.food_ID,
-            this.food_Lat,
-            this.food_Lon,
-            this.food_Data,
-            this.food_vendor,
-            //fooddata.id,
-            fooddata.lat,
-            fooddata.lon,
-            data, 
-            fooddata.vendor,
-        ]
-        
-        this.conn.query(SQL, params, (err) => {
-            if(err){
-                console.log(`Error inserting foodcard ${fooddata.item} - sqlhandler`);
-                return callback(err);
-            }
-            console.log(`Successfully inserted foodcard ${fooddata.item} with lat,lon: ${fooddata.lat} ${fooddata.lon} and data - sqlhandler`);
-            return callback(null); // no error
-        });
-
-    }
         
    
+class FoodStore {
+    constructor() {
+        this.foodlist = [];
+        
+    }
     
+    uploadCard(fooddata, cb){
+
+        const upload = new sutils.food_card(fooddata);
+        //check database for dup entry
+        //const found = this.foodlist.find(FoodCard.id => FoodCard.id = )
+        for(x in this.foodlist){
+            console.log(x);
+            if(upload.id === this.foodlist[x].id){
+                console.log("FoodCard alread in LIST");
+                return cb("Card in List");
+            }
+        }
+        
+        this.foodlist.push(upload);
+        console.log("FoodCard added to list");
+        return cb(null);
+    }
 
     getCardsAll(cb){
         return cb(this.foodlist);
@@ -163,24 +133,20 @@ class FoodStore {
 
 let food = {
     image : "some string" ,
-    vendor : "Cals burweeedos", 
+    vendor : "Pablos pizza", 
     favorite : "none",
-    cuisine : "DANK",
-    item : "Burritos, Tacos",
+    cuisine : "Italin",
+    item : "Pizza",
     travel : "",  
-    reserved : "",
-    lat : 1234.0,
-    lon : 4321.0
+    reserved : "rando@email.com",
+    lat : 0.0,
+    lon : 0.0
 }
 
-const store = new FoodStore();
-store.uploadCard(food, (err, res) => {
+
+FoodStore.uploadCard(food, (err) => {
     if(err){
         console.log("issues");
-        console.log(err);
-    }
-    else {
-        console.log("working")
     }
 });
 
