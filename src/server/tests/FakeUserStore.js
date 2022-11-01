@@ -67,7 +67,7 @@ class UserStore
 
         
    
-class FoodStore {
+class FakeFoodStore {
     constructor() {
         this.foodlist = [];
         
@@ -144,14 +144,9 @@ let food = {
 }
 
 
-FoodStore.uploadCard(food, (err) => {
-    if(err){
-        console.log("issues");
-    }
-});
 
 
 module.exports = {
    UserStore: UserStore,
-   FoodStore: FoodStore
+   FakeFoodStore: FakeFoodStore
 };
