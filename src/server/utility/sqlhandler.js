@@ -35,6 +35,7 @@ module.exports =
        // given an email and passwword
        // The callback is to handle redirection in app.js (and errors)
        // callback should be callback(error)
+       // change this to insertUser(credentials, callback)
         insertUser(email, password, callback){
             var sql = "INSERT INTO ?? (??, ??) VALUES (?, ?)"; // get the sql code
             var parameters = [

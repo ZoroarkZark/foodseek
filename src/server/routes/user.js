@@ -6,11 +6,12 @@
 
 const express = require('express')
 const jwt     = require('jsonwebtoken');
+const { FoodStore } = require('../utility/serverutility.js');
 const jwt_secret = "tempSecretDoNotUseForProduction";
 
 const sutils    = require('../utility/serverutility.js')
 
-const Store = new sutils.FoodStore(); // create a fake foodstore
+const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
 
 
 const UserRouter = express.Router();
@@ -30,109 +31,82 @@ function ezCard(id,item){
     }
 }
 
-//Upload food card to foodstore
-UserRouter.post('/upl', (req,res) => {
-    const resbody = new sutils.res_obj();
 
-    req.setEncoding('utf-8')
-    if(req.body)
-    {
-        if(sutils.validate(['jwt','id','item'], req.body)){
-            
-            // verify user 
-            jwt.verify(req.body.jwt, jwt_secret, (err, results)=> {
-                if(err){
-                    resbody.setIssue(4, "Non-Valid JWT");
-                    res.end(resbody.package());
-                    return;
-                }
-                // verify vendor status
-                if(results.vendor == "1"){
-                    Store.uploadCard(ezCard(req.body.id, req.body.item), (err) => {
-                        if(err){
-                            resbody.setIssue(3, "Duplicate Entry");
-                            res.end(resbody.package());
-                            return;
-                        }
-                        
-                        resbody.setData({
-                            msg: "Uploaded Card"
-                        });
-                        res.end(resbody.package());
-                        return;
-                    });
-                }
-                else{
-                    resbody.setIssue(5, "Non-Vendor performing Vendor Only Task");
-                    res.end(resbody.package());
-                }
-            });
-        
+UserRouter.use('', (req,res, next) => {
+    let resbody = new sutils.res_obj();
+    req.setEncoding('utf8');
 
-            //console.log(ezCard(req.body.id,req.body.item));
-        }
-        else{
-            resbody.setIssue(2, "Fields id and item not found");
-            res.end(resbody.package());
-            return;
-        }
-    }
-    else{
-        resbody.setIssue(1,"No Body Data Found!");
+    if( ! sutils.validate(['jwt'], req.body)){ // Validate the body and jwt field
+        resbody.setIssue(1);
         res.end(resbody.package());
         return;
     }
-        
-});
 
+    sutils.verify(req.body.jwt, (err, type) => { // jwt check
+        if(err){
+            resbody.setIssue(2); // bad jwt
+            res.end(resbody.package());
+            return;
+        }
+
+        if(type){
+            resbody.setIssue(3); // not a vendor type 
+            res.end(resbody.package());
+            return;
+        }
+
+        next(); // if we made it here we passed all above cases
+    });
+
+     
+})
+
+
+// load food cards in area
 UserRouter.post('/list', (req, res)=>{
     const resbody = new sutils.res_obj();
 
-    req.setEncoding('utf-8');
-    if(req.body){
-        if(req.body.jwt){
-            jwt.verify(req.body.jwt, jwt_secret, (err, response)=> {
-                if(err){
-                    console.log(err);
-                    resbody.setIssue(4, "Non-Valid JWT");
-                    res.end(resbody.package());
-                    return;
-                }
+    Store.getCardsAll((results) => {
+        console.log(results);
+        let list = unpackFoodList(results);
+        resbody.setData({
+            msg: "Got List!",
+            items: list
+        })
+        res.end(resbody.package());
+        return;
+    });
 
-                console.log(response);
-                Store.getCardsAll((results) => {
-                    let str = "";
-                    if(results){
-                        str = unpackFoodList(results);
-                    }
-            
-                    resbody.setData({
-                        msg:"got foodcards",
-                        items: str
-                    });
-                    res.end(resbody.package());
-                })
-            });
-        }
-        else{
-            resbody.setIssue(2,'No JWT Field Found');
+});
+
+UserRouter.post('/reserve', (req,res)=>{
+    const resbody = new sutils.res_obj();
+
+    if(sutils.validate(['id','user'], req.body)){
+        FoodStore.markCardReserved(req.body.id, req.body.user, (err) => {
+            if(err){
+                resbody.setIssue(11, "Error reserving card");
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({msg: "Marked Card Reserved"});
             res.end(resbody.package());
             return;
-        }
-    }
-    else{
-        resbody.setIssue(1, 'No Body Data');
+        })
+    }else{
+        resbody.setIssue(1);
         res.end(resbody.package());
         return;
     }
-
-    
 });
+
 
 // implement a JWT  check here by verifiying JWT header on UserRouter.use()
 // the Device simulator cant do this yet so im not doing this yet (stink?)
 
 function unpackFoodList(food_list){
+    if(!food_list){ return "";}
     out_str = "";
     for(x in food_list){
         out_str += "[ id: " + food_list[x].id +", item: " + food_list[x].item +"], ";
