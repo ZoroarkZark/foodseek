@@ -8,6 +8,17 @@ This is where the core functionality of our server takes place. Routers and midd
 
 A lot of the middleware functionality was moved to seperate folders in `src/server/routes`
 
+### Request Errors
+* [00] : "fallthrough error (nothing happened)"
+* [01] : "Bad Body (No body or required keys)"
+* [02] : "Invalid JWT (Didnt verify or jwt had a bad time)"
+* [03] : "Wrong User Permission (vendor/user)"
+* [04] : "Bcrypt Hash Error"
+* [05] : "Bad password"
+* [06] : "Bad Email (signup:already in db, login:not in db)"
+* [07] : "" tbd
+
+
 ### routes/core.js
 All of the core routes are mounted to `/`
 

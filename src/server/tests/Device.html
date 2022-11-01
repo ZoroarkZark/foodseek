@@ -29,39 +29,29 @@
 
                 let items = payload_string.split(",");
 
-                console.log(items);
                 for(item in items){
                     let fields = items[item].split("=");
                     out_obj[fields[0]] = fields[1];
                 }
 
-                console.log(out_obj);
                 return out_obj;
             }
 
 
             function renderResponse(response){
-                out_str = "";
-                for(let x in response){
-                    console.log(x);
-                    if(x==="data" || x == "issue"){
-                        out_str+= x+ ": {";
-                        let substr = "";
-                        for(field in response[x]){
-                            substr+= field + ": " + response[x][field] +", "
-                            if(field == "jwt"){
-                                document.getElementById("jwttar").innerHTML = response[x][field];
-                            }
-                        }
+                console.log(response);
+                out_str = JSON.stringify(response);
 
-                        out_str+= substr + "},";
-                        
-                    }
-                    else{
-                    out_str += x +": "+ response[x] +", "
-                    
+                if(!response){
+                    out_str = "No Response";
+                }
+                
+                if(response.data){
+                    if(response.data.jwt){
+                        document.getElementById('jwttar').innerHTML = response.data.jwt;
                     }
                 }
+                
                 return out_str;
             }
 
@@ -85,7 +75,7 @@
                 }
 
                 xhr.onerror = () => {
-                    console.log("error");
+                    console.log("Request Error");
                     return cb({status:xhr.status},null);
                 }
 

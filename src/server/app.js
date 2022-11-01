@@ -2,7 +2,6 @@
 const express = require('express');
 
 // http helpers
-const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const cors         = require('cors');
 
@@ -13,6 +12,7 @@ require('dotenv').config({path: __dirname +'/.env'}); // fix .env path
 // routers
 const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
+const vendorRouter = require('./routes/vendor.js').VendorRouter;
 
 // Server Constants
 const port = 3000;
@@ -29,7 +29,6 @@ app.use(bodyParser.urlencoded({extended: true}))
 // this is needed to allow devices to connect to our server
 app.use(cors());
 
-app.use(cookieParser()); // app.use is called on any method to any url : basically a update on any request method 
 app.use(express.json());
 
 app.use( (req, res, next) => { // Using this as a general request logger 
@@ -45,7 +44,8 @@ app.use( (req, res, next) => { // Using this as a general request logger
 
 
 app.use('/' ,coreRouter); // mount core routes
-app.use('/food/', userRouter); // mount user routes
+app.use('/user/', userRouter); // mount user routes
+app.use('/vendor/', vendorRouter); // mount vendor routes
 
 // keeps this app open on the specifed port
 app.listen(port,hostname, () => {
