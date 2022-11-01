@@ -10,7 +10,7 @@ const FakeStore = require('../tests/FakeUserStore.js');
 const { res_obj } = require('../utility/serverutility.js');
 const sutils    = require('../utility/serverutility.js')
 
-const Store = new FakeStore.FoodStore(); // create a fake foodstore
+const Store = new FakeStore.FfoodStore(); // create a fake foodstore
 
 
 const UserRouter = express.Router();

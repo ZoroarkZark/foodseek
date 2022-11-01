@@ -1,6 +1,12 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
 require('dotenv').config();
+
+const { getDistance } = require('../utility/serverutility.js');
+const { getKm } = require('../utility/serverutility.js');
+const { getM } = require('../utility/serverutility.js');
+
+
 // DBHandler
 // Going to be the class handling the sql database
 // Want to come up with some reasonable functions to perform these queries
@@ -92,11 +98,11 @@ require('dotenv').config();
         constructor(options) {
             this.conn = database.createPool({
                 connectionLimit: 10,
-                host: process.env.DB_HOST,
-                port: process.env.DB_PORT,
-                user: process.env.DB_USER,
-                password: process.env.DB_PASS,
-                database: process.env.DB_ACTIVE_DB
+                host: "localhost",
+                port: 3306,
+                user: "newuser",
+                password: "AiroldI.1998",
+                database: "foodseek"
            });
            this.food_table = "food_cards";
            this.food_ID = "ID";
@@ -146,39 +152,106 @@ require('dotenv').config();
         
     
         getCardsAll(cb){
-            return cb(this.foodlist);
+            
         }
     
-        getCards(pos , maxdist_m, cb){
+        getCardsByRange(pos , maxdist_m, cb){
             // assuming we have pos.lat , pos.long
-            var lat1 = pos.lat;
-            var lon2 = pos.lon;
-            //let in_range = []
+            let Km = getKm(maxdist_m);
+            console.log(km);
+            let rounded_km = Math.round(Km);
+            console.log(rounded_km)
+            
+            lat_min = pos.lat - (rounded_km * 0.045);
+            lat_max = pos.lat + (rounded_km * 0.045);
+            lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            
+           
+        }
+    
+        getCardsVendor(vendor_id, callback){
+            let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
+            var params = [
+                this.food_table,
+                this.food_vendor,
+                vendor_id
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error finding foodcard ${vendor_id} - sqlhandler`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+
+                var result = (results[0]) ? results[0] : null;
+                if(!result){
+                    console.log("null result - sqlhandler (foodcard)");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - sqlhandler (foodcard)");
+                return callback(null, results);
+            });
+
+        }
+
+        deleteCardsById(card_id, callback){
+            let SQL = 'DELETE FROM ?? where ?? = ?';
+            var params = [
+                this.food_table,
+                this.food_ID,
+                card_id
+            ]
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error deleting foodcard id: ${card_id} - sqlhandler`);
+                    console.log(err);
+                    return callback(err, null);
+                }
                 
-                var lat2 = this.foodlist[x].travel[0];
-                var lon2 = this.foodlist[x].travel[1];
-                var miles = getDistance(lat1, lon1, lat2, lon2)
-                if(miles <= maxdist_m){
-                    in_range.push(x)
-                    console.log("in range foodcard added to list")
+                var result = (results[0]) ? results[0] : null;
+                if(!result){
+                    console.log("null result - sqlhandler (foodcard)");
+                    return callback(null, null); // no error but no result
                 }
-    
-            //return in_range, cb(null);
+                console.log("found - sqlhandler (foodcard)");
+                return callback(null, results);
+            });
+
         }
-    
-        getCardsVendor(vendor_id, cb){
-           /*
-            let vendor_cards = [];
-            for(x in this.foodlist){
-                if(this.foodlist[x].vendor == vendor_id){
-                    vendor_cards.push(x);
+
+        reserveCard(id, username, callback){
+            //change the card with card.id = id in the database to set its reserved field = username
+            let SQL = 'INSERT INTO ?? SELECT * FROM WHERE ?? = ? (??) VALUES (?)';
+            var params = [
+                this.food_table,
+                this.food_ID,
+                this.food_Reserved,
+                id, 
+                username,
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error reserving foodcard for: ${username},  id: ${id} - sqlhandler`);
+                    console.log(err);
+                    return callback(err, null);
                 }
-            }
-            return vendor_cards;
-            */
-            const vendorFood = this.foodlist.filter( item => {item.vendor == vendor_id});
-            return vendorFood, cb(null);
-        }
+
+                var result = (results[0]) ? results[0] : null;
+                if(!result){
+                    console.log("null result - sqlhandler (foodcard)");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - sqlhandler (foodcard)");
+                return callback(null, results);
+            });
+
+
+          }
+
+
     }
 
     module.exports = {
@@ -208,6 +281,7 @@ require('dotenv').config();
     
     
     const store = new FoodStore();
+    
     store.uploadCard(food, (err, res) => {
         if(err){
             console.log("issues");
@@ -217,3 +291,27 @@ require('dotenv').config();
             console.log("working")
         }
     });
+
+    let vendor = "Cals burweeedos";
+    store.getCardsVendor(vendor, (err,res) => {
+        if(err){
+            console.log("issues");
+            console.log(err);
+        }
+        else {
+            console.log("working");
+            console.log(res);
+        }
+    })
+
+    let card_id = 6;
+    store.deleteCardsById(card_id, (err,res) => {
+        if(err){
+            console.log("issues");
+            console.log(err);
+        }
+        else {
+            console.log("working");
+            console.log(res);
+        }
+    })

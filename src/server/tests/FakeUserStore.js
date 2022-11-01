@@ -67,7 +67,7 @@ class UserStore
 
         
    
-class FakeFoodStore {
+class FfoodStore {
     constructor() {
         this.foodlist = [];
         
@@ -148,5 +148,5 @@ let food = {
 
 module.exports = {
    UserStore: UserStore,
-   FakeFoodStore: FakeFoodStore
+   FfoodStore: FfoodStore
 };
