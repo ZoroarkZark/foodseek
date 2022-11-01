@@ -68,8 +68,19 @@ The core routes of the server include (* items mean not included yet):
     * successful rem -> `{success: 1, data {msg: removed users}, issues: null}`
 
 ### routes/user.js
-User Actions (have to be signed in to use) are all mounted on `/food/` as of right now
-So a foodcard route would be `food/upl`
+User Actions (have to be signed in to use) are all mounted on `/user/` as of right now
+So a foodcard route would be `user/upl`
+
+`/list` : retrieve a list of foodcard items
+* Must GET
+* Response:
+    * success: data contains the list of foodcard items (I only return the two uploaded fields for brevity)
+    * error: not incorperated yet
+
+
+### routes/vendor.js
+Vendor Actions actions are all mounted on `/vendor/`
+
 
 `/upl`: upload food card
 * Must POST
@@ -83,11 +94,19 @@ So a foodcard route would be `food/upl`
         * 2, no fields
         * 3, duplicate card
 
-`/list` : retrieve a list of foodcard items
-* Must GET
-* Response:
-    * success: data contains the list of foodcard items (I only return the two uploaded fields for brevity)
-    * error: not incorperated yet
+
+`/del`
+
+`/conf`
+
+---
+
+## sqlhandler.js
+This is where all the SQL is handled(if you could not guess). 
+
+Currently the two classes support general uploads, and gets on the tables.
+We are looking to implement some more features for the FoodStore like filtering the results a little bit better and such
+
 
 ---
 
@@ -141,11 +160,13 @@ A successful login will look like this as a res_obj:
 
 *this is used to quickly see if a request has the desired fields for an operation*
 
----
+`sign(payload)`: returns a signed jwt token
 
-## DataBase Stores
+`verify(token, cb)`: returns a callback with the data  if the token is valid else returns an error
 
-Currently the `live` store is the DBHandler from `sqlhandler.js`. However testing versions are relying on memory stores `UserStore` and `FoodStore` from `FakeUserStores.js`. The DBHandler is in line for a rewrite so im only going to cover the fakestores. The fakestores represent the entire implementation for the actual stores so in live versions when they are working will just be substituted in *no problem*.
+### DataBase Stores
+
+Currently the `live` stores are in `sqlhandler.js`. However testing versions are relying on memory stores `UserStore` and `FoodStore` from `serverutils.js`. The DBHandler is in line for a rewrite so im only going to cover the fakestores. The fakestores represent the entire implementation for the actual stores so in live versions when they are working will just be substituted in *no problem*.
 
 ### UserStore : store user data
 
