@@ -14,6 +14,7 @@ import {
     Favorites,
     SettingsScreen,
     CameraScreen,
+    PostingScreen,
     HoursOfOperationScreen
 } from '../screens'
 import CustomDrawerContent from './CustomDrawerContent'
@@ -123,10 +124,15 @@ export const SettingsStackNavigator = () => {
     )
 }
 
-// Returns a stack navigator for the settings screen
-export const CameraStackNavigator = () => {
+// Returns a stack navigator for the posting and camera screen
+export const PostingStackNavigator = () => {
     return (
         <Stack.Navigator>
+            <Stack.Screen
+                name="Post Food"
+                component={PostingScreen}
+                options={{ title: 'Post Food' }}
+            />
             <Stack.Screen
                 name="Camera"
                 component={CameraScreen}
