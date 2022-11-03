@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Image } from "react-native";
+import { StyleSheet, TextInput, View, Image, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider,  Layout, Text, Button } from 'react-native-rapi-ui';
 import { DismissKeyboard, Title } from '../components/common';
@@ -15,36 +15,30 @@ export const PostingScreen = ({ route, navigation }) => {
     function checkInputs(){
         const nameRegex = /^[A-Z]+$/i;
         console.log(nameRegex.test(foodName));
-        console.log((timeAvailable != '') && (timeAvailable > 0) && (timeAvailable < 24));
-        if ((nameRegex.test(foodName)) && ((timeAvailable != '') && (timeAvailable > 0) && (timeAvailable < 24))) {
+        if (nameRegex.test(foodName)) {
             navigation.navigate('Camera');
         } else {
             //give the error
+            //Alert.alert()
         }
     }
 
     if (uri == ""){
         return (
-            <Layout>
-                <DismissKeyboard>
-                    <Container>
-                    <Title>Upload Food</Title>
-                    <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => checkInputs()}/>
-                        <TextInput style={styles.input} value={foodName} placeholder="Enter Food Name..." onChangeText={setFoodName}/>
-                        <TextWrapper>{foodName}</TextWrapper>
-                        <TextInput style={styles.input} value={timeAvailable} keyboardType="number-pad" placeholder="Enter Time Available..." onChangeText={setTimeAvailable}/>
-                        <TextWrapper>{timeAvailable}</TextWrapper>
-
-                    </Container>
-                </DismissKeyboard>
-            </Layout>
+            <DismissKeyboard>
+                <Container>
+                <Title>Upload Food</Title>
+                <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => checkInputs()}/>
+                    <TextInput style={styles.input} value={foodName} placeholder="Enter Food Name..." onChangeText={setFoodName}/>
+                    <TextWrapper>{foodName}</TextWrapper>
+                </Container>
+            </DismissKeyboard>
         );
     } else {
         return (
             <Container>
-                <Image alt='image didnt load' style={styles.image} source = {{uri: uri}}/>
                 <TextWrapper>Food Name: {foodName}</TextWrapper>
-                <TextWrapper>Time Available: {timeAvailable}</TextWrapper>
+                <Image alt='image didnt load' style={styles.image} source = {{uri: uri}}/>
             </Container>
         );
     }
@@ -53,8 +47,8 @@ export const PostingScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     image: {
         flex: 1,
-        height: 128,
-        width: 128,
+        height: 400,
+        width: 400,
     },
     input: {
       height: 40,
