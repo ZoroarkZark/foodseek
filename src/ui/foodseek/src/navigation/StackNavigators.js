@@ -13,6 +13,7 @@ import {
     PostsScreen,
     Favorites,
     SettingsScreen,
+    PostingScreen,
     CameraScreen,
     HoursOfOperationScreen
 } from '../screens'
@@ -124,9 +125,14 @@ export const SettingsStackNavigator = () => {
 }
 
 // Returns a stack navigator for the settings screen
-export const CameraStackNavigator = () => {
+export const PostingStackNavigator = () => {
     return (
         <Stack.Navigator>
+            <Stack.Screen
+                name="PostFood"
+                component={PostingScreen}
+                options={{ title: 'PostFood' }}
+            />
             <Stack.Screen
                 name="Camera"
                 component={CameraScreen}
