@@ -50,12 +50,7 @@ export const Camera = ({ navigation }) => {
             </View>
         )
     } else {
-        return (
-            <Image
-                source={{ uri: this.photo.uri }}
-                style={{ width: 400, height: 400 }}
-            />
-        )
+        navigation.navigate('PostFood', { uri : this.photo.uri})
     }
 }
 
