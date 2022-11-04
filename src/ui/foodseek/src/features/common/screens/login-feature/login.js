@@ -7,7 +7,7 @@ import {
     Title,
     PasswordInput,
     EmailInput,
-    DismissKeyboard,
+    ScrollViewDismissKeyboard,
 } from '../../../../components/common'
 
 
@@ -28,7 +28,7 @@ export const Login = ({ navigation }) => {
     return (
         <ThemeProvider theme="light">
             <Layout>
-                <DismissKeyboard>
+                <ScrollViewDismissKeyboard>
                     <View
                         style={{
                             flex: 5,
@@ -103,7 +103,7 @@ export const Login = ({ navigation }) => {
                             disabled={loading}
                         />
                     </View>
-                </DismissKeyboard>
+                </ScrollViewDismissKeyboard>
             </Layout>
         </ThemeProvider>
     )

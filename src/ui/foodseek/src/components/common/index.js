@@ -2,7 +2,7 @@ import Title from './title'
 import TextButton from './textbutton'
 import PasswordInput from './passwordinput'
 import EmailInput from './emailinput'
-import DismissKeyboard from './dismisskeyboard'
+import { ViewDismissKeyboard, ScrollViewDismissKeyboard } from './dismisskeyboard'
 import CustomTextInput from './textinput'
 import PickerInput from './pickerinput'
 import { TransitPickerInput } from './pickerinput'
@@ -16,7 +16,8 @@ export {
     TextButton,
     PasswordInput,
     EmailInput,
-    DismissKeyboard,
+    ViewDismissKeyboard,
+    ScrollViewDismissKeyboard,
     CustomTextInput,
     PickerInput,
     TransitPickerInput,

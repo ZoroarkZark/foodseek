@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Image, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider,  Layout, Text, Button } from 'react-native-rapi-ui';
-import { DismissKeyboard, Title } from '../../../../components/common';
+import { ScrollViewDismissKeyboard, Title } from '../../../../components/common';
 import Container from '../../../../components/styling/Container'
 import TextWrapper from '../../../../components/styling/TextWrapper';
 
@@ -25,14 +25,14 @@ export const CreatePost = ({ route, navigation }) => {
 
     if (uri == ""){
         return (
-            <DismissKeyboard>
+            <ScrollViewDismissKeyboard>
                 <Container>
                 <Title>Upload Food</Title>
                 <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => checkInputs()}/>
                     <TextInput style={styles.input} value={foodName} placeholder="Enter Food Name..." onChangeText={setFoodName}/>
                     <TextWrapper>{foodName}</TextWrapper>
                 </Container>
-            </DismissKeyboard>
+            </ScrollViewDismissKeyboard>
         );
     } else {
         return (
