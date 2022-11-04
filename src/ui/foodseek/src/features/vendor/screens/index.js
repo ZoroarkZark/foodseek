@@ -1,5 +1,0 @@
-export { Camera } from './create-post-feature/camera'
-export { CreatePost } from './create-post-feature/create-post'
-export { PostHistory } from './view-post-feature/post-history'
-export { StoreProfile } from './store-display-feature/store-profile'
-export { StoreSettings } from './store-preference-feature/store-settings'
