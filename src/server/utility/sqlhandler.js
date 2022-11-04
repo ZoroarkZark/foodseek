@@ -1,6 +1,6 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
-require('dotenv').config('../');
+require('dotenv').config({path: __dirname +'../../.env'});
 
 // Refactored from the DBHandler class
 // Cleaned up some of the functions

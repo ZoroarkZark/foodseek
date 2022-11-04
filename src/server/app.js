@@ -6,7 +6,7 @@ const bodyParser   = require('body-parser');
 const cors         = require('cors');
 
 //dot.env
-require('dotenv').config({path: __dirname +'/.env'}); // fix .env path 
+require('dotenv').config({path: __dirname +'../.env'}); // fix .env path 
 
 //our database talker (gonna honestly remove all db calls from here in a second)
 // routers
