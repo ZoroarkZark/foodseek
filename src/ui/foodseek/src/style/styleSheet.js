@@ -115,4 +115,15 @@ export const map = StyleSheet.create({
       height: Dimensions.get('window').height,
     },
 } )
+
+export const tabnav = StyleSheet.create({
+    
+    screenOptions : {
+        headerShown: false,
+        tabBarStyle: {
+            backgroundColor: '#fff',
+        },
+    },
+    
+} )
   

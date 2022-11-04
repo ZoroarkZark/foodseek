@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { avatar } from '../../assets'
+import { seekerAvatar } from '../../assets'
 // function sends login request to the server with email and password
 export const loginRequest = (email, password) => {
     // send the request here and recieve back a promise
@@ -9,9 +9,9 @@ export const loginRequest = (email, password) => {
         resolve({
             email: email,
             id: '123',
-            type: 'vendor',
+            isVendor: false,
             un: 'LoggedInUser',
-            avatar: avatar,
+            avatar: seekerAvatar,
         })
     })
 
@@ -27,9 +27,9 @@ export const signupRequest = (email, password, data) => {
         resolve({
             email: email,
             id: '123',
-            type: data.acc,
+            isVendor: true,
             un: data.bn ? data.bn : data.un,
-            avatar: avatar,
+            avatar: seekerAvatar,
         })
     })
 
