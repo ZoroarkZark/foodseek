@@ -1,1 +1,2 @@
-export const avatar = require('./avatar.png')
+export const seekerAvatar = require( './seeker-avatar.png' )
+export const vendorAvatar = require('./vendor-avatar.png')

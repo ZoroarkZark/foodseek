@@ -66,12 +66,14 @@ export const AuthenticationContextProvider = ({ children }) => {
         <AuthenticationContext.Provider
             value={{
                 isAuthenticated: !!user,
+                isVendor: !!user ? user.isVendor : false,
                 loading,
                 user,
                 error,
                 onLogin,
                 onSignup,
                 onLogout,
+                setUser,
             }}
         >
             {children}
