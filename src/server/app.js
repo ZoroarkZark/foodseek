@@ -48,7 +48,7 @@ app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
 
 // keeps this app open on the specifed port
-app.listen(port,hostname, () => {
+app.listen(port, () => {
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
 	console.log(`listening to ${hostname} on port: ${port}`);
 	
