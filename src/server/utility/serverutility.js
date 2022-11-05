@@ -35,8 +35,6 @@ class res_obj {
 
     constructor(){
         this.success = 0;
-        this.data = null;
-        this.issues = null;
     }
 
 
@@ -47,6 +45,7 @@ class res_obj {
     setData(data){
         this.success = 1;
         this.data = data;
+        this.issues = null;
     }
 
     // on failure of operation
@@ -54,6 +53,7 @@ class res_obj {
     setIssues(issues){
         this.success = 0;
         this.issues = issues;
+        this.data = null;
     }
 
     setIssue(code, msg){
@@ -62,15 +62,17 @@ class res_obj {
             error: code,
             message: msg
         }
+        this.data = null;
     }
 
     setIssue(code){
         if(code in Object.keys(common_issues)){
             this.success = 0;
-            this.issue = {
+            this.issues = {
                 error: code,
                 message: common_issues[code]
             }
+            this.data = null;
         }
     }
 
