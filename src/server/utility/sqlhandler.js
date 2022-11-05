@@ -346,8 +346,3 @@ module.exports = {
     FoodStore: FS
 }
 
-
-FS.cancelReservation("poop", (err, res)=>{
-    if(err) throw err;
-    console.log(res);
-})
