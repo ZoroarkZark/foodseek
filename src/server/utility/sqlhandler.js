@@ -242,13 +242,14 @@ const { getM } = require('../utility/serverutility.js');
 
         reserveCard(id, username, callback){
             //change the card with card.id = id in the database to set its reserved field = username
-            let SQL = 'INSERT INTO ?? SELECT * FROM WHERE ?? = ? (??) VALUES (?)';
+            //let SQL = 'INSERT INTO ?? (??) SELECT FROM * WHERE ?? = ? VALUES (?)';
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
             var params = [
                 this.food_table,
-                this.food_ID,
                 this.food_Reserved,
-                id, 
                 username,
+                this.food_ID,
+                id, 
             ]
 
             this.conn.query(SQL, params, (err, results) => {
@@ -301,6 +302,18 @@ const { getM } = require('../utility/serverutility.js');
         lat : 36.974117,
         lon : -122.030792
     }
+
+    let food3 = {
+        image : "some string" ,
+        vendor : "Wennie hut junior", 
+        favorite : "none",
+        cuisine : "wennie food",
+        item : "Hot dogs , Soda , Ice Cream",
+        travel : "",  
+        reserved : "",
+        lat : 36.684527,
+        lon : -122.536815
+    }
     
     let sc_pos = {
         lat: 36.910231,
@@ -312,7 +325,7 @@ const { getM } = require('../utility/serverutility.js');
     
     const store = new FoodStore();
     
-    store.uploadCard(food2, (err, res) => {
+    store.uploadCard(food3, (err, res) => {
         if(err){
             console.log("issues upload");
             console.log(err);
@@ -349,7 +362,7 @@ const { getM } = require('../utility/serverutility.js');
             }
         })
     }, 2000 )
-
+    /*
     let card_id = 0;
     setTimeout(() => {
         store.deleteCardsById(card_id, (err, res) => {
@@ -359,6 +372,21 @@ const { getM } = require('../utility/serverutility.js');
             }
             else {
                 console.log("working delete");
+                //console.log(res);
+            }
+        })
+    }, 3000)
+    */
+    let res_id = 18; 
+    let res_user = "hungry guy";
+    setTimeout(() => {
+        store.reserveCard(res_id, res_user, (err, res) => {
+            if(err){
+                console.log("issues reserve");
+                console.log(err);
+            }
+            else {
+                console.log("working reserve");
                 //console.log(res);
             }
         })
