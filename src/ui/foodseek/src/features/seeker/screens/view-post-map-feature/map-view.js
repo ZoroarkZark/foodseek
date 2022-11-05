@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Text, View } from 'react-native'
 import { Button } from 'react-native-rapi-ui'
 import ViewMap from '../../../../components/common/map.js'
-import { SI } from '../../../../scripts/serverinterface.js'
 import { map as style } from '../../../../style/styleSheet.js'
 import * as loc from 'expo-location'
 
