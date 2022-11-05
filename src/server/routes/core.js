@@ -127,6 +127,7 @@ CoreRouter.post('/login', (req, res, next) => {
                         return;
                     }
                     else{
+                        console.log("bass pass");
                         resbody.setIssue(11, "Bad password");
                         res.end(resbody.package());
                         return;
