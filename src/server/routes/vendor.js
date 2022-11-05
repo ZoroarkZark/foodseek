@@ -1,10 +1,11 @@
 const express = require('express')
-const jwt     = require('jsonwebtoken');
-const jwt_secret = "tempSecretDoNotUseForProduction";
 
-const sutils    = require('../utility/serverutility.js')
 
-const FoodStore = sutils.FoodStore;
+const sutils    = require('../utility/serverutility.js');
+const sql       = require('../utility/sqlhandler.js');
+
+//const FoodStore = sutils.FoodStore;
+const FoodStore   = sql.FoodStore;
 
 const VendorRouter = express.Router();
 
@@ -51,10 +52,11 @@ VendorRouter.post('/upl', (req,res) => {
     
     // our app.use should have hopefully done all the error checking and verifying
     if(sutils.validate(['item'], req.body)){
-        FoodStore.uploadItem(req.body.item, (err) => {
+        FoodStore.uploadItem(req.body.item, req.body.vendor, (err) => {
             if(err){ // didnt upload successfully
+                console.log("Err");
                 resbody.setIssue(11, "Bad upload");
-                res.end();
+                res.end(resbody.package());
                 return;
             }
 

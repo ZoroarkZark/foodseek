@@ -5,18 +5,16 @@
 // Forgot Pass    : /fgpass
 
 const express = require('express')
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const jwt_secret = "tempSecretDoNotUseForProduction";
 
 const sutil = require('../utility/serverutility.js');
-//const DBHandler = require('../utility/sqlhandler.js')
+const sql = require('../utility/sqlhandler.js')
 
-const CoreRouter = express.Router()
-//const DB = new DBHandler()
+const CoreRouter = express.Router();
 
 
-const Store =  sutil.UserStore;
+//const Store =  sutil.UserStore;
+const Store = sql.UserStore;
 
 module.exports = {CoreRouter}
 
@@ -98,9 +96,9 @@ CoreRouter.post('/login', (req, res, next) => {
                 res.end(resbody.package());
                 return;
             }
-                
+            console.log(result);
             if(result){
-                bcrypt.compare(req.body.pass, result.pass, (error, hash) => {
+                bcrypt.compare(req.body.pass, result.password, (error, hash) => {
                     if(error){
                         resbody.setIssue(999,"problem de-hashing pass");
                         res.end(resbody.package());

@@ -10,7 +10,8 @@
     } or null
 }
 */
-require("dotenv").config('../');
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
 
 const jwt = require('jsonwebtoken');
@@ -65,7 +66,7 @@ class res_obj {
 
     setIssue(code){
         if(code in Object.keys(common_issues)){
-            this.succes = 0;
+            this.success = 0;
             this.issue = {
                 error: code,
                 message: common_issues[code]

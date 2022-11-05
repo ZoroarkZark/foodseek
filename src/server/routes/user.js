@@ -4,15 +4,14 @@
 // Confirm card : /confirm
 
 
-const express = require('express')
-const jwt     = require('jsonwebtoken');
-const { FoodStore } = require('../utility/serverutility.js');
-const jwt_secret = "tempSecretDoNotUseForProduction";
+const express = require('express');
+const { res_obj } = require('../utility/serverutility.js');
 
-const sutils    = require('../utility/serverutility.js')
+const sutils    = require('../utility/serverutility.js');
+const sql       = require('../utility/sqlhandler.js');
 
-const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
-
+//const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
+const Store = sql.FoodStore;
 
 const UserRouter = express.Router();
 
@@ -66,12 +65,16 @@ UserRouter.use('', (req,res, next) => {
 UserRouter.post('/list', (req, res)=>{
     const resbody = new sutils.res_obj();
 
-    Store.getCardsAll((results) => {
+    Store.getCardsAll((err,results) => {
+        if(err){
+            resbody.setIssue(11,"SQL issue");
+            res.end(resbody.package());
+        }
+
         console.log(results);
-        let list = unpackFoodList(results);
         resbody.setData({
             msg: "Got List!",
-            items: list
+            items: JSON.stringify(results)
         })
         res.end(resbody.package());
         return;
@@ -83,7 +86,7 @@ UserRouter.post('/reserve', (req,res)=>{
     const resbody = new sutils.res_obj();
 
     if(sutils.validate(['id','user'], req.body)){
-        FoodStore.markCardReserved(req.body.id, req.body.user, (err) => {
+        Store.reserveCard(req.body.id, req.body.user, (err) => {
             if(err){
                 resbody.setIssue(11, "Error reserving card");
                 res.end(resbody.package());
@@ -100,6 +103,32 @@ UserRouter.post('/reserve', (req,res)=>{
         return;
     }
 });
+
+UserRouter.post('/cancel', (req,res) => {
+    let resbody = new res_obj();
+
+    if(sutils.validate(['user'], req.body)){
+        Store.cancelReservation(req.body.user, (err, results) => {
+            if(err){
+                resbody.setIssues(err);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                msg: `cancel reservations for ${req.body.user}`
+            })
+
+            res.end(resbody.package());
+            return;
+        })
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+})
 
 
 // implement a JWT  check here by verifiying JWT header on UserRouter.use()
