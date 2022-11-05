@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ThemeProvider, Layout, Text, Button } from 'react-native-rapi-ui'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
@@ -21,19 +21,23 @@ export const Login = ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const { onLogin, setUser } = useContext(AuthenticationContext)
+    const { user, onLogin, setUser } = useContext( AuthenticationContext )
+    const [display, setDisplay] = useState(false)
 
     async function login() {
         setLoading(true)
         onLogin(email, password)
     }
+
+    useEffect( () => { setDisplay( !display ) }, [ user ] ) // set the signal for displaying the result of user login onto login page for testing
+    
     return(
         <ThemeProvider theme="light">
             <Layout>
                 <ScrollViewDismissKeyboard>
                     <View
                         style={{
-                            flex: 5,
+                            flex: 6,
                             paddingHorizontal: 20,
                             paddingTop: 30,
                         }}
@@ -58,7 +62,7 @@ export const Login = ({ navigation }) => {
                             text={loading ? 'Loading' : 'Continue'}
                             onPress={() => {
                                 // I deleted what ever was here during testing stuff
-                                alert("nothing here");
+                                login()
                             }}
                             style={{ marginTop: 20, marginBottom: 20 }}
                             disabled={loading}
@@ -77,6 +81,9 @@ export const Login = ({ navigation }) => {
                         >
                             Forgot Password?
                         </TextButton>
+                        {display
+                            ? < Text >{ user ? JSON.stringify(user) : 'User is still undefined bruh'}</Text>
+                            : <></>}
                         <Button
                             text="Fake Vendor Login"
                             onPress={() => {

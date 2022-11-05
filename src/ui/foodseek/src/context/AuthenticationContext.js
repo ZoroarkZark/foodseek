@@ -26,8 +26,9 @@ export const AuthenticationContextProvider = ({ children }) => {
     const onLogin = (email, password) => {
         setLoading(true) // set loading status = true while making request for login
         loginRequest(email, password)
-            .then((u) => {
-                setUser(u)
+            .then( ( u ) => {
+                // TODO: parse response.data
+                setUser(u) // pretend its parsed for now 
                 setLoading(false)
             })
             .catch((err) => {

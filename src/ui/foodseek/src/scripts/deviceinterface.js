@@ -27,7 +27,7 @@ export async function fetchRequest(url, method, payload){
         },
         body: payload
     })
-    
+    if ( !resp.ok ) { throw new Error(`HTTP error, status = ${resp.status}`) }  // throws an error if fetch call senses an error
     // json representation of fetch response
     return resp.json();
 }
