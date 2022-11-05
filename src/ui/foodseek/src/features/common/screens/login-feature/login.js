@@ -27,7 +27,7 @@ export const Login = ({ navigation }) => {
         setLoading(true)
         onLogin(email, password)
     }
-    return (
+    return(
         <ThemeProvider theme="light">
             <Layout>
                 <ScrollViewDismissKeyboard>
@@ -57,7 +57,8 @@ export const Login = ({ navigation }) => {
                         <Button
                             text={loading ? 'Loading' : 'Continue'}
                             onPress={() => {
-                                login()
+                                // I deleted what ever was here during testing stuff
+                                alert("nothing here");
                             }}
                             style={{ marginTop: 20, marginBottom: 20 }}
                             disabled={loading}
@@ -107,7 +108,7 @@ export const Login = ({ navigation }) => {
                         <Button 
                             text="EC2 GET"
                             onPress={ () => {
-                                fetch('http://3.101.113.7:3000/test')
+                                fetch('http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/test')
                                 .then((response) => response.json())
                                 .then((data) => alert(JSON.stringify(data)))
                                 .catch((err) => alert(err));
@@ -116,8 +117,8 @@ export const Login = ({ navigation }) => {
                         <Button
                             text="ECT POST"
                             onPress={ () => {
-                                const t = fetchRequest('http://3.101.113.7:3000/test',"POST", {test:"1234"});
-                                console.log(t);
+                                const t = fetchRequest('http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/test',"POST", {test:"1234"});
+                                t.then((res) => console.log(res));
                             }}
                         />
                     </View>
