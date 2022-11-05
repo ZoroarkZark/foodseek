@@ -139,10 +139,10 @@ const { getM } = require('../utility/serverutility.js');
             
             this.conn.query(SQL, params, (err) => {
                 if(err){
-                    console.log(`Error inserting foodcard ${fooddata.item} - sqlhandler`);
+                    console.log(`Error inserting foodcard ${fooddata.item} - upload card`);
                     return callback(err);
                 }
-                console.log(`Successfully inserted foodcard ${fooddata.item} with lat,lon: ${fooddata.lat} ${fooddata.lon} and data - sqlhandler`);
+                console.log(`Successfully inserted foodcard ${fooddata.item} with lat,lon: ${fooddata.lat} ${fooddata.lon} and data - uploadcard`);
                 return callback(null); // no error
             });
     
@@ -155,19 +155,38 @@ const { getM } = require('../utility/serverutility.js');
             
         }
     
-        getCardsByRange(pos , maxdist_m, cb){
+        getCardsByRange(pos , maxdist_m, callback){
             // assuming we have pos.lat , pos.long
             let Km = getKm(maxdist_m);
-            console.log(km);
+            console.log(Km);
             let rounded_km = Math.round(Km);
             console.log(rounded_km)
             
-            lat_min = pos.lat - (rounded_km * 0.045);
-            lat_max = pos.lat + (rounded_km * 0.045);
-            lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-            lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            let lat_min = pos.lat - (rounded_km * 0.045);
+            let lat_max = pos.lat + (rounded_km * 0.045);
+            let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
             
-           
+            let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+            var params = [
+                this.food_table,
+                this.food_Lat,
+                lat_min,
+                lat_max,
+                this.food_Lon,
+                lon_min,
+                lon_max
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error getiing cards in range - getcardsbyrang`);
+                    return callback(err, null);
+                }
+                console.log(`Successfully returned cards in range - getcardsbyrange`);
+                return callback(null, results); // no error
+            });
+    
         }
     
         getCardsVendor(vendor_id, callback){
@@ -180,17 +199,17 @@ const { getM } = require('../utility/serverutility.js');
 
             this.conn.query(SQL, params, (err, results) => {
                 if(err){
-                    console.log(`Error finding foodcard ${vendor_id} - sqlhandler`);
+                    console.log(`Error finding foodcard ${vendor_id} - getCardsVendor`);
                     console.log(err);
                     return callback(err, null);
                 }
 
-                var result = (results[0]) ? results[0] : null;
-                if(!result){
-                    console.log("null result - sqlhandler (foodcard)");
+                
+                if(!results){
+                    console.log("null result - getCardsVendor ");
                     return callback(null, null); // no error but no result
                 }
-                console.log("found - sqlhandler (foodcard)");
+                console.log("found - getCardsVendor ");
                 return callback(null, results);
             });
 
@@ -205,17 +224,17 @@ const { getM } = require('../utility/serverutility.js');
             ]
             this.conn.query(SQL, params, (err, results) => {
                 if(err){
-                    console.log(`Error deleting foodcard id: ${card_id} - sqlhandler`);
+                    console.log(`Error deleting foodcard id: ${card_id} - deleteCardsById`);
                     console.log(err);
                     return callback(err, null);
                 }
                 
-                var result = (results[0]) ? results[0] : null;
-                if(!result){
-                    console.log("null result - sqlhandler (foodcard)");
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - deleteCardsById");
                     return callback(null, null); // no error but no result
                 }
-                console.log("found - sqlhandler (foodcard)");
+                console.log("found - deleteCardsById");
                 return callback(null, results);
             });
 
@@ -223,29 +242,30 @@ const { getM } = require('../utility/serverutility.js');
 
         reserveCard(id, username, callback){
             //change the card with card.id = id in the database to set its reserved field = username
-            let SQL = 'INSERT INTO ?? SELECT * FROM WHERE ?? = ? (??) VALUES (?)';
+            //let SQL = 'INSERT INTO ?? (??) SELECT FROM * WHERE ?? = ? VALUES (?)';
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
             var params = [
                 this.food_table,
-                this.food_ID,
                 this.food_Reserved,
-                id, 
                 username,
+                this.food_ID,
+                id, 
             ]
 
             this.conn.query(SQL, params, (err, results) => {
                 if(err){
-                    console.log(`Error reserving foodcard for: ${username},  id: ${id} - sqlhandler`);
+                    console.log(`Error reserving foodcard for: ${username},  id: ${id} -  reserveCard`);
                     console.log(err);
-                    return callback(err, null);
+                    return callback(err);
                 }
 
-                var result = (results[0]) ? results[0] : null;
-                if(!result){
-                    console.log("null result - sqlhandler (foodcard)");
-                    return callback(null, null); // no error but no result
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result -  reserveCard");
+                    return callback(null); // no error but no result
                 }
-                console.log("found - sqlhandler (foodcard)");
-                return callback(null, results);
+                console.log("found -  reserveCard");
+                return callback(null);
             });
 
 
@@ -260,7 +280,7 @@ const { getM } = require('../utility/serverutility.js');
      };
 
 
-     let food = {
+     let food1 = {
         image : "some string" ,
         vendor : "Cals burweeedos", 
         favorite : "none",
@@ -270,6 +290,29 @@ const { getM } = require('../utility/serverutility.js');
         reserved : "",
         lat : 36.974117,
         lon : -122.030792
+    }
+    let food2 = {
+        image : "some string" ,
+        vendor : "Breaking Breakfast", 
+        favorite : "none",
+        cuisine : "Breakfast",
+        item : "burritos , eggs, sausage , pancakes, cereal, hashbrowns",
+        travel : "",  
+        reserved : "",
+        lat : 36.974117,
+        lon : -122.030792
+    }
+
+    let food3 = {
+        image : "some string" ,
+        vendor : "Wennie hut junior", 
+        favorite : "none",
+        cuisine : "wennie food",
+        item : "Hot dogs , Soda , Ice Cream",
+        travel : "",  
+        reserved : "",
+        lat : 36.684527,
+        lon : -122.536815
     }
     
     let sc_pos = {
@@ -282,36 +325,69 @@ const { getM } = require('../utility/serverutility.js');
     
     const store = new FoodStore();
     
-    store.uploadCard(food, (err, res) => {
+    store.uploadCard(food3, (err, res) => {
         if(err){
-            console.log("issues");
+            console.log("issues upload");
             console.log(err);
         }
         else {
-            console.log("working")
+            console.log("working upload")
         }
     });
 
     let vendor = "Cals burweeedos";
-    store.getCardsVendor(vendor, (err,res) => {
-        if(err){
-            console.log("issues");
-            console.log(err);
-        }
-        else {
-            console.log("working");
-            console.log(res);
-        }
-    })
+    setTimeout(() => {
+        store.getCardsVendor(vendor, (err,res) => {
+            if(err){
+                console.log("issues get fc by vendor");
+                console.log(err);
+            }
+            else {
+                console.log("working get fc by vendor");
+                console.log(res);
+            }
+        })
+    }, 1000)
 
-    let card_id = 6;
-    store.deleteCardsById(card_id, (err,res) => {
-        if(err){
-            console.log("issues");
-            console.log(err);
-        }
-        else {
-            console.log("working");
-            console.log(res);
-        }
-    })
+    max_dist = 12;
+    setTimeout(() => {
+        store.getCardsByRange(sc_pos, max_dist,  (err,res) => {
+            if(err){
+                console.log("issues Range");
+                console.log(err);
+            }
+            else {
+                console.log("working Range");
+                console.log(res);
+            }
+        })
+    }, 2000 )
+    /*
+    let card_id = 0;
+    setTimeout(() => {
+        store.deleteCardsById(card_id, (err, res) => {
+            if(err){
+                console.log("issues delete");
+                console.log(err);
+            }
+            else {
+                console.log("working delete");
+                //console.log(res);
+            }
+        })
+    }, 3000)
+    */
+    let res_id = 18; 
+    let res_user = "hungry guy";
+    setTimeout(() => {
+        store.reserveCard(res_id, res_user, (err, res) => {
+            if(err){
+                console.log("issues reserve");
+                console.log(err);
+            }
+            else {
+                console.log("working reserve");
+                //console.log(res);
+            }
+        })
+    }, 3000)
