@@ -136,7 +136,7 @@ class FoodStore {
         // random pos from list
         let rind = Math.round((Math.random()*100)) % TEST_POS.length;
         let pos = TEST_POS[rind];
-        console.log(`lat ${pos[0]}, lon ${pos[1]}`);
+        console.log(`uploaded card: lat ${pos[0]}, lon ${pos[1]}`);
 
         // meta data
         let data = JSON.stringify({

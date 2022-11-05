@@ -103,7 +103,7 @@ CoreRouter.post('/login', (req, res, next) => {
                 res.end(resbody.package());
                 return;
             }
-            console.log(result);
+            //console.log(result);
             if(result){
                 bcrypt.compare(req.body.pass, result.password, (error, hash) => {
                     if(error){

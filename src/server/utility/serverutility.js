@@ -78,6 +78,7 @@ class res_obj {
 
     // just return the string version of this object
     package(){
+        console.log(`Packaging response as : ${JSON.stringify(this)}`);
         return JSON.stringify(this);
     }
     
