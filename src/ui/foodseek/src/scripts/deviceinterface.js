@@ -1,122 +1,38 @@
-function createIssue(code, msg){
-    return ({
-        error: code,
-        message: msg
+
+const endpoint = "http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/"
+
+
+/** 
+ *  url: path on the server. So '/login', '/signup', '/user/list', .. etc what ever is in the readme
+ *  method: 'get' or 'post'
+ *  payload: null on a get, stringifies the  passed object on a post (must be a JSON or we will get errors in the request) 
+ *  
+ *  returns: a promise object representing our res_obj or a internal error
+ *  .then( (body) => {// body.data can be found if body.success=1 otherwise body.issues can be found})
+ *  .catch( (err) => {// it will only error on networking issues, or parsing. A bad login, or duplicate acc should still return a res_obj just with a non null issues field})
+*/
+
+export async function fetchRequest(url, method, payload){
+    // get everything ready for the actual fetch call
+    url = buildURL(endpoint,url);
+    method = method.toUpperCase();
+    payload = (method=="GET") ? null : JSON.stringify(payload); //If we have a GET send no body, if we have anything else stringify the body
+    console.log(`${method} @ ${url} : payload ${JSON.stringify(payload)}`);
+
+    // actual fetch call
+    const resp = await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: payload
     })
-}
-
-class res_obj {
-    // defualt constructor
-    // all fields set to uninitilized
-
-    constructor(){
-        this.success = 0;
-        this.data = null;
-        this.issues = null;
-    }
-
-
-    // only call one of these
-
-    // on success 
-    // set the returned data 
-    setData(data){
-        this.success = 1;
-        this.data = data;
-    }
-
-    // on failure of operation
-    // set the returned issue
-    setIssues(issues){
-        this.success = 0;
-        this.issues = issues;
-    }
-
-    setIssue(code, msg){
-        this.success = 0;
-        this.issue = {
-            error: code,
-            message: msg
-        }
-    }
-
-    // just return the string version of this object
-    package(){
-        return JSON.stringify(this);
-    }
     
+    // json representation of fetch response
+    return resp.json();
 }
 
-
-function xhrRequest(url, method, payload, cb){
-    //ignore payload on get requests
-    payload = (method==="GET") ? null : payload;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open(method,url);
-    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8'); // what we intend to send
-    xhr.responseType = "json";
-    
-    xhr.send(JSON.stringify(payload));
-
-    xhr.onload = () => {
-        //console.log('loaded!');
-        return cb(null, xhr.response);
-    }
-
-    xhr.onerror = () => {
-        console.log("error");
-        let err_res = new res_obj();
-        err_res.setIssue(xhr.status,"HTTP request error");
-        return cb(err_res,null);
-    }
-
+function buildURL(end,path){
+    return `${end}${path}`;
 }
 
-function buildURL(root,path){
-    return `http://${root}/${path}`;
-}
-
-class Device {
-    constructor(host,port){
-        this.token = "";
-        this.root = `${host}:${port}`;
-    }
-
-
-    signup(payload, callback ){
-        let path = buildURL(this.root,'signup');
-
-        xhrRequest(path,"POST", payload, (err, response) => {
-            if(err){
-                return callback(err,null);
-            }
-
-            return callback(null,response);
-        })
-    }
-
-    login(payload, callback){
-        let path = buildURL(this.root, 'login');
-
-        xhrRequest(path, "POST", payload ,(err, response) => {
-            if(err){
-                return callback(err,null);
-            }
-
-            this.token = response.data.jwt; // get the token
-
-            return callback(null, response);
-        })
-    }
-    
-    // set token to nothing to invalidate any requests until token is reset
-    logout(){
-        this.token = "";
-    }
-
-    
-
-
-
-}

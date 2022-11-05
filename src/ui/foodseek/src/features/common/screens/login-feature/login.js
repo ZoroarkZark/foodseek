@@ -10,6 +10,8 @@ import {
     ScrollViewDismissKeyboard,
 } from '../../../../components/common'
 
+import { fetchRequest } from '../../../../scripts/deviceinterface'
+
 
 // ATTENTION: THIS IS ONLY A TESTING Development build... to be removed at release
 
@@ -25,7 +27,7 @@ export const Login = ({ navigation }) => {
         setLoading(true)
         onLogin(email, password)
     }
-    return (
+    return(
         <ThemeProvider theme="light">
             <Layout>
                 <ScrollViewDismissKeyboard>
@@ -55,7 +57,8 @@ export const Login = ({ navigation }) => {
                         <Button
                             text={loading ? 'Loading' : 'Continue'}
                             onPress={() => {
-                                login()
+                                // I deleted what ever was here during testing stuff
+                                alert("nothing here");
                             }}
                             style={{ marginTop: 20, marginBottom: 20 }}
                             disabled={loading}
@@ -101,6 +104,22 @@ export const Login = ({ navigation }) => {
                             }}
                             style={{ marginTop: 20, marginBottom: 20 }}
                             disabled={loading}
+                        />
+                        <Button 
+                            text="EC2 GET"
+                            onPress={ () => {
+                                fetch('http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/test')
+                                .then((response) => response.json())
+                                .then((data) => alert(JSON.stringify(data)))
+                                .catch((err) => alert(err));
+                            }}
+                        />
+                        <Button
+                            text="ECT POST"
+                            onPress={ () => {
+                                const t = fetchRequest('http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/test',"POST", {test:"1234"});
+                                t.then((res) => console.log(res));
+                            }}
                         />
                     </View>
                 </ScrollViewDismissKeyboard>
