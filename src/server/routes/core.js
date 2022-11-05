@@ -22,6 +22,7 @@ module.exports = {CoreRouter}
 CoreRouter.use('/test', (req,res)=>{
     if(req.method != "GET"){
         if(!req.body){
+            console.log("Event body!");
             req.on('data', (chunk)=>{
                 res.end(JSON.stringify(chunk));
             })
