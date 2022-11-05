@@ -1,6 +1,15 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
-require('dotenv').config({path: __dirname +'../../.env'});
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
+
+TEST_POS = [
+    [37.002,-121.9282], //santa cruz
+    [38.284,-122.6423], // Santa rosa basically
+    [40.253,-111.6409], // Provo utah
+    [44.814, 20.4368] // Serbia lmao
+]
+
 
 // Refactored from the DBHandler class
 // Cleaned up some of the functions
@@ -29,7 +38,7 @@ class UserStore {
     }
 
     // pass credentials with keys [email, pass, vendor]
-    createUser(credentials, callback){
+    insertUser(credentials, callback){
 
         // SQL query
         let SQL = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?)";
@@ -54,7 +63,7 @@ class UserStore {
     }
 
     //pass credentials [email] to find a user with that associated email
-    findUser(email, callback){
+    getUser(email, callback){
 
         //SQL query
         let SQL = "SELECT * FROM ?? WHERE ?? = ?";
@@ -122,6 +131,48 @@ class FoodStore {
     // removed favorite and travel bc those are meaningless
     // changing the object to have a field "pos" = [lat, long]
     
+    //dev feature to uplaod a card easier
+    uploadItem(item,vendor, callback){
+        // random pos from list
+        let rind = Math.round((Math.random()*100)) % TEST_POS.length;
+        let pos = TEST_POS[rind];
+        console.log(`lat ${pos[0]}, lon ${pos[1]}`);
+
+        // meta data
+        let data = JSON.stringify({
+            image: "test",
+            cuisine: "test",
+            item: item,
+            tags: "test"
+        });
+
+        
+        let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
+        let params = [
+            this.table,
+            this.col.lat,
+            this.col.lon,
+            this.col.data,
+            this.col.vendor,
+            pos[0],
+            pos[1],
+            data,
+            vendor
+        ];
+
+        this.conn.query(SQL,params, (err) => {
+            if(err) {
+                return callback(err);
+            }
+
+            return callback(null);
+        });
+
+
+
+
+    }
+
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
         let data = JSON.stringify({
@@ -155,8 +206,17 @@ class FoodStore {
    
     
 
-    getCardsAll(cb){
-        
+    getCardsAll(callback){
+        let SQL = "SELECT * FROM ??";
+        let params = [this.table];
+
+        this.conn.query(SQL,params, (err, results) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            return callback(null, results);
+        })
     }
 
     getCardsByRange(pos , maxdist_m, cb){
@@ -232,7 +292,7 @@ class FoodStore {
     reserveCard(id, username, callback){
         //change the card with card.id = id in the database to set its reserved field = username
         // You were using a Insert here but we want to use Update
-        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?';
+        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? IS NULL';
         let params = [
             this.table,
             this.col.res,
@@ -248,15 +308,31 @@ class FoodStore {
                 return callback(err, null);
             }
 
-            var result = (results[0]) ? results[0] : null;
-            if(!result){
-                return callback(null, null); // no error but no result
-            }
-            return callback(null, result);
+            return callback(null, results.affectedRows);
         });
 
 
-      }
+    }
+
+    cancelReservation(username, callback){
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.res,
+            null,
+            this.col.res,
+            username
+        ]
+
+        this.conn.query(SQL,params, (err, results) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            return callback(null, results);
+        })
+
+    }
 
 
 }
@@ -269,3 +345,4 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+

@@ -10,7 +10,8 @@
     } or null
 }
 */
-require("dotenv").config('../');
+const path = require('path');
+require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
 
 const jwt = require('jsonwebtoken');
@@ -34,8 +35,6 @@ class res_obj {
 
     constructor(){
         this.success = 0;
-        this.data = null;
-        this.issues = null;
     }
 
 
@@ -46,6 +45,7 @@ class res_obj {
     setData(data){
         this.success = 1;
         this.data = data;
+        this.issues = null;
     }
 
     // on failure of operation
@@ -53,23 +53,26 @@ class res_obj {
     setIssues(issues){
         this.success = 0;
         this.issues = issues;
+        this.data = null;
     }
 
     setIssue(code, msg){
         this.success = 0;
-        this.issue = {
+        this.issues = {
             error: code,
             message: msg
         }
+        this.data = null;
     }
 
     setIssue(code){
         if(code in Object.keys(common_issues)){
-            this.succes = 0;
-            this.issue = {
+            this.success = 0;
+            this.issues = {
                 error: code,
                 message: common_issues[code]
             }
+            this.data = null;
         }
     }
 
