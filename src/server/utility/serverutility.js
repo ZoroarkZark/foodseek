@@ -58,7 +58,7 @@ class res_obj {
 
     setIssue(code, msg){
         this.success = 0;
-        this.issue = {
+        this.issues = {
             error: code,
             message: msg
         }
