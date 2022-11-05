@@ -27,6 +27,7 @@ CoreRouter.use('/test', (req,res)=>{
                 res.end(JSON.stringify(chunk));
             })
         }
+        console.log("immediate body");
         res.end(JSON.stringify(req.body));
     }
     else{
