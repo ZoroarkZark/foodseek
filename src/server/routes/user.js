@@ -67,7 +67,7 @@ UserRouter.post('/list', (req, res)=>{
 
     Store.getCardsAll((err,results) => {
         if(err){
-            resbody.setIssue(11,"SQL issue");
+            resbody.setIssue(7);
             res.end(resbody.package());
         }
 
@@ -88,7 +88,7 @@ UserRouter.post('/reserve', (req,res)=>{
     if(sutils.validate(['id','user'], req.body)){
         Store.reserveCard(req.body.id, req.body.user, (err) => {
             if(err){
-                resbody.setIssue(11, "Error reserving card");
+                resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }

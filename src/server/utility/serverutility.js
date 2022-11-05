@@ -26,7 +26,8 @@ common_issues = {
     3: "Wrong User Permission (vendor/user)",
     4: "Bcrypt Hash Error",
     5: "Bad password",
-    6:  "Bad Email (signup:already in db, login:not in db)"
+    6:  "Bad Email (signup:already in db, login:not in db)",
+    7: "SQL Query Problem"
 }
 
 class res_obj {
@@ -56,24 +57,21 @@ class res_obj {
         this.data = null;
     }
 
-    setIssue(code, msg){
+    setIssue(code, msg=''){
         this.success = 0;
         this.issues = {
             error: code,
-            message: msg
+            message: ''
         }
         this.data = null;
-    }
 
-    setIssue(code){
         if(code in Object.keys(common_issues)){
-            this.success = 0;
-            this.issues = {
-                error: code,
-                message: common_issues[code]
-            }
-            this.data = null;
+            this.issues.message = common_issues[code];
         }
+        else{
+            this.issues.message = msg;
+        }
+
     }
 
     // just return the string version of this object
