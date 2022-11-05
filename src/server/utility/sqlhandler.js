@@ -1,271 +1,365 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
-require('dotenv').config('../');
+require('dotenv').config();
 
-// Refactored from the DBHandler class
-// Cleaned up some of the functions
-// Added a deleteUser in case some one wants to remove their acc
-class UserStore {
-    constructor(){
+const { getDistance } = require('../utility/serverutility.js');
+const { getKm } = require('../utility/serverutility.js');
+const { getM } = require('../utility/serverutility.js');
 
-        // Create Connection Pool
-        this.conn = database.createPool( {
-            connectionLimit: 10,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_ACTIVE_DB
-        });
 
-        // Define table and column names
-        this.table = "user_data";
-        this.col = {
-            email: "user_email",
-            pass: "password",
-            vend: "vendor",
-            data: "Data"
-        };
-    }
+// DBHandler
+// Going to be the class handling the sql database
+// Want to come up with some reasonable functions to perform these queries
+// Inserts look like : INSERT INTO <table_name> ([columns]) VALUES ([vals])
+// Selects look like : SELECT [Fields] FROM <table> WHERE <column> = <value> 
+// Deletes           : DELETE FROM <table> WHERE <column> = <value>
 
-    // pass credentials with keys [email, pass, vendor]
-    createUser(credentials, callback){
+    class DBHandler {
+        constructor(options){
+            // set the connection pool object 
+            this.conn = database.createPool({
+                connectionLimit: 10,
+                host: process.env.DB_HOST,
+                port: process.env.DB_PORT,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASS,
+                database: process.env.DB_ACTIVE_DB
+            });
+            
 
-        // SQL query
-        let SQL = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?)";
-        let parameters = [
-            this.table,
-            this.col.email,
-            this.col.pass,
-            this.col.vend,
-            credentials.email,
-            credentials.pass,
-            credentials.vendor
-        ]
+            this.user_table = "user_data"
+            this.email = "user_email";
+            this.pass = "password";
+        }
 
-        // query the database
-        this.conn.query(SQL, parameters, (err) => {
-            if(err){
-                return callback(err); // we have an error return it to the callback
-            }
+        /*
+            Insertions:
+                take in a table name, pass a dict {column: value} for the items to be inserted
+                going to need to build the string
+        */
+       // Insert a new user into the database
+       // given an email and passwword
+       // The callback is to handle redirection in app.js (and errors)
+       // callback should be callback(error)
+        insertUser(email, password, callback){
+            var sql = "INSERT INTO ?? (??, ??) VALUES (?, ?)"; // get the sql code
+            var parameters = [
+                this.user_table,
+                this.email,
+                this.pass,
+                email,
+                password
+            ];
+            
+            this.conn.query(sql, parameters, (err) => {
+                if(err){
+                    console.log(`Error inserting user ${email} - sqlhandler`);
+                    return callback(err);
+                }
+                console.log(`Successfully created user ${email} with password: ${password} - sqlhandler`);
+                return callback(null); // no error
+            });
 
-            return callback(null); // no error 
-        })
-    }
+        }
 
-    //pass credentials [email] to find a user with that associated email
-    findUser(email, callback){
+        // Get an existing user from the table
+        // if the user is found it will return their password
+        // if no user is found it will return a null
+        // callback will be -> callback(err, result)
+        getUser(email, callback){
+            var sql = "SELECT * FROM ?? WHERE ?? = ?";
+            var parameters = [
+                this.user_table,
+                this.email,
+                email
+            ];
 
-        //SQL query
-        let SQL = "SELECT * FROM ?? WHERE ?? = ?";
-        let parameters = [
-            this.table,
-            this.col.email,
-            email
-        ];
+            this.conn.query(sql, parameters, (err, results) => {
+                if(err){
+                    console.log(`Error finding user ${email} - sqlhandler`);
+                    console.log(err);
+                    return callback(err, null);
+                }
 
-        this.conn.query(SQL, parameters, (err, results) => {
-            if(err){
-                return callback(err, null);
-            }
-
-            let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
-            if(!result){
-                return callback(null, null); // no error but no result
-            }
-            return callback(null, result);
-        });
-    }
-
-    deleteUser(email, callback){
-        let SQL = "DELETE FROM ?? WHERE ?? = ?";
-        let parameters = [
-            this.table,
-            this.col.email,
-            email
-        ];
-
-        this.conn.query(SQL,parameters, (err,results) => {
-            if(err){
-                return callback(err,null); // could not delete
-            }
-            return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
-        });
-    }
-
-}
-
-class FoodStore {
-    constructor(options) {
-        this.conn = database.createPool({
-            connectionLimit: 10,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_ACTIVE_DB
-       });
-
-       this.table = "food_cards"
-       this.col = {
-        id: "id",
-        lat: "lat",
-        lon: "lon",
-        data: "data",
-        res: "res",
-        vendor: "vendor"
-       }
+                var result = (results[0]) ? results[0] : null;
+                if(!result){
+                    console.log("null result - sqlhandler");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - sqlhandler");
+                return callback(null, result[this.pass]);
+            });
+        }
 
     }
 
-    // changed the fields we are storing in the data object
-    // removed favorite and travel bc those are meaningless
-    // changing the object to have a field "pos" = [lat, long]
+
+    class FoodStore {
+        constructor(options) {
+            this.conn = database.createPool({
+                connectionLimit: 10,
+                host: "localhost",
+                port: 3306,
+                user: "newuser",
+                password: "AiroldI.1998",
+                database: "foodseek"
+           });
+           this.food_table = "food_cards";
+           this.food_ID = "ID";
+           this.food_Lat = "Lat";
+           this.food_Lon = "Lon";
+           this.food_Data = "Data";
+           this.food_Reserved = "Reserved";
+           this.food_vendor = "Vendor"
     
-    uploadCard(fooddata, callback){
-        let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
-        let data = JSON.stringify({
-            image : fooddata.image,
-            cuisine : fooddata.cuisine,
-            item : fooddata.item,
-        })
-        var params = [
-            this.table,
-            //this.food_ID,
-            this.col.lat,
-            this.col.lon,
-            this.col.data,
-            this.col.vendor,
-            //fooddata.id,
-            fooddata.pos[0],
-            fooddata.pos[1],
-            data, 
-            fooddata.vendor,
-        ]
+        }
         
-        this.conn.query(SQL, params, (err) => {
-            if(err){
-                return callback(err);
-            }
-            return callback(null); // no error
-        });
-
-    }
-        
-   
+        uploadCard(fooddata, callback){
+            let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
+            let data = JSON.stringify({
+                image : fooddata.image,
+                favorite : fooddata.favorite,
+                cuisine : fooddata.cuisine,
+                item : fooddata.item,
+                travel : fooddata.travel
+            })
+            var params = [
+                this.food_table,
+                //this.food_ID,
+                this.food_Lat,
+                this.food_Lon,
+                this.food_Data,
+                this.food_vendor,
+                //fooddata.id,
+                fooddata.lat,
+                fooddata.lon,
+                data, 
+                fooddata.vendor,
+            ]
+            
+            this.conn.query(SQL, params, (err) => {
+                if(err){
+                    console.log(`Error inserting foodcard ${fooddata.item} - upload card`);
+                    return callback(err);
+                }
+                console.log(`Successfully inserted foodcard ${fooddata.item} with lat,lon: ${fooddata.lat} ${fooddata.lon} and data - uploadcard`);
+                return callback(null); // no error
+            });
     
-
-    getCardsAll(cb){
-        
-    }
-
-    getCardsByRange(pos , maxdist_m, cb){
-        // assuming we have pos.lat , pos.long
-        let Km = getKm(maxdist_m);
-        console.log(km);
-        let rounded_km = Math.round(Km);
-        console.log(rounded_km)
-        
-        lat_min = pos.lat - (rounded_km * 0.045);
-        lat_max = pos.lat + (rounded_km * 0.045);
-        lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-        lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-        
+        }
+            
        
-    }
-
-    getCardsVendor(vendor_id, callback){
-        let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
-        let params = [
-            this.table,
-            this.col.vendor,
-            vendor_id
-        ]
-
-        this.conn.query(SQL, params, (err, results) => {
-            if(err){
-                return callback(err, null);
-            }
-
+        
+    
+        getCardsAll(cb){
             
-            if(!results){
-                return callback(null, null); // no error but no result
-            }
-            return callback(null, results);
-        });
-
-    }
-
-    getCardsById(id, callback){
-        let SQL = 'SELECT FROM ?? where ?? = ?';
-        let params = [
-            this.table,
-            this.col.id,
-            id
-        ];
-
-        this.conn.query(SQL, params, (err, results) => {
-
-        });
-    }
-
-    deleteCardsById(card_id, callback){
-        let SQL = 'DELETE FROM ?? where ?? = ?';
-        let params = [
-            this.table,
-            this.col.id,
-            card_id
-        ]
-        this.conn.query(SQL, params, (err, results) => {
-            if(err){
-                return callback(err, null);
-            }
+        }
+    
+        getCardsByRange(pos , maxdist_m, callback){
+            // assuming we have pos.lat , pos.long
+            let Km = getKm(maxdist_m);
+            console.log(Km);
+            let rounded_km = Math.round(Km);
+            console.log(rounded_km)
             
-            if(!results){
-                return callback(null, null); // no error but no result
-            }
-            return callback(null, results);
-        });
+            let lat_min = pos.lat - (rounded_km * 0.045);
+            let lat_max = pos.lat + (rounded_km * 0.045);
+            let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            
+            let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+            var params = [
+                this.food_table,
+                this.food_Lat,
+                lat_min,
+                lat_max,
+                this.food_Lon,
+                lon_min,
+                lon_max
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error getiing cards in range - getcardsbyrang`);
+                    return callback(err, null);
+                }
+                console.log(`Successfully returned cards in range - getcardsbyrange`);
+                return callback(null, results); // no error
+            });
+    
+        }
+    
+        getCardsVendor(vendor_id, callback){
+            let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
+            var params = [
+                this.food_table,
+                this.food_vendor,
+                vendor_id
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error finding foodcard ${vendor_id} - getCardsVendor`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+
+                
+                if(!results){
+                    console.log("null result - getCardsVendor ");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - getCardsVendor ");
+                return callback(null, results);
+            });
+
+        }
+
+        deleteCardsById(card_id, callback){
+            let SQL = 'DELETE FROM ?? where ?? = ?';
+            var params = [
+                this.food_table,
+                this.food_ID,
+                card_id
+            ]
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error deleting foodcard id: ${card_id} - deleteCardsById`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+                
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - deleteCardsById");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - deleteCardsById");
+                return callback(null, results);
+            });
+
+        }
+
+        reserveCard(id, username, callback){
+            //change the card with card.id = id in the database to set its reserved field = username
+            let SQL = 'INSERT INTO ?? SELECT * FROM WHERE ?? = ? (??) VALUES (?)';
+            var params = [
+                this.food_table,
+                this.food_ID,
+                this.food_Reserved,
+                id, 
+                username,
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error reserving foodcard for: ${username},  id: ${id} -  reserveCard`);
+                    console.log(err);
+                    return callback(err);
+                }
+
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result -  reserveCard");
+                    return callback(null); // no error but no result
+                }
+                console.log("found -  reserveCard");
+                return callback(null);
+            });
+
+
+          }
+
 
     }
 
-    reserveCard(id, username, callback){
-        //change the card with card.id = id in the database to set its reserved field = username
-        // You were using a Insert here but we want to use Update
-        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?';
-        let params = [
-            this.table,
-            this.col.res,
-            username,
-            this.col.id,
-            id,
-            this.col.res,
-            ""
-        ];
+    module.exports = {
+        DBHandler: DBHandler,
+        FoodStore: FoodStore
+     };
 
-        this.conn.query(SQL, params, (err, results) => {
+
+     let food1 = {
+        image : "some string" ,
+        vendor : "Cals burweeedos", 
+        favorite : "none",
+        cuisine : "DANK",
+        item : "Burritos, Tacos",
+        travel : "",  
+        reserved : "",
+        lat : 36.974117,
+        lon : -122.030792
+    }
+    let food2 = {
+        image : "some string" ,
+        vendor : "Breaking Breakfast", 
+        favorite : "none",
+        cuisine : "Breakfast",
+        item : "burritos , eggs, sausage , pancakes, cereal, hashbrowns",
+        travel : "",  
+        reserved : "",
+        lat : 36.974117,
+        lon : -122.030792
+    }
+    
+    let sc_pos = {
+        lat: 36.910231,
+        lon: -121.7568946
+    }
+    
+    
+    
+    
+    const store = new FoodStore();
+    
+    store.uploadCard(food2, (err, res) => {
+        if(err){
+            console.log("issues upload");
+            console.log(err);
+        }
+        else {
+            console.log("working upload")
+        }
+    });
+
+    let vendor = "Cals burweeedos";
+    setTimeout(() => {
+        store.getCardsVendor(vendor, (err,res) => {
             if(err){
-                return callback(err, null);
+                console.log("issues get fc by vendor");
+                console.log(err);
             }
-
-            var result = (results[0]) ? results[0] : null;
-            if(!result){
-                return callback(null, null); // no error but no result
+            else {
+                console.log("working get fc by vendor");
+                console.log(res);
             }
-            return callback(null, result);
-        });
+        })
+    }, 1000)
 
+    max_dist = 12;
+    setTimeout(() => {
+        store.getCardsByRange(sc_pos, max_dist,  (err,res) => {
+            if(err){
+                console.log("issues Range");
+                console.log(err);
+            }
+            else {
+                console.log("working Range");
+                console.log(res);
+            }
+        })
+    }, 2000 )
 
-      }
-
-
-}
-
-
-const US = new UserStore();
-const FS = new FoodStore();
-
-module.exports = {
-    UserStore: US,
-    FoodStore: FS
-}
+    let card_id = 0;
+    setTimeout(() => {
+        store.deleteCardsById(card_id, (err, res) => {
+            if(err){
+                console.log("issues delete");
+                console.log(err);
+            }
+            else {
+                console.log("working delete");
+                //console.log(res);
+            }
+        })
+    }, 3000)
