@@ -10,6 +10,8 @@ import {
     ScrollViewDismissKeyboard,
 } from '../../../../components/common'
 
+import { fetchRequest } from '../../../../scripts/deviceinterface'
+
 
 // ATTENTION: THIS IS ONLY A TESTING Development build... to be removed at release
 
@@ -101,6 +103,22 @@ export const Login = ({ navigation }) => {
                             }}
                             style={{ marginTop: 20, marginBottom: 20 }}
                             disabled={loading}
+                        />
+                        <Button 
+                            text="EC2 GET"
+                            onPress={ () => {
+                                fetch('http://3.101.113.7:3000/test')
+                                .then((response) => response.json())
+                                .then((data) => alert(JSON.stringify(data)))
+                                .catch((err) => alert(err));
+                            }}
+                        />
+                        <Button
+                            text="ECT POST"
+                            onPress={ () => {
+                                const t = fetchRequest('http://3.101.113.7:3000/test',"POST", {test:"1234"});
+                                console.log(t);
+                            }}
                         />
                     </View>
                 </ScrollViewDismissKeyboard>

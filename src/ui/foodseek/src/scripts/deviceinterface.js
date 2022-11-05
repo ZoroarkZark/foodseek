@@ -48,9 +48,24 @@ class res_obj {
 }
 
 
-function xhrRequest(url, method, payload, cb){
+export async function fetchRequest(url, method, payload){
+    payload = (method=="GET") ? null : JSON.stringify(payload); //If we have a GET send no body, if we have anything else stringify the body
+
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: payload
+    })
+
+    return response.json();
+}
+
+export function xhrRequest(url, method, payload, cb){
     //ignore payload on get requests
     payload = (method==="GET") ? null : payload;
+    console.log(`${method} @ ${url} with ${payload}`);
 
     let xhr = new XMLHttpRequest();
     xhr.open(method,url);
