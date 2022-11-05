@@ -21,6 +21,11 @@ module.exports = {CoreRouter}
 
 CoreRouter.use('/test', (req,res)=>{
     if(req.method != "GET"){
+        if(!req.body){
+            req.on('data', (chunk)=>{
+                res.end(JSON.stringify(chunk));
+            })
+        }
         res.end(JSON.stringify(req.body));
     }
     else{
