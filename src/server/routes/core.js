@@ -117,6 +117,7 @@ CoreRouter.post('/login', (req, res, next) => {
                             
                         data = {
                             user: req.body.email,
+                            vendor: result.vendor,
                             jwt: token,
                             message: "user signed in!"
                         }
