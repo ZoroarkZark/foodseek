@@ -81,7 +81,7 @@ class res_obj {
         let js = JSON.stringify(this);
         Log.writeToLog(js);
         console.log(`Packaging response as : ${js}`);
-        return JSON.stringify(js);
+        return js;
     }
     
 }
