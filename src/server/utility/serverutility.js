@@ -306,7 +306,7 @@ class Logger {
         string = string+ "\n";
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
-            console.log(`Logged ${string}`);
+            //console.log(`Logged ${string}`);
         })
     }
 
@@ -319,7 +319,6 @@ class Logger {
             for(let x in data){
                 obj[x] = data[x];
             }
-            console.log(obj);
             return callback(null,obj);
         });
     }
