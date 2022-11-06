@@ -55,9 +55,10 @@ class UserStore {
         // query the database
         this.conn.query(SQL, parameters, (err) => {
             if(err){
+                console.log("issue")
                 return callback(err); // we have an error return it to the callback
             }
-
+            console.log(" no issue")
             return callback(null); // no error 
         })
     }
@@ -121,15 +122,24 @@ const { getM } = require('../utility/serverutility.js');
                 user: "newuser",
                 password: "AiroldI.1998",
                 database: "foodseek"
-           });
-           this.food_table = "food_cards";
-           this.food_ID = "ID";
-           this.food_Lat = "Lat";
-           this.food_Lon = "Lon";
-           this.food_Data = "Data";
-           this.food_Reserved = "Reserved";
-           this.food_vendor = "Vendor"
-    
+            });
+            this.food_table = "food_cards";
+            this.food_ID = "ID";
+            this.food_Lat = "Lat";
+            this.food_Lon = "Lon";
+            this.food_Data = "Data";
+            this.food_Reserved = "Reserved";
+            this.food_vendor = "Vendor"
+            /*
+            this.col = {
+                id:  "id",
+                lat: "lat",
+                lon: "lon",
+                data: "data",
+                res:  "res",
+                vendor: "vendor"
+            }
+            */
         }
         
         uploadCard(fooddata, callback){
@@ -253,7 +263,7 @@ const { getM } = require('../utility/serverutility.js');
                     return callback(null, null); // no error but no result
                 }
                 console.log("found - deleteCardsById");
-                return callback(null, results);
+                return callback(null, results.affectedRows);
             });
 
         }
@@ -261,39 +271,93 @@ const { getM } = require('../utility/serverutility.js');
         reserveCard(id, username, callback){
             //change the card with card.id = id in the database to set its reserved field = username
             //let SQL = 'INSERT INTO ?? (??) SELECT FROM * WHERE ?? = ? VALUES (?)';
-            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? is NULL'
             var params = [
                 this.food_table,
                 this.food_Reserved,
                 username,
                 this.food_ID,
-                id, 
+                id,
+                this.food_Reserved 
             ]
 
             this.conn.query(SQL, params, (err, results) => {
                 if(err){
                     console.log(`Error reserving foodcard for: ${username},  id: ${id} -  reserveCard`);
                     console.log(err);
-                    return callback(err);
+                    return callback(err, null);
                 }
 
                 //var result = (results[0]) ? results[0] : null;
                 if(!results){
                     console.log("null result -  reserveCard");
-                    return callback(null); // no error but no result
+                    return callback(null,null); // no error but no result
                 }
                 console.log("found -  reserveCard");
-                return callback(null);
+                return callback(null, results.affectedRows);
             });
 
 
           }
 
+        cancelReservation(user, callback){
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
+            var params = [
+                this.food_table,
+                this.food_Reserved,
+                null,
+                this.food_reserved,
+                user,
+            ]
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error canceling foodcard for: ${user} - cancelReservation`);
+                    console.log(err);
+                    return callback(err, null);
+                }
 
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - cancelReservation");
+                    return callback(null,null); // no error but no result
+                }
+                console.log("res canceled - cancelReservation");
+                return callback(null, results.affectedRows);
+            });
+        }
+
+        deleteCardVendor(card_id, callback){
+            let SQL = 'DELETE FROM ?? where ?? = ? AND ?? is NULL';
+            var params = [
+                this.food_table,
+                this.food_ID,
+                card_id,
+                this.food_Reserved,
+            ]
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error deleting foodcard id: ${card_id} - deleteCardVendor`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+                
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - deleteCardVendor");
+                    return callback(null, null); // no error but no result
+                }
+                console.log("found - deleteCardVendor");
+                return callback(null, results.affectedRows);
+            });
+
+        }
     }
 
+    const US = new UserStore();
+    const FS = new FoodStore();
+
     module.exports = {
-        DBHandler: DBHandler,
+        UserStore: UserStore,
         FoodStore: FoodStore
      };
 

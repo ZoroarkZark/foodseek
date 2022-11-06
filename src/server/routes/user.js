@@ -11,7 +11,8 @@ const sutils    = require('../utility/serverutility.js');
 const sql       = require('../utility/sqlhandler.js');
 
 //const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
-const Store = sql.FoodStore;
+//const Store = sql.FoodStore;
+const Store = new sql.FoodStore()
 
 const UserRouter = express.Router();
 
@@ -64,28 +65,31 @@ UserRouter.use('', (req,res, next) => {
 // load food cards in area
 UserRouter.post('/list', (req, res)=>{
     const resbody = new sutils.res_obj();
+    
+    if(sutils.validate(['pos','max_dist'], req.body)){
+        Store.getCardsByRange(req.body.pos, req.body.max_dist, (err,results) => {
+            if(err){
+               resbody.setIssue(11,"SQL issue");
+               res.end(resbody.package());
+            }
 
-    Store.getCardsAll((err,results) => {
-        if(err){
-            resbody.setIssue(11,"SQL issue");
+            console.log(results);
+            resbody.setData({
+                msg: "Got List!",
+                items: JSON.stringify(results)
+            })
             res.end(resbody.package());
-        }
-
-        console.log(results);
-        resbody.setData({
-            msg: "Got List!",
-            items: JSON.stringify(results)
-        })
-        res.end(resbody.package());
-        return;
-    });
+            return;
+        });
+    }
 
 });
 
 UserRouter.post('/reserve', (req,res)=>{
     const resbody = new sutils.res_obj();
-
+    console.log("in res")
     if(sutils.validate(['id','user'], req.body)){
+        console.log("valid")
         Store.reserveCard(req.body.id, req.body.user, (err) => {
             if(err){
                 resbody.setIssue(11, "Error reserving card");

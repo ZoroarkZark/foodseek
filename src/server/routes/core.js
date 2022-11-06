@@ -14,8 +14,9 @@ const CoreRouter = express.Router();
 
 
 //const Store =  sutil.UserStore;
-const Store = sql.UserStore;
-
+//const Store = sql.UserStore;
+const Store = new sql.UserStore();
+//const  = new FoodStore();
 module.exports = {CoreRouter}
 
 
@@ -40,6 +41,7 @@ CoreRouter.use('/test', (req,res)=>{
 // returns a response_object 
 CoreRouter.post('/signup', async (req, res) => 
 {
+    console.log('in signup');
     // this is our standard response object being sent to the client in the res.body
     const resbody = new sutil.res_obj();
     
@@ -66,7 +68,7 @@ CoreRouter.post('/signup', async (req, res) =>
                     res.end(resbody.package());
                     return;
                 }
-                
+
                 resbody.setData({
                     message: "Succsesful signup"
                 });
