@@ -15,12 +15,17 @@ const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 const vendorRouter = require('./routes/vendor.js').VendorRouter;
 
+const sutil = require('./utility/serverutility.js');
+const { res_obj } = require('./utility/serverutility.js');
+
 // Server Constants
 const port = process.env.PORT || 3000;
 const hostname = "0.0.0.0";
 
 // Express app 
 const app = express();
+const startTime = new Date();
+const Log = sutil.Logger;
 
 //utils for parsing the body into a json we can interact with
 app.use(bodyParser.json())
@@ -32,21 +37,38 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use('', (req, res, next) => { // Using this as a general request logger 
-	req.setEncoding('utf8');
-	console.log(`${req.method} to path: ${req.path} @ ${Date.now()}`);
-	req.on('data', (data) => { 
-		console.log("late");
-		console.log(data);
-		//console.log(Object.keys(data));
-	});
-	next();
-})
 
-app.use('', (req,res,next) => {
-	console.log("used!");
+app.use('', (req, res, next) => { // Using this as a general request logger 
+	console.log(req.path);
+	
+		req.setEncoding('utf8');
+		let reqTime = new Date();
+		let str = `${req.method} to path: ${req.path} @ ${reqTime.getHours()}:${reqTime.getMinutes()}:${reqTime.getSeconds()})}`;
+		console.log(str);
+		Log.writeToLog(str);
+		req.on('data', (data) => { 
+			console.log("late");
+			console.log(data);
+			//console.log(Object.keys(data));
+		});
+	
 	next();
-})
+});
+
+app.get('/logs', (req,res)=> {
+	Log.readLogs((err, data) => {
+		if(err){
+			res.end(JSON.stringify({err:"error loading logs"}));
+			return;
+		}
+
+		res.end(JSON.stringify(
+			{logs: data}
+		));
+		return;
+	})
+});
+
 
 app.use('/' ,coreRouter); // mount core routes
 app.use('/user/', userRouter); // mount user routes
@@ -58,3 +80,4 @@ app.listen(port, () => {
 	console.log(`listening to on port: ${port}`);
 	
 });
+
