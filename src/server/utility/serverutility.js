@@ -10,6 +10,7 @@
     } or null
 }
 */
+const file = require('fs');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
@@ -292,6 +293,58 @@ function verifytoken(token, callback){
     });
 }
 
+class Logger {
+    constructor(){
+        //folder to place log file
+        let now = Date.now();
+        this.path = '';
+        this.name = `SLog_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}`;
+    }
+
+    writeLog(string){
+        file.appendFile(this.name, string, (err) => {
+            if(err) throw err;
+            console.log(`Logged ${string}`);
+        })
+    }
+
+    setPath(){
+        this.path = path.resolve(__dirname, this.name);
+    }
+
+    getPath(){
+        if(this.path === ""){
+            this.setPath();
+        }
+        return this.path;
+    }
+
+}
+
+function getKM(miles){
+    return miles * 1.609344;
+}
+
+function getM(Km){
+    return Km * 0.62137119;
+}
+
+function getDistance(lat1, lon1, lat2, lon2){
+    let dLat = (lat2 - lat1) * Math.PI / 180.0;
+    let dLon = (lon2 - lon1) * Math.PI / 180.0;
+    // convert to radians
+    lat1 = (lat1) * Math.PI / 180.0;
+    lat2 = (lat2) * Math.PI / 180.0;
+    // apply formula
+    let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+    let rad = 6371;
+    let dist_km = 2 * Math.asin(Math.sqrt(a));
+    // conversion factor
+    const factor = 0.621371
+    const miles = dist_km * factor;
+    return miles;
+}
+
 
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
@@ -304,7 +357,10 @@ module.exports = {
     UserStore: US,
     FoodStore: FS,
     sign: signtoken,
-    verify: verifytoken
+    verify: verifytoken,
+    getKm: getKM,
+    getM: getM,
+    getDistance: getDistance
 
 }
 

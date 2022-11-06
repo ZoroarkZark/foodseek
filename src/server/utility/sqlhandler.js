@@ -3,6 +3,8 @@ const database = require('mysql');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
+const sutil = require('../utility/serverutility.js');
+
 TEST_POS = [
     [37.002,-121.9282], //santa cruz
     [38.284,-122.6423], // Santa rosa basically
@@ -219,17 +221,41 @@ class FoodStore {
         })
     }
 
-    getCardsByRange(pos , maxdist_m, cb){
-        // assuming we have pos.lat , pos.long
-        let Km = getKm(maxdist_m);
-        console.log(km);
-        let rounded_km = Math.round(Km);
-        console.log(rounded_km)
-        
-        lat_min = pos.lat - (rounded_km * 0.045);
-        lat_max = pos.lat + (rounded_km * 0.045);
-        lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-        lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+    getCardsByRange(pos , maxdist_m, callback){
+            let Km = sutil.getKm(maxdist_m);
+            console.log(Km);
+            let rounded_km = Math.round(Km);
+            console.log(rounded_km)
+            
+            let lat_min = pos.lat - (rounded_km * 0.045);
+            let lat_max = pos.lat + (rounded_km * 0.045);
+            let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+            
+            let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+            var params = [
+                this.table,
+                this.col.lat,
+                lat_min,
+                lat_max,
+                this.col.lon,
+                lon_min,
+                lon_max
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error getiing cards in range - getcardsbyrang`);
+                    return callback(err, null);
+                }
+                console.log(`Successfully returned cards in range - getcardsbyrange`);
+                if(!results){
+                    // no cards in given range
+                    return callback(null,null);
+                }
+
+                return callback(null, results); // no error and results 
+            });
         
        
     }
@@ -256,19 +282,6 @@ class FoodStore {
 
     }
 
-    getCardsById(id, callback){
-        let SQL = 'SELECT FROM ?? where ?? = ?';
-        let params = [
-            this.table,
-            this.col.id,
-            id
-        ];
-
-        this.conn.query(SQL, params, (err, results) => {
-
-        });
-    }
-
     deleteCardsById(card_id, callback){
         let SQL = 'DELETE FROM ?? where ?? = ?';
         let params = [
@@ -284,7 +297,7 @@ class FoodStore {
             if(!results){
                 return callback(null, null); // no error but no result
             }
-            return callback(null, results);
+            return callback(null, results.affectedRows);
         });
 
     }
@@ -308,6 +321,9 @@ class FoodStore {
                 return callback(err, null);
             }
 
+            if(!results){
+                return callback(null,null);
+            }
             return callback(null, results.affectedRows);
         });
 

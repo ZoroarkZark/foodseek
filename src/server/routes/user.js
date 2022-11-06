@@ -61,7 +61,7 @@ UserRouter.use('', (req,res, next) => {
 })
 
 
-// load food cards in area
+// load food cards
 UserRouter.post('/list', (req, res)=>{
     const resbody = new sutils.res_obj();
 
@@ -81,6 +81,43 @@ UserRouter.post('/list', (req, res)=>{
     });
 
 });
+
+UserRouter.post('/lr', (req,res) => {
+    const resbody = new res_obj();
+
+    if(sutils.validate(['lat','lon','dist'],req.body)){
+        let lat = parseFloat(req.body.lat);
+        let lon = parseFloat(req.body.lon);
+        let dist = parseInt(req.body.dist);
+
+        Store.getCardsByRange({lat:lat, lon:lon}, dist, (err,results)=>{
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+            if(!results){
+                resbody.setData({
+                    cards: null,
+                    msg: `no cards ${dist} away from lat:${lat}, lon:${long}`
+                })
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                cards: results,
+                msg: "cards found"
+            });
+            res.end(resbody.package());
+        })
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+})
 
 UserRouter.post('/reserve', (req,res)=>{
     const resbody = new sutils.res_obj();
