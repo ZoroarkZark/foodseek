@@ -29,6 +29,8 @@ export async function fetchRequest(url, method, payload){
     })
     
     // json representation of fetch response
+
+    if(!resp.ok){ throw new Error("bad network request");}
     return resp.json();
 }
 

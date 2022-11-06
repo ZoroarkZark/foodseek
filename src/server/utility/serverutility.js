@@ -10,6 +10,7 @@
     } or null
 }
 */
+const file = require('fs');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
@@ -26,7 +27,8 @@ common_issues = {
     3: "Wrong User Permission (vendor/user)",
     4: "Bcrypt Hash Error",
     5: "Bad password",
-    6:  "Bad Email (signup:already in db, login:not in db)"
+    6:  "Bad Email (signup:already in db, login:not in db)",
+    7: "SQL Query Problem"
 }
 
 class res_obj {
@@ -56,28 +58,26 @@ class res_obj {
         this.data = null;
     }
 
-    setIssue(code, msg){
+    setIssue(code, msg=''){
         this.success = 0;
         this.issues = {
             error: code,
-            message: msg
+            message: ''
         }
         this.data = null;
-    }
 
-    setIssue(code){
         if(code in Object.keys(common_issues)){
-            this.success = 0;
-            this.issues = {
-                error: code,
-                message: common_issues[code]
-            }
-            this.data = null;
+            this.issues.message = common_issues[code];
         }
+        else{
+            this.issues.message = msg;
+        }
+
     }
 
     // just return the string version of this object
     package(){
+        console.log(`Packaging response as : ${JSON.stringify(this)}`);
         return JSON.stringify(this);
     }
     
@@ -293,6 +293,58 @@ function verifytoken(token, callback){
     });
 }
 
+class Logger {
+    constructor(){
+        //folder to place log file
+        let now = Date.now();
+        this.path = '';
+        this.name = `SLog_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}`;
+    }
+
+    writeLog(string){
+        file.appendFile(this.name, string, (err) => {
+            if(err) throw err;
+            console.log(`Logged ${string}`);
+        })
+    }
+
+    setPath(){
+        this.path = path.resolve(__dirname, this.name);
+    }
+
+    getPath(){
+        if(this.path === ""){
+            this.setPath();
+        }
+        return this.path;
+    }
+
+}
+
+function getKM(miles){
+    return miles * 1.609344;
+}
+
+function getM(Km){
+    return Km * 0.62137119;
+}
+
+function getDistance(lat1, lon1, lat2, lon2){
+    let dLat = (lat2 - lat1) * Math.PI / 180.0;
+    let dLon = (lon2 - lon1) * Math.PI / 180.0;
+    // convert to radians
+    lat1 = (lat1) * Math.PI / 180.0;
+    lat2 = (lat2) * Math.PI / 180.0;
+    // apply formula
+    let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+    let rad = 6371;
+    let dist_km = 2 * Math.asin(Math.sqrt(a));
+    // conversion factor
+    const factor = 0.621371
+    const miles = dist_km * factor;
+    return miles;
+}
+
 
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
@@ -305,7 +357,10 @@ module.exports = {
     UserStore: US,
     FoodStore: FS,
     sign: signtoken,
-    verify: verifytoken
+    verify: verifytoken,
+    getKm: getKM,
+    getM: getM,
+    getDistance: getDistance
 
 }
 

@@ -103,11 +103,11 @@ CoreRouter.post('/login', (req, res, next) => {
                 res.end(resbody.package());
                 return;
             }
-            console.log(result);
+            //console.log(result);
             if(result){
                 bcrypt.compare(req.body.pass, result.password, (error, hash) => {
                     if(error){
-                        resbody.setIssue(999,"problem de-hashing pass");
+                        resbody.setIssue(4,"problem de-hashing pass");
                         res.end(resbody.package());
                         return;
                     }
@@ -127,7 +127,6 @@ CoreRouter.post('/login', (req, res, next) => {
                         return;
                     }
                     else{
-                        console.log("bass pass");
                         resbody.setIssue(5);
                         res.end(resbody.package());
                         return;
@@ -135,14 +134,14 @@ CoreRouter.post('/login', (req, res, next) => {
                 });
             }
             else{
-                resbody.setIssue(3, "No Account Found!");
+                resbody.setIssue(6);
                 res.end(resbody.package());
                 return;
             }
         })
     }
     else{
-        resbody.setIssue(2,`${Object.keys(req.body)} passed : no email or pass found`);
+        resbody.setIssue(1);
         res.end(resbody.package());
         return;
     }

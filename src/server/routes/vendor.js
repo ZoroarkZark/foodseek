@@ -55,7 +55,7 @@ VendorRouter.post('/upl', (req,res) => {
         FoodStore.uploadItem(req.body.item, req.body.vendor, (err) => {
             if(err){ // didnt upload successfully
                 console.log("Err");
-                resbody.setIssue(11, "Bad upload");
+                resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
@@ -83,7 +83,7 @@ VendorRouter.post('/del', (req,res) => {
     if(sutils.validate(['id'], req.body)){
         FoodStore.deleteCard(Number(req.body.id), (err) => {
             if(err){
-                resbody.setIssue(11, "Issue deleting");
+                resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
@@ -110,7 +110,7 @@ VendorRouter.post('/conf', (req,res) => {
     if(sutils.validate(['user','id'], req.body)){
         FoodStore.getCard(req.body.id, (err, result) => {
             if(err || !result){
-                resbody.setIssue(11, "invalid food card id");
+                resbody.setIssue(7);
                 res.end(resbody.package);
                 return;
             }
@@ -128,7 +128,7 @@ VendorRouter.post('/conf', (req,res) => {
                 }
             }
             else{
-                resbody.setIssue(11, "Bad match on confirmation");
+                resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
