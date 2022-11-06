@@ -37,6 +37,7 @@ class res_obj {
 
     constructor(){
         this.success = 0;
+        this.logger = getLogFile();
     }
 
 
@@ -77,8 +78,10 @@ class res_obj {
 
     // just return the string version of this object
     package(){
-        console.log(`Packaging response as : ${JSON.stringify(this)}`);
-        return JSON.stringify(this);
+        let js = JSON.stringify(this);
+        Log.writeToLog(js);
+        console.log(`Packaging response as : ${js}`);
+        return js;
     }
     
 }
@@ -294,29 +297,34 @@ function verifytoken(token, callback){
 }
 
 class Logger {
-    constructor(){
+    constructor(file){
         //folder to place log file
-        let now = Date.now();
-        this.path = '';
-        this.name = `SLog_${now.getHours()}_${now.getMinutes()}_${now.getSeconds()}`;
+        this.fpath = path.resolve(__dirname, file);
     }
 
-    writeLog(string){
-        file.appendFile(this.name, string, (err) => {
+    writeToLog(string){
+        string = string+ "\n";
+        file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
-            console.log(`Logged ${string}`);
+            //console.log(`Logged ${string}`);
         })
     }
 
-    setPath(){
-        this.path = path.resolve(__dirname, this.name);
+    readLogs(callback){
+        file.readFile(this.fpath, 'utf8', (err,data) => {
+            if(err) return callback(err,null);
+
+            data = data.split("\n");
+            let obj = {};
+            for(let x in data){
+                obj[x] = data[x];
+            }
+            return callback(null,obj);
+        });
     }
 
     getPath(){
-        if(this.path === ""){
-            this.setPath();
-        }
-        return this.path;
+        return this.fpath;
     }
 
 }
@@ -349,6 +357,9 @@ function getDistance(lat1, lon1, lat2, lon2){
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
 
+const startTime = new Date();
+const getLogFile = () => {`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
+const Log = new Logger(`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`);
 
 module.exports = {
     res_obj: res_obj,
@@ -360,8 +371,10 @@ module.exports = {
     verify: verifytoken,
     getKm: getKM,
     getM: getM,
-    getDistance: getDistance
+    getDistance: getDistance,
+    Logger: Log,
+    logFile: getLogFile
 
 }
 
-
+const L = new Logger('../logs/log_21_56.txt');
