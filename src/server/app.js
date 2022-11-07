@@ -43,7 +43,7 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 	
 		req.setEncoding('utf8');
 		let reqTime = new Date();
-		let str = `${req.method} to path: ${req.path} @ ${reqTime.getHours()}:${reqTime.getMinutes()}:${reqTime.getSeconds()})}`;
+		let str = `${req.method} to path: ${req.path} @ ${reqTime.getHours()}:${reqTime.getMinutes()}:${reqTime.getSeconds()}  ${reqTime.getMonth()}/${reqTime.getDay()}}`;
 		console.log(str);
 		Log.writeToLog(str);
 		req.on('data', (data) => { 

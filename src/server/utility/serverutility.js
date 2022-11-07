@@ -16,6 +16,7 @@ require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
 
 const jwt = require('jsonwebtoken');
+const { start } = require('repl');
 const devJWT = process.env.JWT_SECRET;
 console.log("JWT Secret",devJWT);
 
@@ -79,7 +80,9 @@ class res_obj {
     // just return the string version of this object
     package(){
         let js = JSON.stringify(this);
-        Log.writeToLog(js);
+        let packTime = new Date();
+        let packStr = `${packTime.getMonth()}/${packTime.getDay()} ${packTime.getHours()}:${packTime.getMinutes()}:${packTime.getSeconds()}`;
+        Log.writeToLog(js, packStr);
         console.log(`Packaging response as : ${js}`);
         return js;
     }
@@ -302,8 +305,13 @@ class Logger {
         this.fpath = path.resolve(__dirname, file);
     }
 
-    writeToLog(string){
-        string = string+ "\n";
+    writeToLog(string, ts=''){
+        if(ts){
+            string = string+ " @" + ts +  "\n";
+        }
+        else{
+            string = string+ "\n";
+        }
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
             //console.log(`Logged ${string}`);
@@ -358,8 +366,8 @@ const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
 
 const startTime = new Date();
-const getLogFile = () => {`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
-const Log = new Logger(`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`);
+const getLogFile = () => {`../logs/log_${startTime.getMonth()}_${startTime.getDay()}_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
+const Log = new Logger(`../logs/log_${startTime.getMonth()}_${startTime.getDay()}_${startTime.getHours()}_${startTime.getMinutes()}.txt`);
 
 module.exports = {
     res_obj: res_obj,
