@@ -72,7 +72,7 @@ User Actions (have to be signed in to use) are all mounted on `/user/` as of rig
 So a foodcard route would be `user/upl`
 
 `/list` : retrieve a list of foodcard items
-* Must GET
+* Must POST
 * Response:
     * success: data contains the list of foodcard items (I only return the two uploaded fields for brevity)
     * error: not incorperated yet
