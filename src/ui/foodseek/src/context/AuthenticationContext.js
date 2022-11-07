@@ -11,7 +11,8 @@ export const AuthenticationContext = createContext()
 export const AuthenticationContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false) // create state holder for setting the loading state (while waiting for request responses show loading behavior)
     const [user, setUser] = useState(null) // create state holder for user (currently logged in)
-    const [error, setError] = useState('') // create state holder for storing error state for logging in
+    const [ error, setError ] = useState( '' ) // create state holder for storing error state for logging in
+    const [jwt, setJWT] = useState('')          // TODO: store more securely jwt
 
     // checks if incoming user is valid or null and updates the user
     // eslint-disable-next-line no-unused-vars
@@ -26,8 +27,10 @@ export const AuthenticationContextProvider = ({ children }) => {
     const onLogin = (email, password) => {
         setLoading(true) // set loading status = true while making request for login
         loginRequest(email, password)
-            .then((u) => {
-                setUser(u)
+            .then( ( u ) => {
+                // TODO: parse response.data
+                setJWT(u.jwt)
+                setUser(u) // pretend its parsed for now 
                 setLoading(false)
             })
             .catch((err) => {
@@ -67,6 +70,7 @@ export const AuthenticationContextProvider = ({ children }) => {
             value={{
                 isAuthenticated: !!user,
                 isVendor: !!user ? user.isVendor : false,
+                jwt,
                 loading,
                 user,
                 error,

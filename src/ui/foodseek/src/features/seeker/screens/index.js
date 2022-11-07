@@ -1,4 +1,4 @@
-export { Settings } from './seeker-preference-feature/settings'
+export { SeekerSettings } from './seeker-preference-feature/settings'
 export { Favorites } from './seeker-preference-feature/favorites'
 export { Posts } from './view-post-listing-feature/posts'
 export { ExpandPost } from './view-post-listing-feature/expandedPost'

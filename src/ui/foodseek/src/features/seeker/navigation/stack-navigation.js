@@ -12,24 +12,24 @@ const Drawer = createDrawerNavigator() // TODO: see below
 
 
 
-export const SettingsNavigator = () => {
-    return (
-        <Drawer.Navigator
-            screenOptions={{ headerShown: false }}
-            drawerContent={(props) => <CustomDrawerContent {...props} />}
-            defaultStatus="open"
-            detachInactiveScreens={false}
-        >
-            <Drawer.Screen name="Settings" component={screen.Settings} />
-            <Drawer.Screen
-                name="User"
-                component={screen.Settings}
-                options={{ title: 'User Screen' }}
-            />
-            <Drawer.Screen name="Favorites" component={screen.Favorites} />
-        </Drawer.Navigator>
-    )
-}
+// export const SettingsNavigator = () => {
+//     return (
+//         <Drawer.Navigator
+//             screenOptions={{ headerShown: false }}
+//             drawerContent={(props) => <CustomDrawerContent {...props} />}
+//             defaultStatus="open"
+//             detachInactiveScreens={false}
+//         >
+//             <Drawer.Screen name="Settings" component={screen.Settings} />
+//             <Drawer.Screen
+//                 name="User"
+//                 component={screen.Settings}
+//                 options={{ title: 'User Screen' }}
+//             />
+//             <Drawer.Screen name="Favorites" component={screen.Favorites} />
+//         </Drawer.Navigator>
+//     )
+// }
 
 // Returns a stack navigator for the User screen
 export const MapNavigator = () => {
@@ -85,6 +85,19 @@ export const SearchNavigator = () => {
             <Stack.Screen
                 name="Search" 
                 component={screen.Search}
+                options={{ title: 'Orders' }}
+            />
+        </Stack.Navigator>
+    )
+}
+
+// Returns a stack navigator for the post listing screens
+export const SettingsNavigator = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="SeekerSettings" 
+                component={screen.SeekerSettings}
                 options={{ title: 'Orders' }}
             />
         </Stack.Navigator>

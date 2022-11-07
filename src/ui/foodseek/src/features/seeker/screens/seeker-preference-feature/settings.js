@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 import { Avatar } from '../../../../components/common'
 
-export const Settings = ({ navigation }) => {
+export const SeekerSettings = () => {
     const { user } = useContext(AuthenticationContext)
 
     return (
@@ -13,10 +13,11 @@ export const Settings = ({ navigation }) => {
                     <View flex={1} flexDirection="column" paddingTop="20%">
                         <Avatar user={user} />
                         <Text style={{ paddingTop: 20, fontWeight: '500' }}>
-                            user: {user.un}
+                            user: {user.un ? user.un : JSON.stringify(user)}
                         </Text>
                     </View>
                     <View flex={1} flexDirection="column">
+
                         <Text>Email: {user.email}</Text>
                         <Text>type: {user.type}</Text>
                     </View>

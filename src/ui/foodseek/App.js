@@ -4,8 +4,10 @@ import { Navigation } from './src/features/all/navigation/Navigation'
 import { AuthenticationContextProvider } from './src/context/AuthenticationContext'
 import { ThemeContextProvider } from './src/context/ThemeContext'
 
+export const testing = true
 // context provider wrappers wrapping child (application)
-export default function App() {
+export default function App () {
+    
     return (
         <ThemeContextProvider>
             <AuthenticationContextProvider>
