@@ -8,6 +8,10 @@ import { TextButton, Title } from '../../../../components/common'
 export const Signup = ({ navigation }) => {
     const { onSignup } = useContext(AuthenticationContext)
 
+    const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$')
+    const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$')
+    const validPhone = new RegExp('^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+
     // variables used for conditional rendering vendor or user forms
     const [state, setState] = useState('Base')
     const [prev, setPrev] = useState('Base')
@@ -161,7 +165,17 @@ export const Signup = ({ navigation }) => {
             )}
 
             {state === 'Base' ? (
-                <Button title="Continue" onPress={() => updateState()}>
+                <Button title="Continue" onPress={() => {
+                    if(!validEmail.test(email))
+                        alert("OI BLOKE! NOT A BLOODY VALID EMAIL")
+                    //password requires numbers and letters
+                    else if(!validPassword.test(pwd))
+                        alert("Invalid Password! Must contain both letters and numbers")
+                    else if(!validPhone.test(phone))
+                        alert("Invalid Phone!")
+                    else
+                        updateState()
+                    }}>
                     Advances to the secondary form pages
                 </Button>
             ) : (

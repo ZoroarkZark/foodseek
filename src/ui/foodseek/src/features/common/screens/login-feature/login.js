@@ -17,6 +17,8 @@ import { Dimensions } from 'react-native'
 import { fetchRequest } from '../../../../scripts/deviceinterface'
 import { vendorAvatar, seekerAvatar } from '../../../../../assets'
 
+const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$')
+const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$')
 
 export const Login = ({ navigation }) => {
     const [email, setEmail] = useState('')
@@ -68,7 +70,13 @@ export const Login = ({ navigation }) => {
                     text={loading ? 'Loading' : 'Continue'}
                     onPress={() => {
                         // I deleted what ever was here during testing stuff
-                        login()
+                        if(!validEmail.test(email))
+                            alert("OI BLOKE! NOT A BLOODY VALID EMAIL")
+                        //password requires numbers and letters
+                        else if(!validPassword.test(password))
+                            alert("Invalid Password! Must contain both letters and numbers")
+                        else
+                            login()
                     }}
                     style={{ marginTop: 20, marginBottom: 20 }}
                     //disabled={loading}
