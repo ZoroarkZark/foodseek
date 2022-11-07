@@ -15,6 +15,8 @@ import { VenSignupScreen } from '../../screens/review/vendorsignup';
 import { PostsScreen } from '../../screens/posts';
 import { ForgotPasswordScreen } from '../../screens/authentication/forgotpassword';
 import { HoursOfOperationScreen } from '../../screens/hours';
+import { Posts } from '../../features/seeker/screens';
+import { ExpandPost } from '../../features/seeker/screens';
 
 
 const Stack = createNativeStackNavigator();     // Create stack navigator component
@@ -140,4 +142,21 @@ export const PostsStackNavigator = () => {
         </Stack.Navigator>
     );  
 }
+
+/*export const PostCardNavigator = () => {
+    return(
+        <Stack.Navigator> 
+            <Stack.Screen
+            name="Posts" //RESPONSE PAGE SCREEN
+            component={Posts}
+            options={{ title: 'Posts' }}
+            />
+            <Stack.Screen
+            name="ExpandedPost"
+            component={ExpandPost}
+            options={{ title: 'ExpandedPost' }}
+            />
+        </Stack.Navigator>
+    );  
+}*/
 

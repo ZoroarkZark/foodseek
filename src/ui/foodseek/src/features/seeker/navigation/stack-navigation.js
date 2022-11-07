@@ -54,6 +54,11 @@ export const PostsNavigator = () => {
                 component={screen.Posts}
                 options={{ title: 'Posts' }}
             />
+            <Stack.Screen
+                name="ExpandedPost" 
+                component={screen.ExpandPost}
+                options={{ headerShown: false }}
+            />
         </Stack.Navigator>
     )
 }

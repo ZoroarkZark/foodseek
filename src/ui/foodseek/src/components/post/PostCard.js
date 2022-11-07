@@ -6,14 +6,17 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
+import { useNavigation } from '@react-navigation/native';
+
 
 // PostCard makes up a single list item
 const PostCard = (props) => {
     const data = props.data
-    const expandPost = props.expandPost
+    const navigation = useNavigation();
+
     return (
         //TODO: wrap section (card/item) in touchable opacity container here to include onPress behavior of navigating from post listing to another view screen that contains reservation button
-        <TouchableOpacity onPress={expandPost}>
+        <TouchableOpacity onPress={() => {navigation.navigate('ExpandedPost', {id: data.id, cuisine: data.cuisine, item: data.item})}}>
             <Section>
                 <SectionImage source={data.image} height={200} />
                 <SectionContent padding={10}>
