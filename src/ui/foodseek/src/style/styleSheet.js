@@ -26,6 +26,7 @@ const styles2 = StyleSheet.create({
     },
     buttonTextStyle: {
         color: '#FFFFFF',
+        alignItems: 'center',
         paddingVertical: 10,
         fontSize: 16,
     },
