@@ -11,7 +11,7 @@ export const FoodCardProvider = ( { children } ) => {
   const [ loading, setLoading ] = useState( false )
   const [ error, setError ] = useState( null )
   const [ location, setLocation ] = useState( { latitude: '36.974117', longitude: '-122.030792' } ) // TODO add location context
-  const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters
+  const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters per second
   const [unit, setUnit] = useState('mi') // TODO add preferred units context
   const { jwt } = useContext( AuthenticationContext )
   
@@ -57,7 +57,7 @@ export const FoodCardProvider = ( { children } ) => {
 
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, error}}>
+    <FoodCardContext.Provider value={{cards, test: setCards, onRefresh: refreshCards, loading, error}}>
       {children}
     </FoodCardContext.Provider>
   )
