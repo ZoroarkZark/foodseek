@@ -6,9 +6,10 @@
 
 const express = require('express')
 const bcrypt = require('bcrypt');
-
+var randtoken = require('rand-token');
 const sutil = require('../utility/serverutility.js');
-const sql = require('../utility/sqlhandler.js')
+const sql = require('../utility/sqlhandler.js');
+const { sendEmail } = require('../utility/serverutility.js');
 
 const CoreRouter = express.Router();
 
@@ -16,7 +17,7 @@ const CoreRouter = express.Router();
 //const Store =  sutil.UserStore;
 //const Store = sql.UserStore;
 const Store = new sql.UserStore();
-//const  = new FoodStore();
+
 module.exports = {CoreRouter}
 
 
@@ -41,7 +42,7 @@ CoreRouter.use('/test', (req,res)=>{
 // returns a response_object 
 CoreRouter.post('/signup', async (req, res) => 
 {
-    console.log('in signup');
+    //console.log('in signup');
     // this is our standard response object being sent to the client in the res.body
     const resbody = new sutil.res_obj();
     
@@ -155,7 +156,49 @@ CoreRouter.post('/login', (req, res, next) => {
 
 // send an email to a user to let them reset their pass word
 CoreRouter.post('/fgpss', (req, res,next) => {
-    next();
+    //next();
+    const resbody = new sutil.res_obj();
+    if(sutil.validate(['email'], req.body)){
+        let token = randtoken.generate(20);
+        let sent = sendEmail(req.body.email, token);
+        console.log("sent:")
+        console.log(sent);
+        if(sent == 1){
+            resbody.setIssues(10)
+            res.end(resbody.package());
+            return;
+        }
+        bcrypt.hash(token, 10, (err, hash)=>{
+            if(err){
+                resbody.setIssue(4);
+                res.end(resbody.package());
+                return;
+            }
+            
+            Store.changeEmailToken(req.body.email, hash, (err) => {
+                if(err) {
+                    console.error(err);
+                    resbody.setIssues(err);
+                    res.end(resbody.package());
+                    return;
+                }
+
+                resbody.setData({
+                    message: "Succsesful update and email"
+                });
+                
+                res.end(resbody.package());
+                return;
+            });
+            
+            
+        });
+    }
+    else{
+        resbody.setIssues(1)
+        res.end(resbody.package());
+        return;
+    }
 });
 
 // post data here to set a new password

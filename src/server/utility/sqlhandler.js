@@ -1,6 +1,7 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
 const path = require('path');
+const nodemailer = require('nodemailer')
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
 TEST_POS = [
@@ -103,7 +104,38 @@ class UserStore {
         });
     }
 
-}
+    changeEmailToken(email, token, callback){
+        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
+            var params = [
+                this.table,
+                this.col.pass,
+                token,
+                this.col.email,
+                email,
+            ]
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error updating pass for: ${email} - changeEmailToken`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - changeEmailToken");
+                    return callback(null,null); // no error but no result
+                }
+                console.log("password updated - changeEmailToken");
+                return callback(null, results.affectedRows);
+            });
+
+
+          }
+
+    }
+
+
 
 
 const { getDistance } = require('../utility/serverutility.js');

@@ -13,9 +13,11 @@
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
-
+const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const devJWT = process.env.JWT_SECRET;
+const EMAIL = process.env.EMAIL;
+const E_PASS = process.env.E_PASS;
 console.log("JWT Secret",devJWT);
 
 
@@ -293,6 +295,40 @@ function verifytoken(token, callback){
     });
 }
 
+//send email
+function sendEmail(email, token) {
+ 
+    var email = email;
+    var token = token;
+ 
+    var transport = nodemailer.createTransport({
+        service: "gmail",    
+        auth: {
+            user: 'foodseek2022.ucsc@gmail.com', // Your email id
+            pass: 'qtazkxgenmugphsh' // Your password
+        }
+    });
+ 
+    var mailOptions = {
+        from: 'FoodSeek',
+        to: email,
+        subject: 'New password token',
+        html: '<p>You requested for reset password, kindly use this ' + token + ' to sign in and reset your password</p>'
+ 
+    };
+ 
+    transport.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            console.log(1)
+            
+        } else {
+            console.log(0)
+            
+        }
+    });
+}
+
+
 
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
@@ -305,7 +341,8 @@ module.exports = {
     UserStore: US,
     FoodStore: FS,
     sign: signtoken,
-    verify: verifytoken
+    verify: verifytoken,
+    sendEmail: sendEmail
 
 }
 
