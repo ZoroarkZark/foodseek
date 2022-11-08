@@ -161,8 +161,6 @@ CoreRouter.post('/fgpss', (req, res,next) => {
     if(sutil.validate(['email'], req.body)){
         let token = randtoken.generate(20);
         let sent = sendEmail(req.body.email, token);
-        console.log("sent:")
-        console.log(sent);
         if(sent == 1){
             resbody.setIssues(10)
             res.end(resbody.package());
@@ -203,7 +201,7 @@ CoreRouter.post('/fgpss', (req, res,next) => {
 
 // post data here to set a new password
 CoreRouter.post('/newpass', (req, res,next)=> {
-    next();
+    //next();
 });
 
 CoreRouter.use('/rem', (req,res) => {

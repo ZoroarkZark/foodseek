@@ -87,9 +87,9 @@ UserRouter.post('/list', (req, res)=>{
 
 UserRouter.post('/reserve', (req,res)=>{
     const resbody = new sutils.res_obj();
-    console.log("in res")
+    //console.log("in res")
     if(sutils.validate(['id','user'], req.body)){
-        console.log("valid")
+        //console.log("valid")
         Store.reserveCard(req.body.id, req.body.user, (err) => {
             if(err){
                 resbody.setIssue(11, "Error reserving card");

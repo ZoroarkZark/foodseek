@@ -1,7 +1,7 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
 const database = require('mysql');
 const path = require('path');
-const nodemailer = require('nodemailer')
+
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
 TEST_POS = [
@@ -156,13 +156,15 @@ const { getM } = require('../utility/serverutility.js');
                 database: "foodseek"
             });
             this.food_table = "food_cards";
+            /*
             this.food_ID = "ID";
             this.food_Lat = "Lat";
             this.food_Lon = "Lon";
             this.food_Data = "Data";
             this.food_Reserved = "Reserved";
             this.food_vendor = "Vendor"
-            /*
+            */
+            
             this.col = {
                 id:  "id",
                 lat: "lat",
@@ -171,7 +173,7 @@ const { getM } = require('../utility/serverutility.js');
                 res:  "res",
                 vendor: "vendor"
             }
-            */
+            
         }
         
         uploadCard(fooddata, callback){
@@ -186,15 +188,16 @@ const { getM } = require('../utility/serverutility.js');
             var params = [
                 this.food_table,
                 //this.food_ID,
-                this.food_Lat,
-                this.food_Lon,
-                this.food_Data,
-                this.food_vendor,
-                //fooddata.id,
+                this.col.lat,
+                this.col.lon,
+                this.col.data,
+                this.col.vendor,
+                //this.col.expired,
                 fooddata.lat,
                 fooddata.lon,
                 data, 
                 fooddata.vendor,
+                //expire time
             ]
             
             this.conn.query(SQL, params, (err) => {
@@ -230,10 +233,10 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
             var params = [
                 this.food_table,
-                this.food_Lat,
+                this.col.lat,
                 lat_min,
                 lat_max,
-                this.food_Lon,
+                this.col.lon,
                 lon_min,
                 lon_max
             ]
@@ -253,7 +256,7 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
             var params = [
                 this.food_table,
-                this.food_vendor,
+                this.col.vendor,
                 vendor_id
             ]
 
@@ -279,7 +282,7 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'DELETE FROM ?? where ?? = ?';
             var params = [
                 this.food_table,
-                this.food_ID,
+                this.col.id,
                 card_id
             ]
             this.conn.query(SQL, params, (err, results) => {
@@ -306,11 +309,11 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? is NULL'
             var params = [
                 this.food_table,
-                this.food_Reserved,
+                this.col.res,
                 username,
-                this.food_ID,
+                this.col.id,
                 id,
-                this.food_Reserved 
+                this.col.res 
             ]
 
             this.conn.query(SQL, params, (err, results) => {
@@ -336,9 +339,9 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
             var params = [
                 this.food_table,
-                this.food_Reserved,
+                this.col.res,
                 null,
-                this.food_reserved,
+                this.col.res,
                 user,
             ]
             this.conn.query(SQL, params, (err, results) => {
@@ -362,9 +365,9 @@ const { getM } = require('../utility/serverutility.js');
             let SQL = 'DELETE FROM ?? where ?? = ? AND ?? is NULL';
             var params = [
                 this.food_table,
-                this.food_ID,
+                this.col.id,
                 card_id,
-                this.food_Reserved,
+                this.col.res,
             ]
             this.conn.query(SQL, params, (err, results) => {
                 if(err){

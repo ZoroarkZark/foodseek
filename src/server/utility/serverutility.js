@@ -319,10 +319,10 @@ function sendEmail(email, token) {
  
     transport.sendMail(mailOptions, function(error, info) {
         if (error) {
-            console.log(1)
+            //console.log(1)
             
         } else {
-            console.log(0)
+            //console.log(0)
             
         }
     });
