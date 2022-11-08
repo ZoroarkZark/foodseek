@@ -43,6 +43,7 @@ export const Login = ({ navigation }) => {
     // idc just leave the other one alone lol
     const TestScreen = () => {
         return (
+            <ScrollViewDismissKeyboard>
             <View
                 style={{
                     flex: 6,
@@ -167,7 +168,8 @@ export const Login = ({ navigation }) => {
                         t.then((res) => console.log(res))
                     }}
                 />
-            </View>
+                </View>
+                </ScrollViewDismissKeyboard>
         )
     }
 
@@ -176,6 +178,7 @@ export const Login = ({ navigation }) => {
     //                       application
     const RealScreen = () => {
         return (
+            <ScrollViewDismissKeyboard>
             <View
                 style={{
                     flex: 6,
@@ -220,7 +223,8 @@ export const Login = ({ navigation }) => {
                 >
                     Forgot Password?
                 </TextButton>
-            </View>
+                </View>
+                </ScrollViewDismissKeyboard>
         )
     }
 
@@ -235,9 +239,8 @@ export const Login = ({ navigation }) => {
                     drawerPosition={DrawerLayout.positions.Left}
                     drawerBackgroundColor="#fff"
                 >
-                    <ScrollViewDismissKeyboard>
-                        <TestScreen />
-                    </ScrollViewDismissKeyboard>
+                    {TestScreen()}
+
                 </DrawerLayout>
             </Layout>
         </ThemeProvider>
