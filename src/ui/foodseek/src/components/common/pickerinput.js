@@ -9,8 +9,8 @@ const PickerInput = ({
     placeholder,
     label = 'Picker',
     options = [
-        { label: 'Seeker', value: 'USR_SEEK' },
-        { label: 'Vendor', value: 'USR_VEND' },
+        { label: 'Seeker', value: 0 },
+        { label: 'Vendor', value: 1 },
     ],
 }) => {
     return (

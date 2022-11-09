@@ -90,7 +90,7 @@ export const Signup = ({ navigation }) => {
     const updateState = () => {
         if (!acc) {
             alert('User must choose to be vendor or seeker...')
-        } else if (acc === 'USR_SEEK') {
+        } else if (acc === 0) {
             setPrev(state)
             setState('User')
         } else {
@@ -108,22 +108,31 @@ export const Signup = ({ navigation }) => {
 
     // button triggered event: form submission behavior
     const onSubmit = () => {
+        // organize data before sending request
         const data = {
-            fn: fn,
-            ln: ln,
-            phone: phone,
-            un: un,
-            loc: loc,
-            email: email,
-            pwd: pwd,
-            acc: acc,
-            bn: bn,
-            ba: ba,
-            bphone: bphone,
-            bemail: bemail,
-            inc: inc,
-            period: period,
-            ptravel: ptravel,
+            vendor: acc,
+            base: {
+                fn: fn,
+                ln: ln,
+                phone: phone,
+                email: email,
+                pwd: pwd,
+            },
+            seek: {
+                ...base,
+                un: un,
+                loc: loc,
+                inc: inc,
+                period: period,
+                ptravel: ptravel,
+            },
+            vend: {
+                ...base,
+                bn: bn,
+                ba: ba,
+                bphone: bphone,
+                bemail: bemail,
+            }
         }
         onSignup(email, pwd, data)
     }
