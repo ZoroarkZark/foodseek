@@ -1,72 +1,71 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Text, View } from 'react-native'
-import { Button } from 'react-native-rapi-ui'
 import ViewMap from '../../../../components/common/map.js'
 import { map as style } from '../../../../style/styleSheet.js'
-import * as loc from 'expo-location'
+import { Ionicons } from '@expo/vector-icons'
+import TextButton from '../../../../components/common/textbutton.js'
+import { LocationContext } from '../../../../context/LocationContext.js'
+import { Marker } from 'react-native-maps'
 
-// experimenting with map ui and expo-location after accepting permission get check terminal for your location in LOG
 export const Map = ({ navigation, route }) => {
-    const [ test, setTest ] = useState( '' )
-    const [ view, setView ] = useState( true )
-    const [ location, setLocation ] = useState( null )
-    const [ error, setError ] = useState( null )
-    
-    // requests location once after asking for permission to access it
-    useEffect( () => {
-        ( async () => {
-            let { status } = await loc.requestForegroundPermissionsAsync()
-            if ( status !== 'granted' ) {
-                setError( 'Location permissions were denied' )
-                return
-            }
-            let location = await loc.getCurrentPositionAsync()
-            setLocation(location)
-        }) ()
-    }, [] )
-    
-    // assign the text variable in case of error or if a valid location was received
-    let text = 'Loading...'
-    if ( error ) {
-        text = error
-    } else if ( location ) {
-        text = JSON.stringify( location )
-    }
+    const { deviceLocation, getLocation, setLocation } = useContext(LocationContext)
+    const [showUser, setShowUser] = useState(false) // state used to show or hide user on map
+    const [mapRegion, setMapRegion] = useState({
+        // default to los angeles (so we can test an animated prop later)
+        latitude: 34.059761,
+        longitude: -118.276802,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    } )
+    const [ origin, setOrigin ] = useState(
+        {
+            latitude: 34.059761,
+            longitude: -118.276802
+        }
+    )
 
-    // when the location or error text is updated... print to console.log
-    useEffect( () => {
-        console.log( text )
-    }, [ text ] )
+    // when the user presses the button to use the devices location, it updates the map with the location
+    useEffect(() => {
+        if (!deviceLocation) return
+        const {
+            coords: { longitude, latitude },
+        } = deviceLocation
+        setShowUser(true)
+        setOrigin(
+            {
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+            }
+        )
+        setMapRegion(
+            {
+            latitude: Number(latitude),
+            longitude: Number(longitude),
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+            }
+        )
+        setLocation(deviceLocation)
+    }, [deviceLocation])
+
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            { !view
-            ?   <>
-                    <Text>User Details 12334</Text>
-                    <Button
-                        text="Continue"
-                        onPress={() => {
-                            console.log( 'button clicked' )
-                            let a = SI.xmlTest( ( body ) => {
-                                console.log( body )
-                                setTest( body.test )
-                            } )
-                        }}
-                    />
-                    <Text>{test}</Text>
-                </>
-                : <>
-                    <View style={style.container}>
-                        <ViewMap style={style} />    
-                    </View>
-                </>
-            }
-            <Button text={view ? 'hide map' : 'show map'} onPress={() => setView( !view )} ></Button>
+        <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+            <View style={style.container}>
+                <ViewMap
+                    style={style}
+                    showUser={showUser}
+                    region={mapRegion}
+                >
+                    {mapRegion && <Marker coordinate={mapRegion} />} 
+                </ViewMap>
+            </View>
+            <TextButton onPress={() => getLocation()}>
+                <Ionicons name="location-outline" />
+                <Text>Current Location</Text>
+            </TextButton>
         </View>
     )
-}
-{
-    /*UserScreen.navigationOptions = {
-    title: 'User Details'
-};*/
 }
