@@ -354,7 +354,17 @@ function getDistance(lat1, lon1, lat2, lon2){
     const miles = dist_km * factor;
     return miles;
 }
-
+// creat mailOptions
+function createOptions(email, subject , html_str){
+    
+    var mailOptions = {
+        from: 'FoodSeek',
+        to: email,
+        subject: subject,
+        html: html_str
+    };
+    return mailOptions;
+}
 //send email
 function sendEmail(mailOptions) {
     
@@ -401,6 +411,7 @@ module.exports = {
     Logger: Log,
     logFile: getLogFile,
     sendEmail: sendEmail,
+    createOptions: createOptions,
 
 }
 

@@ -35,7 +35,9 @@ class UserStore {
             email: "user_email",
             pass: "password",
             vend: "vendor",
-            data: "Data"
+            data: "Data",
+            travel: "travel",
+            valid: "valid",
         };
     }
 
@@ -131,34 +133,34 @@ class UserStore {
             });
     }
 
-        changePassword(email, old_pass, new_pass, callback){
-            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?'
+        setValid(email, callback){
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
+            let valid = 1;
             var params = [
                 this.table,
-                this.col.pass,
-                new_pass,
+                this.col.valid,
+                valid,
                 this.col.email,
                 email,
-                this.col.pass,
-                old_pass,
             ];
     
                 this.conn.query(SQL, params, (err, results) => {
                     if(err){
-                        console.log(`Error changing pass for: ${email} - changePassword`);
+                        console.log(`Error settign email vaild for: ${email} - setValid`);
                         console.log(err);
                         return callback(err, null);
                     }
     
                     //var result = (results[0]) ? results[0] : null;
                     if(!results){
-                        console.log("null result - changePassword");
+                        console.log("null result - setValid");
                         return callback(null,null); // no error but no result
                     }
-                    console.log("password updated - changePassword");
+                    console.log("email validated - setValid");
                     return callback(null, results.affectedRows);
                 });
         }
+        
 }
 
 
