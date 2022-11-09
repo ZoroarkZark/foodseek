@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const url = require('url');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
-const { sendEmail } = require('../utility/serverutility.js');
+const { sendEmail, createOptions } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
 const jwt_decode = require('jwt-decode');
@@ -72,6 +72,17 @@ CoreRouter.post('/signup', async (req, res) =>
                     message: "Succsesful signup"
                 });
                 
+                
+                const token = sutil.sign({user: req.body.email});
+                let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> to reset your password</p>';
+                let subject = 'Confirmation email';
+                let mailOptions = createOptions(req.body.email, subject, html_str);
+                let sent = sendEmail(mailOptions);
+                if(sent == 1){
+                    resbody.setIssues(10)
+                    res.end(resbody.package());
+                    return;
+                }       
                 res.end(resbody.package());
                 return;
             });
@@ -156,15 +167,10 @@ CoreRouter.post('/fgpss', (req, res,next) => {
     //next();
     const resbody = new sutil.res_obj();
     if(sutil.validate(['email'], req.body)){
-    
         let token = sutil.sign({user: req.body.email});
-        var mailOptions = {
-            from: 'FoodSeek',
-            to: req.body.email,
-            subject: 'Password Reset Link',
-            html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/updatepass?token=' + token + '">link</a> to reset your password</p>'
-     
-        };
+        let html_str = '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/updatepass?token=' + token + '">link</a> to reset your password</p>';
+        let subject = 'Password Reset Link';
+        let mailOptions = createOptions(req.body.email, subject, html_str);
         let sent = sendEmail(mailOptions);
         if(sent == 1){
             resbody.setIssues(10)
@@ -191,16 +197,13 @@ CoreRouter.get('/updatepass', (req, res,next)=> {
             return;
         }
     });
-    // add code to set pass as token and email them their password
+    //  code to set pass as token and email them their password
     let token = randtoken.generate(20);
     let decoded = jwt_decode(req.query.token);
     let email = decoded.user;
-    var mailOptions = {
-        from: 'FoodSeek',
-        to: email,
-        subject: 'New Password Token',
-        html: '<p>You requested for reset password, kindly use this ' + token + ' to sign in </p>'
-    };
+    let subject = 'Reset Password Token';
+    let html_str = '<p>You requested for reset password, kindly use this ' + token + ' to sign in </p>';
+    let mailOptions = createOptions(email, subject, html_str)
     let sent = sendEmail(mailOptions);
     if(sent == 1){
         resbody.setIssues(10)
@@ -282,6 +285,30 @@ CoreRouter.post('/newpass', (req, res,next)=> {
         return;
     }
 });
+
+
+CoreRouter.get('/confirmEmail', (req,res) => {
+    const resbody = new sutil.res_obj();
+    sutil.verify(req.query.token, (err, type) => { // jwt check
+        if(err){
+            resbody.setIssue(2); // bad jwt
+            res.end(resbody.package());
+            return;
+        }
+    });
+    let decoded = jwt_decode(req.query.token);
+    let email = decoded.user;
+    Store.setValid(email, (err) => {
+        if(err){
+            resbody.setIssue(7);
+            res.end(resbody.package());
+            return;
+        }
+        
+    })
+
+});
+
 
 CoreRouter.use('/rem', (req,res) => {
     Store.deleteAll();
