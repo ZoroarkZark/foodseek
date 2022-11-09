@@ -7,7 +7,7 @@ import { View } from 'react-native';
 const ViewMap = ( { region, style, showUser} ) => {
   return (
     <View style={style ? style.container : {}} > 
-          <MapView style={style.component} showsUserLocation={showUser ? true : false} followsUserLocation={showUser ? true : false} region={region} />
+          <MapView style={style.component} showsUserLocation={showUser ? true : false} followsUserLocation={false} region={region} />
     </View >
     )
 }
