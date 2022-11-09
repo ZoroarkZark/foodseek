@@ -356,10 +356,8 @@ function getDistance(lat1, lon1, lat2, lon2){
 }
 
 //send email
-function sendEmail(email, token) {
-    console.log(token)
-    var email = email;
-    var token = token;
+function sendEmail(mailOptions) {
+    
  
     var transport = nodemailer.createTransport({
         service: "gmail",    
@@ -368,14 +366,6 @@ function sendEmail(email, token) {
             pass: 'qtazkxgenmugphsh' // Your password
         }
     });
- 
-    var mailOptions = {
-        from: 'FoodSeek',
-        to: email,
-        subject: 'New password token',
-        html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/updatepass%3Ftoken=' + token + '">link</a> to reset your password</p>'
- 
-    };
  
     transport.sendMail(mailOptions, function(error, info) {
         if (error) {
