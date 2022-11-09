@@ -6,12 +6,12 @@
 
 const express = require('express')
 const bcrypt = require('bcrypt');
-
+const url = require('url');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
-
+const { sendEmail } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
-
+var randtoken = require('rand-token');
 
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
@@ -152,7 +152,47 @@ CoreRouter.post('/login', (req, res, next) => {
 
 // send an email to a user to let them reset their pass word
 CoreRouter.post('/fgpss', (req, res,next) => {
-    next();
+    //next();
+    //let token; 
+    const resbody = new sutil.res_obj();
+    if(sutil.validate(['email'], req.body)){
+        let token = randtoken.generate(20);
+        //let token = sutil.sign({user: req.body.email});    
+        console.log(token)
+        let sent = sendEmail(req.body.email, token);
+        if(sent == 1){
+            resbody.setIssues(10)
+            res.end(resbody.package());
+            return;
+        }
+        
+    }
+    else{
+        resbody.setIssues(1)
+        res.end(resbody.package());
+        return;
+    }
+});
+
+// post data here to set a update new password with link
+CoreRouter.get('/updatepass', (req, res,next)=> {
+    //next();
+    const resbody = new sutil.res_obj();
+    let token = url.parse(req.url, true).query.token
+    console.log(token)
+    console.log(req.body.token)
+    sutil.verify(req.query.token, (err, type) => { // jwt check
+        if(err){
+            resbody.setIssue(2); // bad jwt
+            res.end(resbody.package());
+            console.log("fail")
+            return;
+        }
+    });
+
+    if(sutil.validate(['email' ], req.body)){ 
+
+    }
 });
 
 // post data here to set a new password
