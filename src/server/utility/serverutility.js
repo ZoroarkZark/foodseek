@@ -19,6 +19,8 @@ const jwt = require('jsonwebtoken');
 const devJWT = process.env.JWT_SECRET;
 console.log("JWT Secret",devJWT);
 
+const nodemailer = require('nodemailer');
+
 
 common_issues = {
     0: "fallthrough error (nothing happened)",
@@ -353,6 +355,30 @@ function getDistance(lat1, lon1, lat2, lon2){
     return miles;
 }
 
+//send email
+function sendEmail(mailOptions) {
+    
+ 
+    var transport = nodemailer.createTransport({
+        service: "gmail",    
+        auth: {
+            user: 'foodseek2022.ucsc@gmail.com', // Your email id
+            pass: 'qtazkxgenmugphsh' // Your password
+        }
+    });
+ 
+    transport.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            //console.log(1)
+            return 1;
+            
+        } else {
+            //console.log(0)
+            return 0;
+        }
+    });
+}
+
 
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
@@ -373,7 +399,8 @@ module.exports = {
     getM: getM,
     getDistance: getDistance,
     Logger: Log,
-    logFile: getLogFile
+    logFile: getLogFile,
+    sendEmail: sendEmail,
 
 }
 

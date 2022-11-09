@@ -104,7 +104,63 @@ class UserStore {
         });
     }
 
+    setPassword(email, pass, callback){
+        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? '
+            var params = [
+                this.table,
+                this.col.pass,
+                pass,
+                this.col.email,
+                email,
+            ];
+
+            this.conn.query(SQL, params, (err, results) => {
+                if(err){
+                    console.log(`Error updating pass for: ${email} - setPassword`);
+                    console.log(err);
+                    return callback(err, null);
+                }
+
+                //var result = (results[0]) ? results[0] : null;
+                if(!results){
+                    console.log("null result - setPassword");
+                    return callback(null,null); // no error but no result
+                }
+                console.log("password updated - setPassword");
+                return callback(null, results.affectedRows);
+            });
+    }
+
+        changePassword(email, old_pass, new_pass, callback){
+            let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?'
+            var params = [
+                this.table,
+                this.col.pass,
+                new_pass,
+                this.col.email,
+                email,
+                this.col.pass,
+                old_pass,
+            ];
+    
+                this.conn.query(SQL, params, (err, results) => {
+                    if(err){
+                        console.log(`Error changing pass for: ${email} - changePassword`);
+                        console.log(err);
+                        return callback(err, null);
+                    }
+    
+                    //var result = (results[0]) ? results[0] : null;
+                    if(!results){
+                        console.log("null result - changePassword");
+                        return callback(null,null); // no error but no result
+                    }
+                    console.log("password updated - changePassword");
+                    return callback(null, results.affectedRows);
+                });
+        }
 }
+
 
 class FoodStore {
     constructor(options) {
