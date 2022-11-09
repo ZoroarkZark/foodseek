@@ -31,6 +31,7 @@ Providing a convenient, quick, and easy-to-use interface for a consumer type use
   - Post creation and listing for advertising available donations.
     * Post creation for Vendors to submit formatted postings (_food cards_) with visual content provided from the uploaded menu, a device's camera, or the device photo gallery.
     * Post search/listing with filters for Seekers to view listings that are relevant to them based on dietary preferences/requirements, proximity, and acccessibility.
+    * 
   - Reservation system
     * Helper animations/text explains a well defined transactional model for how this process will go. 
     * Confirmed reservations result in automatically sharing the necessary information between both parties so both can share expectations of service.
@@ -41,15 +42,37 @@ Providing a convenient, quick, and easy-to-use interface for a consumer type use
 
 # Application Preview (Screenshots/Animations) 
 
+Login Screen
 
+![Ze 1](https://user-images.githubusercontent.com/48034253/200879306-ad356428-b5a5-4017-ba99-d540ae173660.jpg)
+
+Map Screen
+
+![Ze2 1](https://user-images.githubusercontent.com/48034253/200879448-11179ba8-76e3-4213-8e03-c1a5b6a453f0.jpg)
 
 
 ---
 
 
 # Tools/Resources/Libraries
+We had utilized Visual Studio Code for our coding environment. In order to work with React Native and Expo, its framework, which are designed for designing the frontend of the application, Node.js, Git, and Watchman (if MacOS or Linux) is needed.
 
 
+For designing the frontend, we had utilized different libraries:
+
+The standard React + React-Native libraries, for basic usage, such as buttons, styling, and general UI design.
+
+The React Navigation library, for navigation throughout the app.
+
+The React Native Rapi UI library, for more refined UI elements and cleaner usage of said elements.
+
+The React Native Asynchronous Storage library, to allow for saving values more directly into a file within the app.
+
+The React Native Gesture Handler library, for introducing more refined touch screen-based elements into the app.
+
+The Expo Camera library, for being able to utilize the camera for uploading images of the post's food in questions.
+
+The Geolib library, for determining distance between different points on a map, for post distance calculation.
 
 
 ---
