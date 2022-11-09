@@ -1,8 +1,5 @@
 import * as Location from 'expo-location'
 
-const requestLocation = ( searchKey ) => {
-  
-  return (
-
-  )
+const fetchReverseGeocode = async ( searchKey ) => {
+    // gets the locations address from the 
 }
