@@ -19,11 +19,9 @@ export const FoodCardProvider = ( { children } ) => {
     setLoading( true )
     setCards( [] )
     try {
-      console.log('hi')
       cardRequest( loc, jwt )
       .then( (results) => { 
         const { items } = results
-        //console.log(JSON.stringify(items))
         return cardTransform( loc, speed, JSON.parse(items), unit )
       } )
       .then( ( arr ) => {
@@ -49,7 +47,6 @@ export const FoodCardProvider = ( { children } ) => {
   useEffect( () => {
     if ( location ) {
       retrieveCards( location, jwt )
-      //(error) && console.error(error) // maybe prints out the error if not null
     }
   }, [ location ] )
   

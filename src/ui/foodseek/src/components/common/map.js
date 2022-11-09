@@ -4,11 +4,11 @@ import { View } from 'react-native';
 
 
 // map displays user's location if permission has been given
-const ViewMap = ( { location, style } ) => {
-    return (
-        <View style={style ? style.container : {}} > 
-            <MapView style={style.component} showsUserLocation={true} />
-        </View >
+const ViewMap = ( { region, style, showUser} ) => {
+  return (
+    <View style={style ? style.container : {}} > 
+          <MapView style={style.component} showsUserLocation={showUser ? true : false} followsUserLocation={showUser ? true : false} region={region} />
+    </View >
     )
 }
 
