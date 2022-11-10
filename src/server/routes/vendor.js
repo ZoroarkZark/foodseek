@@ -138,3 +138,28 @@ VendorRouter.post('/conf', (req,res) => {
     }
 });
 
+VendorRouter.post('/checkres', (req,res) => {
+    let resbody = new sutils.res_obj();
+
+    if(sutils.validate(['vendor'], req.body)){
+        FoodStore.getVendorReserved(req.body.vendor, (err, results) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                msg:"Get reserved cards",
+                cards: results
+            });
+            res.end(resbody.package());
+            return;
+        })
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+})
