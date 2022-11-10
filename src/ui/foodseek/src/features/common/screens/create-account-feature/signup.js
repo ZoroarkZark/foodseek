@@ -2,11 +2,11 @@ import React, { useContext, useState } from 'react'
 import { Text, View, Button } from 'react-native'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 import { UserForm, VendorForm, BaseForm } from '../../../../components/forms'
-import { TextButton, Title } from '../../../../components/common'
+import { ScrollViewDismissKeyboard, TextButton, Title } from '../../../../components/common'
 
 // Function returns the user registration screen as a component
 export const Signup = ({ navigation }) => {
-    const { onSignup } = useContext(AuthenticationContext)
+    const { onSignup, loading } = useContext(AuthenticationContext)
 
     const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$')
     const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$')
@@ -108,7 +108,7 @@ export const Signup = ({ navigation }) => {
     }
 
     // button triggered event: form submission behavior
-    const onSubmit = () => {
+    const onSubmit = async () => {
         // organize data before sending request
         const base = {
             fn: fn,
@@ -135,7 +135,7 @@ export const Signup = ({ navigation }) => {
                 bemail: bemail,
             }
         }
-        onSignup(email, pwd, data)
+        let result = await onSignup(email, pwd, data)
     }
 
     // renders the title, a return to login button, and conditionally renders form fields and buttons based on user input
@@ -147,6 +147,7 @@ export const Signup = ({ navigation }) => {
                 paddingTop: 30,
             }}
         >
+            <ScrollViewDismissKeyboard>
             <Title>Create Account</Title>
             <View
                 style={{
@@ -192,7 +193,8 @@ export const Signup = ({ navigation }) => {
                 <Button title="Back" onPress={() => goBack()}>
                     Returns to previous page
                 </Button>
-            )}
+                )}
+            </ScrollViewDismissKeyboard>
         </View>
     )
 }
