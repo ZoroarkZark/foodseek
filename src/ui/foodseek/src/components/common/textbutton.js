@@ -6,6 +6,9 @@ const TextButton = ({
     children,
     style = {
         color: 'black',
+        padding: 10,
+        alignContent: 'stretch'
+
     },
 }) => (
     <Button

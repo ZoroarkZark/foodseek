@@ -2,6 +2,12 @@
     "expo": {
         "name": "foodseek",
         "slug": "foodseek",
+        "scheme" : "com.nspicer.foodseek",
+        "extra": {
+            "eas": {
+              "projectId": "3aeb3a0a-badc-494b-9d37-15b15787b929"
+            }
+          },
         "owner": "nspicer",
         "version": "1.0.0",
         "orientation": "portrait",
@@ -12,14 +18,12 @@
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
-        "test": {
-            "avatar": "./assets/avatar_expanded.png"
-        },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
+            "bundleIdentifier": "com.nspicer.foodseek",
             "supportsTablet": true,
             "infoPlist": {
                 "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location",

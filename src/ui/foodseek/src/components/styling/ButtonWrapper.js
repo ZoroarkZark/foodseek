@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { StyleSheet, View, Button} from 'react-native'
 import { ThemeContextProvider, ThemeContext } from '../../context/ThemeContext'
 
-const TextWrapper = ({ children }) => {
+const ButtonWrapper = ({ children }) => {
     const {darkTheme, toggleTheme} = useContext(ThemeContext);
 
     const styles = StyleSheet.create({
@@ -31,4 +31,4 @@ const TextWrapper = ({ children }) => {
     )
 }
 
-export default TextWrapper
+export default ButtonWrapper

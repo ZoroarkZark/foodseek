@@ -90,7 +90,7 @@ export const Login = ({ navigation }) => {
                 </TextButton>
                 <TextButton
                     style={styles.textButton}
-                    onPress={() => navigation.navigate('Forgot Password')}
+                    onPress={() => navigation.navigate('ForgotPassword')}
                 >
                     Forgot Password?
                 </TextButton>
