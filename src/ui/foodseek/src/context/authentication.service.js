@@ -48,9 +48,9 @@ export const resetPasswordRequest = (email) => {
 
 
 // request to update the password for this account
-export const patchPasswordRequest = (email, password) => {
+export const patchPasswordRequest = (tok, password) => {
     let path = 'newpass'
-    return fetchRequest( path, "post", { email: email, pass: password } )
+    return fetchRequest( path, "post", { tok: tok, pass: password } )
         .then( (response) => {
             if ( response.success != 1 ) {
                 throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error

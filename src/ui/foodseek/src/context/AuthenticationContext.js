@@ -3,6 +3,8 @@ import {
     loginRequest,
     signupRequest,
     logoutRequest,
+    resetPasswordRequest,
+    patchPasswordRequest,
 } from './authentication.service'
 
 export const AuthenticationContext = createContext()
@@ -63,6 +65,52 @@ export const AuthenticationContextProvider = ({ children }) => {
             } )
     }
 
+    // sends a request to the server to reset an account with the given email
+    const onResetPassword = (email) => {
+        setLoading(true)
+        // return error for data checks client side
+        if (!email) {
+            setError('Error: no email provided when resetting password')
+            return
+        }
+        // call signup request and set user
+        resetPasswordRequest(email)
+            .then( ( response ) => {
+                if ( response.message === 'Reset request recieved' ) 
+                { 
+                    setLoading( false )
+                    return
+                }
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError(err.toString())
+            } )
+    }
+
+    // submits new password to update the db
+    const onNewPassword = ( email, tok, password ) => {
+        setLoading(true)
+        // return error for data checks client side
+        if (!email) {
+            setError('Error: no email provided when resetting password')
+            return
+        }
+        // call signup request and set user
+        patchPasswordRequest(tok, password)
+            .then( ( response ) => {
+                if ( response.message === 'Password successfully updated' ) 
+                { 
+                    onLogin(email, password)
+                }
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError(err.toString())
+            } )
+    }
+
+
     // function called when logging out of the application
     const onLogout = () => {
         setUser(null)
@@ -78,6 +126,8 @@ export const AuthenticationContextProvider = ({ children }) => {
                 loading,
                 user,
                 error,
+                onResetPassword,
+                onNewPassword,
                 onLogin,
                 onSignup,
                 onLogout,

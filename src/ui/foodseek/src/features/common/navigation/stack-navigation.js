@@ -8,7 +8,7 @@ import * as screen from '../screens'
 const Stack = createNativeStackNavigator() // Create stack navigator component
 
 // Returns a stack navigator for the screens Login/Register/Forgot Password related by authentication flow
-export const AuthenticationNavigation = () => {
+export const AuthenticationNavigation = ({linking}) => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
@@ -22,9 +22,13 @@ export const AuthenticationNavigation = () => {
                 options={{ title: 'Signup' }}
             />
             <Stack.Screen
-                name="Forgot Password" //FORGOT PASSWORD PAGE SCREEN
+                name="ForgotPassword" //FORGOT PASSWORD PAGE SCREEN
                 component={screen.ForgotPassword}
                 options={{ title: 'Forgot Password' }}
+            />
+            <Stack.Screen
+                name="ChangePassword" 
+                component={screen.ChangePassword}
             />
         </Stack.Navigator>
     )

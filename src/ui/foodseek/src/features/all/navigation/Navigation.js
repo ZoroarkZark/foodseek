@@ -7,12 +7,12 @@ import { AppNavigation } from './AppNavigation'
 import { AuthenticationNavigation } from '../../common/navigation/stack-navigation'
 
 // Returns a navigation container for the top-level navigator in the application.
-export const Navigation = () => {
+export const Navigation = ({linking}) => {
     const { isAuthenticated } = useContext(AuthenticationContext)
     return (
         // container wraps top-level navigator, linking it to the app environment
-        <NavigationContainer>
-          { isAuthenticated ? <AppNavigation /> : <AuthenticationNavigation /> }
+        <NavigationContainer linking={linking}>
+        {isAuthenticated ? <AppNavigation linking={linking} /> : <AuthenticationNavigation linking={linking} /> }
         </NavigationContainer>
     )
 }
