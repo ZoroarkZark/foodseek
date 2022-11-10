@@ -175,6 +175,7 @@ class FoodStore {
 
     }
 
+    // upload whole card
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
         let data = JSON.stringify({
@@ -207,7 +208,7 @@ class FoodStore {
         
    
     
-
+    // return all cards
     getCardsAll(callback){
         let SQL = "SELECT * FROM ??";
         let params = [this.table];
@@ -221,6 +222,7 @@ class FoodStore {
         })
     }
 
+    // get all cards maxdist_m from pos
     getCardsByRange(pos , maxdist_m, callback){
             let Km = sutil.getKm(maxdist_m);
             console.log(Km);
@@ -260,6 +262,7 @@ class FoodStore {
        
     }
 
+    // return all cards uploaded by a vendor
     getCardsVendor(vendor_id, callback){
         let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
         let params = [
@@ -282,6 +285,44 @@ class FoodStore {
 
     }
 
+    // return reserved cards for a vendor (so vendors can see if their cards have been reserved by users)
+    getVendorReserved(vendor_id, callback){
+        let SQL = "SELECT * FROM  ?? WHERE ?? = ? AND ?? IS NOT NULL";
+        let params = [
+            this.table,
+            this.col.vendor = vendor_id,
+            this.col.res
+        ]
+
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                return callback(err, null);
+            }
+            if(!results){
+                return callback(null,null);
+            }
+
+            return callback(null,results);
+        })
+    }
+
+    //return the card the user has
+    getUserReserved(user_id, callback){
+        let SQL = "SELECT * FROM ?? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.res,
+            user_id
+        ]
+
+        this.conn.query(SQL, params ,(err, results) => {
+            if(err) return callback(err,null);
+            if(!results) return callback(null,null);
+            return callback(null, results); // we should only get one here so we might want to check that somewhere.
+        });
+    }
+
+    // delete card by id 
     deleteCardsById(card_id, callback){
         let SQL = 'DELETE FROM ?? where ?? = ?';
         let params = [
@@ -302,6 +343,7 @@ class FoodStore {
 
     }
 
+    // reserve card by id and upload user email into reserved field
     reserveCard(id, username, callback){
         //change the card with card.id = id in the database to set its reserved field = username
         // You were using a Insert here but we want to use Update
@@ -330,6 +372,7 @@ class FoodStore {
 
     }
 
+    // remove the user from the card
     cancelReservation(username, callback){
         let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
         let params = [
