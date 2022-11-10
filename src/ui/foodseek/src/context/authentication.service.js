@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { seekerAvatar } from '../../assets'
 import { fetchRequest } from '../scripts/deviceinterface'
 
 

@@ -24,7 +24,7 @@ export const Signup = ({ navigation }) => {
     const [loc, setLoc] = useState('') // location
     const [email, setEmail] = useState('') // email
     const [pwd, setPwd] = useState('') // password
-    const [acc, setAcc] = useState('') // account type (vendor/seeker)
+    const [acc, setAcc] = useState(null) // account type (vendor/seeker)
     const [bn, setBn] = useState('') // business name
     const [ba, setBa] = useState('') // business address
     const [bphone, setBPhone] = useState('') // business phone number
@@ -88,14 +88,15 @@ export const Signup = ({ navigation }) => {
 
     // button triggered event: updates the state based on user input
     const updateState = () => {
-        if (!acc) {
-            alert('User must choose to be vendor or seeker...')
-        } else if (acc === 0) {
+
+        if (acc === 0) {
             setPrev(state)
             setState('User')
-        } else {
+        } else if (acc === 1) {
             setPrev(state)
             setState('Vendor')
+        } else {
+            alert('User must choose to be vendor or seeker...')
         }
     }
 
@@ -109,15 +110,15 @@ export const Signup = ({ navigation }) => {
     // button triggered event: form submission behavior
     const onSubmit = () => {
         // organize data before sending request
+        const base = {
+            fn: fn,
+            ln: ln,
+            phone: phone,
+            email: email,
+            pwd: pwd,
+        }
         const data = {
             vendor: acc,
-            base: {
-                fn: fn,
-                ln: ln,
-                phone: phone,
-                email: email,
-                pwd: pwd,
-            },
             seek: {
                 ...base,
                 un: un,
