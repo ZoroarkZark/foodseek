@@ -1,9 +1,13 @@
 import React, { useContext } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Button, StyleSheet, Text, View } from 'react-native'
+import { DrawerLayout } from 'react-native-gesture-handler'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 import { Avatar } from '../../../../components/common'
 
-export const StoreSettings = ({ navigation }) => {
+
+
+
+const StoreScreen = () => {
     const { user } = useContext(AuthenticationContext)
 
     return (
@@ -28,6 +32,23 @@ export const StoreSettings = ({ navigation }) => {
             )}
         </View>
     )
+}
+
+export const StoreSettings = ({ navigation }) => {
+    
+    return (
+        <View>
+        <DrawerLayout
+                    drawerType="front"
+                    renderNavigationView={StoreScreen}
+                    drawerWidth={Dimensions.get('screen').width}
+                    drawerPosition={DrawerLayout.positions.Left}
+                    drawerBackgroundColor="#fff"
+        >
+        <Button title={"Blah"} onPress={() => {navigation.navigate("Hours")}}/>
+        </DrawerLayout> 
+        </View>   
+     )
 }
 
 const styles = StyleSheet.create({
