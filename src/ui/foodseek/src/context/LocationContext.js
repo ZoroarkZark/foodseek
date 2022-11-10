@@ -10,7 +10,6 @@ export const LocationProvider = ( { children } ) => {
   const [ error, setError ] = useState( null )
   const [ keyword, setKeyword ] = useState( 'Santa Cruz' )
   
-
   const onLocate = async () => {
     setLoading(true)
     try {

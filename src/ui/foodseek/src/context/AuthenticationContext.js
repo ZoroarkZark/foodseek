@@ -29,6 +29,9 @@ export const AuthenticationContextProvider = ({ children }) => {
         loginRequest(email, password)
             .then( ( u ) => {
                 // TODO: parse response.data
+                if ( u.success === 0 ) {
+                    throw new Error( u.issues.message, { cause: u.issues } )
+                }
                 setJWT(u.jwt)
                 setUser(u) // pretend its parsed for now 
                 setLoading(false)
@@ -49,14 +52,15 @@ export const AuthenticationContextProvider = ({ children }) => {
         }
         // call signup request and set user
         signupRequest(email, password, data)
-            .then((u) => {
-                setUser(u)
-                setLoading(false)
+            .then( ( response ) => {
+                if ( response.message === 'Succsesful signup' ) { // lol!
+                    onLogin(email, password)
+                }
             })
             .catch((err) => {
                 setLoading(false)
                 setError(err.toString())
-            })
+            } )
     }
 
     // function called when logging out of the application

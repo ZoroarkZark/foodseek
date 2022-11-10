@@ -24,7 +24,7 @@ export const Signup = ({ navigation }) => {
     const [loc, setLoc] = useState('') // location
     const [email, setEmail] = useState('') // email
     const [pwd, setPwd] = useState('') // password
-    const [acc, setAcc] = useState('') // account type (vendor/seeker)
+    const [acc, setAcc] = useState(null) // account type (vendor/seeker)
     const [bn, setBn] = useState('') // business name
     const [ba, setBa] = useState('') // business address
     const [bphone, setBPhone] = useState('') // business phone number
@@ -88,14 +88,15 @@ export const Signup = ({ navigation }) => {
 
     // button triggered event: updates the state based on user input
     const updateState = () => {
-        if (!acc) {
-            alert('User must choose to be vendor or seeker...')
-        } else if (acc === 'USR_SEEK') {
+
+        if (acc === 0) {
             setPrev(state)
             setState('User')
-        } else {
+        } else if (acc === 1) {
             setPrev(state)
             setState('Vendor')
+        } else {
+            alert('User must choose to be vendor or seeker...')
         }
     }
 
@@ -108,22 +109,31 @@ export const Signup = ({ navigation }) => {
 
     // button triggered event: form submission behavior
     const onSubmit = () => {
-        const data = {
+        // organize data before sending request
+        const base = {
             fn: fn,
             ln: ln,
             phone: phone,
-            un: un,
-            loc: loc,
             email: email,
             pwd: pwd,
-            acc: acc,
-            bn: bn,
-            ba: ba,
-            bphone: bphone,
-            bemail: bemail,
-            inc: inc,
-            period: period,
-            ptravel: ptravel,
+        }
+        const data = {
+            vendor: acc,
+            seek: {
+                ...base,
+                un: un,
+                loc: loc,
+                inc: inc,
+                period: period,
+                ptravel: ptravel,
+            },
+            vend: {
+                ...base,
+                bn: bn,
+                ba: ba,
+                bphone: bphone,
+                bemail: bemail,
+            }
         }
         onSignup(email, pwd, data)
     }

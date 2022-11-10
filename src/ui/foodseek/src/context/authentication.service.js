@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { seekerAvatar } from '../../assets'
 import { fetchRequest } from '../scripts/deviceinterface'
+
 
 // function sends login request to the server with email and password
 export const loginRequest = ( email, password ) => {
@@ -15,25 +15,47 @@ export const loginRequest = ( email, password ) => {
         .catch( ( error ) => { throw error } )
 }
 
+
 // function sends signup request to the server with email, password and form data
 export const signupRequest = (email, password, data) => {
-    // send the request here and recieve back a promise
-
-    // temporary placeholder for promise
-    const promise = new Promise((resolve, reject) => {
-        resolve({
-            email: email,
-            id: '123',
-            isVendor: true,
-            un: data.bn ? data.bn : data.un,
-            avatar: seekerAvatar,
-        })
-    })
-
-    return promise
+    let path = 'signup'
+    const { vendor } = data
+    const formData = vendor === '1' ? data.vend : data.seek
+    return fetchRequest( path, "post", { email: email, pass: password, vendor: vendor, formData: formData } )
+        .then( (response) => {
+            if ( response.success != 1 ) {
+                throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error
+            }
+            return response.data
+        } )
+        .catch( ( error ) => { throw error } )
 }
 
-// communicate to server that this login has ended
-export const logoutRequest = () => {
-    // send the request here and recieve back nothing
+
+// request to have the server handle a request to reset a user's password
+export const resetPasswordRequest = (email) => {
+    let path = 'fgpass'
+    return fetchRequest( path, "post", { email: email } )
+        .then( (response) => {
+            if ( response.success != 1 ) {
+                throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error
+            }
+            return response.data
+        } )
+        .catch( ( error ) => { throw error } )
+}
+
+
+
+// request to update the password for this account
+export const patchPasswordRequest = (email, password) => {
+    let path = 'newpass'
+    return fetchRequest( path, "post", { email: email, pass: password } )
+        .then( (response) => {
+            if ( response.success != 1 ) {
+                throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error
+            }
+            return response.data
+        } )
+        .catch( ( error ) => { throw error } )
 }
