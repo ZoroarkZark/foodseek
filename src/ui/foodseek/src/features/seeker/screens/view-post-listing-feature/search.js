@@ -22,7 +22,7 @@ export const Search = ( {navigation} ) => {
     return (
         <ScrollViewDismissKeyboard>
         <View>
-            <Text> Name </Text>
+            <Text> Post Name </Text>
             <SearchInput
                     value={search}
                     onChangeText={(text) => setSearch(text)}
