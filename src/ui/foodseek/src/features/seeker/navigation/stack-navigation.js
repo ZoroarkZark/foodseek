@@ -63,7 +63,6 @@ export const PostsNavigator = () => {
     )
 }
 
-
 // Returns a stack navigator for the post listing screens
 export const OrderNavigator = () => {
     return (
@@ -85,7 +84,7 @@ export const SearchNavigator = () => {
             <Stack.Screen
                 name="Search" 
                 component={screen.Search}
-                options={{ title: 'Orders' }}
+                options={{ title: 'Search' }}
             />
         </Stack.Navigator>
     )

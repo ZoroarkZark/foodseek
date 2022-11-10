@@ -59,6 +59,11 @@ export const StoreSettings = () => {
                 component={screen.StoreSettings}
                 options={{ title: 'StoreSettings' }}
             />
+            <Stack.Screen
+                name="Hours"
+                component={screen.HoursOfOperationScreen}
+                options={{title: 'Hours'}}
+            />
         </Stack.Navigator>
-    )
+    )  
 }
