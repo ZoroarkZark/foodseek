@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const { res_obj } = require('../utility/serverutility.js');
 
 
 const sutils    = require('../utility/serverutility.js');
@@ -163,3 +164,35 @@ VendorRouter.post('/checkres', (req,res) => {
         return;
     }
 })
+
+VendorRouter.post('/list', (req,res) => {
+    let resbody = new res_obj();
+
+    if(sutils.validate(['vendor'])){
+        FoodStore.getCardsVendor(req.body.vendor, (err, results) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            if(results){
+                resbody.setData({
+                    msg: "got vendor cards",
+                    cards: results
+                });
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                msg: "no cards for this vendor",
+                cards: null
+            });
+
+            res.end(resbody.package());
+            return;
+
+        })
+    }
+});
