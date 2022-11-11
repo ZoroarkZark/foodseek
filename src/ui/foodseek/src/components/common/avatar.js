@@ -3,7 +3,8 @@ import { View, Image, Text } from 'react-native'
 
 const Avatar = ({
     children,
-    user,
+    avatar,
+    username,
     style = {
         width: 120,
         height: 120,
@@ -18,13 +19,13 @@ const Avatar = ({
         <View>
             <View style={{ ...style, elevation: 5 }}>
                 <View style={{ ...style, overflow: 'hidden' }}>
-                    <Image source={user.avatar} style={style}>
+                    <Image source={avatar} style={style}>
                         {children}
                     </Image>
                 </View>
             </View>
             <Text style={{ paddingTop: 20, fontWeight: '500' }}>
-                u: {user.un}
+                u: {username}
             </Text>
         </View>
     )

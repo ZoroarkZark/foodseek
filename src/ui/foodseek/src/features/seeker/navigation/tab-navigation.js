@@ -2,13 +2,13 @@ import React from 'react'
 import { Entypo, FontAwesome5, Ionicons } from '@expo/vector-icons' // used for tab icons
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { tabnav as style } from '../../../style/styleSheet'
-import * as stack from './stack-navigation'
+import { Stack as stack } from '.'
 
 // add bottom tab navigation to the application
 const SeekerTab = createBottomTabNavigator()
 
 // function returns a bottom tab navigator component for seeker type user
-export const SeekerNavigator = () => {
+export const SeekerTabNav = () => {
     return (
         <SeekerTab.Navigator
             screenOptions={style.screenOptions}

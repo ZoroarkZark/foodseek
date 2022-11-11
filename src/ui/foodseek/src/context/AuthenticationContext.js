@@ -8,13 +8,15 @@ import {
 } from './authentication.service'
 
 export const AuthenticationContext = createContext()
-
+import { defaultAvatar } from '../../assets'
 // provides a wrapper for sharing global context and mutator functions for authentication of the user session (leading to a logged in or logged out status)
 export const AuthenticationContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false) // create state holder for setting the loading state (while waiting for request responses show loading behavior)
     const [user, setUser] = useState(null) // create state holder for user (currently logged in)
     const [ error, setError ] = useState( '' ) // create state holder for storing error state for logging in
-    const [jwt, setJWT] = useState('')          // TODO: store more securely jwt
+    const [ jwt, setJWT ] = useState( '' )          // TODO: store more securely jwt
+    const [ avatar, setAvatar ] = useState( defaultAvatar )
+    
 
     // checks if incoming user is valid or null and updates the user
     // eslint-disable-next-line no-unused-vars
@@ -125,6 +127,7 @@ export const AuthenticationContextProvider = ({ children }) => {
                 jwt,
                 loading,
                 user,
+                avatar,
                 error,
                 onResetPassword,
                 onNewPassword,
