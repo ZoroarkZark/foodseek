@@ -167,23 +167,53 @@ CoreRouter.post('/fgpss', (req, res,next) => {
     //next();
     const resbody = new sutil.res_obj();
     if(sutil.validate(['email'], req.body)){
-        let token = sutil.sign({user: req.body.email});
-        let html_str = '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/updatepass?token=' + token + '">link</a> to reset your password</p>';
-        let subject = 'Password Reset Link';
+        let code = randtoken.generate(8);
+        Store.setForgotCode(req.body.email, code, (err) => {
+            if(err){
+			    resbody.setIssue(7);
+			    res.end(resbody.package());
+			    return;
+            }
+        })
+
+        let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
+        let subject = 'Confirmation code, forgot password';
         let mailOptions = createOptions(req.body.email, subject, html_str);
         let sent = sendEmail(mailOptions);
         if(sent == 1){
             resbody.setIssues(10)
             res.end(resbody.package());
             return;
-        }
-        
+        }        
     }
     else{
         resbody.setIssues(1)
         res.end(resbody.package());
         return;
     }
+});
+
+CoreRouter.post('validatecode', (req, res) => {
+    const resbody = new sutil.res_obj();
+    if(sutil.validate(['code'], req.body)){		
+		Store.getCodeInfo(req.body.code, (err, results) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+            console.log(results);
+            /*
+			if(result === req.body.code){
+				// correct code was used
+				resbody.setData({msg: "correct code for fgpass"});
+				res.end(resbody.package());
+				return;
+			}
+            */
+		})
+	}
+	
 });
 
 // post data here to set a update new password with link
