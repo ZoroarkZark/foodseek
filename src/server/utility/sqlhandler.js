@@ -164,7 +164,7 @@ class UserStore {
         }
 
         setForgotCode(email, code, callback){
-            let SQL = 'UPDATE ?? SET ?? = NOW(), ?? = ? WHERE ?? = ?'
+            let SQL = 'UPDATE ?? SET ?? = NOW() + INTERVAL 15 MINUTE, ?? = ? WHERE ?? = ?'
             let valid = 1;
             var params = [
                 this.table,
@@ -195,10 +195,9 @@ class UserStore {
         getCodeInfo(code, callback){
 
             //SQL query
-            let SQL = "SELECT ?? ?? FROM ?? WHERE ?? = ?";
+            let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
             let parameters = [
                 this.col.code,
-                this.col.exp,
                 this.table,
                 this.col.code,
                 code
@@ -210,11 +209,12 @@ class UserStore {
                 }
     
 
-                if(!results){
+                let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
+                if(!result){
                     return callback(null, null); // no error but no result
                 }
-                return callback(null, results);
-            });
+                return callback(null, result);
+            })
         }
 }
 

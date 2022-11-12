@@ -13,6 +13,7 @@ const { sendEmail, createOptions } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
 const jwt_decode = require('jwt-decode');
+const e = require('express');
 
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
@@ -193,24 +194,26 @@ CoreRouter.post('/fgpss', (req, res,next) => {
     }
 });
 
-CoreRouter.post('validatecode', (req, res) => {
+CoreRouter.post('/validatecode', (req, res) => {
     const resbody = new sutil.res_obj();
     if(sutil.validate(['code'], req.body)){		
-		Store.getCodeInfo(req.body.code, (err, results) => {
+		Store.getCodeInfo(req.body.code, (err, result) => {
             if(err){
                 resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
-            console.log(results);
-            /*
-			if(result === req.body.code){
+			if(result.code === req.body.code){
 				// correct code was used
 				resbody.setData({msg: "correct code for fgpass"});
 				res.end(resbody.package());
 				return;
 			}
-            */
+            else {
+                resbody.setData({msg: "no code found, request new code"});
+				res.end(resbody.package());
+				return;
+            }
 		})
 	}
 	
