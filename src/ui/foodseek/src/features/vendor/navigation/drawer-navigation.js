@@ -13,7 +13,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const Drawer = createDrawerNavigator()
 
-export const SeekerNavigator = () => {
+export const VendorNavigator = () => {
     const { avatar } = useContext(AuthenticationContext)
 
     return (
@@ -55,7 +55,7 @@ export const SeekerNavigator = () => {
         >
             <Drawer.Screen
                 name="App"
-                component={SeekerTabNav}
+                component={VendorTabNav}
                 options={({ navigation }) => ({
                     drawerItemStyle: { display: 'none' },
                     drawerIcon: ({ color }) => (

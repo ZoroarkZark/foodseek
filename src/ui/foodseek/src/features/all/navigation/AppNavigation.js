@@ -2,7 +2,7 @@
 import React, {useContext} from 'react'
 import { AuthenticationContext } from '../../../context/AuthenticationContext'
 import { FavoritesContextProvider } from '../../../context/FavoritesContext'
-import { VendorNavigator } from '../../vendor/navigation/tab-navigation'
+import { VendorNavigator } from '../../vendor/navigation/drawer-navigation'
 import { SeekerNavigator } from '../../seeker/navigation/drawer-navigation'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { FoodCardProvider, LocationProvider } from '../../../context'
