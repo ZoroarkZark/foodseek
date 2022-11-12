@@ -7,7 +7,7 @@ import * as stack from './stack-navigation'
 const VendorTab = createBottomTabNavigator()
 
 // function returns a vendor's bottom tab navigator component with nested stack navigators for each tab
-export const VendorNavigator = () => {
+export const VendorTabNav = () => {
     return (
         <VendorTab.Navigator
             screenOptions={style.screenOptions}

@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { Feather, Ionicons } from '@expo/vector-icons'
 
-import { SeekerTabNav } from './tab-navigation'
+import { VendorTabNav } from './tab-navigation'
 import { CustomDrawer } from './custom-drawer'
 
 import * as stack from './stack-navigation'

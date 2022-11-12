@@ -37,6 +37,10 @@ export const PostsNavigator = () => {
             <Stack.Screen
                 name="Posts" 
                 component={screen.Posts}
+                options={{
+                    
+                    headerLeft: () => {<></> }
+                }}
             />
             <Stack.Screen
                 name="ExpandedPost" 
@@ -100,16 +104,11 @@ export const FavoritesNavigator = ({navigation}) => {
         <Stack.Navigator
         screenOptions={{
                 headerShown: false,
-            headerBackVisible: true,
+                headerBackVisible: true,
         }}>
             <Stack.Screen
                 name="Favorites" 
                 component={screen.Favorites}
-                options={( { navigation } ) => ( {
-                    headerLeft: () => (
-                        <BackButton onPress={navigation.goBack} />
-                    ),
-                } )}
             />
         </Stack.Navigator>
     )
