@@ -116,7 +116,6 @@ export const AuthenticationContextProvider = ({ children }) => {
     // function called when logging out of the application
     const onLogout = () => {
         setUser(null)
-        logoutRequest()
     }
 
     return (

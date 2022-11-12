@@ -1,101 +1,83 @@
-import React, { useContext } from 'react'
-import { View, Text, ImageBackground, Image, TouchableOpacity } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-
+import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity } from 'react-native';
+import { DrawerItem, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { SafeAreaView } from 'react-native-safe-area-context'
 // custom build
 
 import { Avatar } from '../../../components/common';
 import { AuthenticationContext } from '../../../context/AuthenticationContext'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons'
+import { ThemeContext } from '../../../context/ThemeContext'
+
 
 
 export const CustomDrawer = props => {
   const { user, avatar } = useContext( AuthenticationContext )
+  const { darkTheme, toggleTheme } = useContext( ThemeContext )
+
+  const { navigation, color, backgroundColor } = props
   
-  // returns a small box with the formatted icon, label and number figure
-  const MiniBanner = ({Icon, Figure, Label}) => {
-    return (
-      <View style={{ flexDirection: row, flex: 3 }} >
-        <View style={{ flex: 1 }}>
-          <Icon />
+
+
+  return (<>
+    <SafeAreaView>
+      <View style={{flexDirection: 'column', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row' }}>
+        <View>
+          <Avatar avatar={avatar} />
         </View>
-        <View style={{ flex: 2 }}>
-          <View style={{ flex: 2, flexDirection: 'column' }}>
-            <View style={{ flex: 1 }}>
-              <Label />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Figure />
-            </View>
-          </View>
+        
+        <View style={{justifyContent: 'flex-start', alignSelf: 'flex-start', start: '40%'}}>
+          <TouchableOpacity onPress={() => navigation.closeDrawer()}>
+            <Feather name="x" size={22} color={color} />
+          </TouchableOpacity>
         </View>
       </View>
-    )
-  }
-
-  const Meals = ( {icon, style, figure} ) => {
-    return (
-      <MiniBanner 
-        Icon={<MaterialCommunityIcons name="baguette" size={icon.size} color={icon.color} />}
-        Figure={<Text style={style.figure}>{figure}</Text>}
-        Label={<Text style={style.label}>Meals</Text>} />
-    )
-  }
-
-  const  = ( {icon, style, figure} ) => {
-    return (
-      <MiniBanner 
-        Icon={<MaterialCommunityIcons name="baguette" size={icon.size} color={icon.color} />}
-        Figure={<Text style={style.figure}>{figure}</Text>}
-        Label={<Text style={style.label}>Meals</Text>} />
-    )
-  }
-  return (
-    <View style={{ flex: 1, flexDirection: 'column'}}>
-      {/* put in custom header stuff top of page */}
-      <Avatar avatar={avatar} username={user.un} />
-      <View style={{ flex: 2, flexDirection: 'row' }}>
-        <View style={{ flex: 1 }}>
-          
-        </View>
+      <Text style={{ paddingTop: 20, fontWeight: '500', color: color }}>
+        u: {user.un}
+        </Text>
+        
       </View>
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={{backgroundColor: '#8200d6'}}>
-        <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
-          <DrawerItemList {...props} />
-        </View>
+      </SafeAreaView>
+      <DrawerContentScrollView {...props} contentContainerStyle={{backgroundColor: {backgroundColor}}}>
+            <DrawerItemList {...props} />
       </DrawerContentScrollView>
+          
 
-      {/* {put still buttons here} */}
-      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="share-social-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                fontFamily: 'Roboto-Medium',
-                marginLeft: 5,
-              }}>
-              Tell a Friend
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="exit-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                fontFamily: 'Roboto-Medium',
-                marginLeft: 5,
-              }}>
-              Sign Out
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <SafeAreaView style={{flexDirection: 'row'}}>
+      <DrawerItem
+      flex={5}
+      label="Logout"
+      icon={() => (
+        <FontAwesome
+          name="power-off"
+          size={20}
+          color={color}
+        />
+      )}
+      onPress={() => onLogout()}
+      {...props}
+    />
+
+      <DrawerItem
+        flex={1}
+        label=''
+        labelStyle={{ display: 'none', padding: 0 }}
+          icon={() => (
+              <Ionicons
+              name={darkTheme ? 'ios-moon' : 'ios-moon-outline'}
+              size={20}
+              color={color}
+              />
+          )}
+      onPress={() => toggleTheme()}
+      {...props}
+      />
+      
+        
+      </SafeAreaView>
+
+    
+      </>
   );
 };

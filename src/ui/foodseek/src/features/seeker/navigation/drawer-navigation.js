@@ -1,50 +1,78 @@
-import React from 'react';
-import { createDrawerNavigator } from 'react-navigation-drawer';
-
-// import CustomDrawer from '../components/CustomDrawer';
-
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import ProfileScreen from '../screens/ProfileScreen';
-import MessagesScreen from '../screens/MessagesScreen';
-import MomentsScreen from '../screens/MomentsScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-
-
-// experimental part here
+import React, { useContext, useEffect, useState } from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { Feather } from '@expo/vector-icons'
 
 import { SeekerTabNav } from './tab-navigation';
-const Drawer = createDrawerNavigator();
-import { CustomDrawer } from './custom-drawer';
+import { CustomDrawer } from './custom-drawer'
 
+import * as screen from '../screens';
+import { ThemeContext } from '../../../context/ThemeContext'
+import { BackButton } from '../../../components/common/backbutton'
+import { useNavigation } from '@react-navigation/native'
 
-export const SeekerNavigator = () => {
+const Drawer = createDrawerNavigator()
+
+export const SeekerNavigator = ({navigation}) => {
+  const { darkTheme } = useContext( ThemeContext )
+  const [ backgroundColor, setBackgroundColor ] = useState( '#fff' )
+  const [ color, setColor ] = useState( 'grey' )
+
+  useEffect( () => {
+    if ( darkTheme === true ) {
+      setBackgroundColor( '#000' )
+      setColor( '#fff' )
+    }
+    setBackgroundColor( '#fff' )
+    setColor( 'grey' )
+  }, [ darkTheme ] )
+  
   return (
     <Drawer.Navigator
-      drawerContent={props => <CustomDrawer {...props} />}
-      screenOptions={{
-        headerShown: false,
+      screenOptions={( {navigation}) => ( {
+        headerShown: true,
+        headerTitle: '',
+        headerTransparent: true,
         drawerType: 'front',
         drawerPosition: 'right',
-        drawerActiveBackgroundColor: '#aa18ea',
-        drawerActiveTintColor: '#fff',
-        drawerInactiveTintColor: '#333',
         drawerLabelStyle: {
           marginLeft: -25,
-          fontFamily: 'Roboto-Medium',
           fontSize: 15,
         },
-      }}>
+        headerLeft: ({navigation}) => (
+          <BackButton style={{paddingLeft: 5, fontSize: 22 }} onPress={navigation.goBack} />
+        ),
+      } )}
+      drawerContent={props => <CustomDrawer backgroundColor={backgroundColor} color={color} {...props} />}
+    >
       <Drawer.Screen
-        name="AppTabs"
+        name="App"
         component={SeekerTabNav}
-        options={{
+        options={({ navigation }) => ({
+          drawerItemStyle: {display: 'none'},
           drawerIcon: ({color}) => (
-            <Ionicons name="home-outline" size={22} color={color} />
+            <Feather name="x" size={22} color={color} />
           ),
-        }}
+            
+        } )}
       />
       <Drawer.Screen
+        name="Favorites"
+        component={screen.Favorites}
+        options={({ navigation }) => ({
+          drawerLabel: 'Favorites',
+          headerStyle: {
+            backgroundColor: backgroundColor,
+          },
+          drawerIcon: ({color}) => (
+            <Feather name="star" size={22} color={color} />
+          ),
+          
+        } )}
+            
+        
+      />
+      
+      {/* <Drawer.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -63,11 +91,11 @@ export const SeekerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="Moments"
+        name="Favorites"
         component={MomentsScreen}
         options={{
           drawerIcon: ({color}) => (
-            <Ionicons name="timer-outline" size={22} color={color} />
+            <FontAwesome name="heart-o" size={22} color="black" />
           ),
         }}
       />
@@ -79,7 +107,7 @@ export const SeekerNavigator = () => {
             <Ionicons name="settings-outline" size={22} color={color} />
           ),
         }}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 };

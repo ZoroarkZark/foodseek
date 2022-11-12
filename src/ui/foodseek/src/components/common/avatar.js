@@ -4,7 +4,6 @@ import { View, Image, Text } from 'react-native'
 const Avatar = ({
     children,
     avatar,
-    username,
     style = {
         width: 120,
         height: 120,
@@ -24,9 +23,6 @@ const Avatar = ({
                     </Image>
                 </View>
             </View>
-            <Text style={{ paddingTop: 20, fontWeight: '500' }}>
-                u: {username}
-            </Text>
         </View>
     )
 }

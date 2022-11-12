@@ -2,7 +2,7 @@ import React from 'react'
 import { Entypo, FontAwesome5, Ionicons } from '@expo/vector-icons' // used for tab icons
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { tabnav as style } from '../../../style/styleSheet'
-import { Stack as stack } from '.'
+import * as stack from './stack-navigation'
 
 // add bottom tab navigation to the application
 const SeekerTab = createBottomTabNavigator()
@@ -11,7 +11,9 @@ const SeekerTab = createBottomTabNavigator()
 export const SeekerTabNav = () => {
     return (
         <SeekerTab.Navigator
-            screenOptions={style.screenOptions}
+            screenOptions={{
+                headerShown: false,
+            }}
         >
             <SeekerTab.Screen
                 name="PostList"

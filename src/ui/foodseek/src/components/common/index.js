@@ -11,6 +11,8 @@ import SearchInput from './searchinput'
 import FavoriteButton from './favoritebutton'
 import Avatar from './avatar'
 import ViewMap from './map'
+export { DarkModeButton } from './darkmodebutton'
+
 
 export {
     Title,
