@@ -42,7 +42,6 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 	console.log(req.path);
 	
 		req.setEncoding('utf8');
-		let reqTime = new Date();
 		let str = `${req.method} to path: ${req.path}`;
 		console.log(str);
 		Log.writeToLog(str);
