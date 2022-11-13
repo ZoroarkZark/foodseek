@@ -79,7 +79,7 @@ CoreRouter.post('/signup', async (req, res) =>
                 let mailOptions = createOptions(req.body.email, subject, html_str);
                 let sent = sendEmail(mailOptions);
                 if(sent == 1){
-                    resbody.setIssues(10)
+                    resbody.setIssue(10)
                     res.end(resbody.package());
                     return;
                 }       
@@ -91,7 +91,7 @@ CoreRouter.post('/signup', async (req, res) =>
         });
     }
     else{
-        resbody.setIssues(1)
+        resbody.setIssue(1)
         res.end(resbody.package());
         return;
     }
@@ -199,7 +199,7 @@ CoreRouter.post('/fgpss', (req, res,next) => {
         });
     }
     else{
-        resbody.setIssues(1)
+        resbody.setIssue(1)
         res.end(resbody.package());
         return;
     }
@@ -233,7 +233,7 @@ CoreRouter.post('/validatecode', (req, res) => {
 
 			}
             else {
-                resbody.setData({msg: "no code found, request new code"});
+                resbody.setIssue(70,"no code found");
 				res.end(resbody.package());
 				return;
             }
