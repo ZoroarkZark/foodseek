@@ -63,7 +63,7 @@ UserRouter.use('', (req,res, next) => {
 
 // load food cards
 UserRouter.post('/list', (req, res)=>{
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     Store.getCardsAll((err,results) => {
         if(err){
@@ -83,7 +83,7 @@ UserRouter.post('/list', (req, res)=>{
 });
 
 UserRouter.post('/lr', (req,res) => {
-    const resbody = new res_obj();
+    let resbody = new res_obj();
 
     if(sutils.validate(['lat','lon','dist'],req.body)){
         let lat = parseFloat(req.body.lat);
@@ -120,7 +120,7 @@ UserRouter.post('/lr', (req,res) => {
 })
 
 UserRouter.post('/reserve', (req,res)=>{
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     if(sutils.validate(['id','user'], req.body)){
         Store.reserveCard(req.body.id, req.body.user, (err) => {

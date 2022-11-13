@@ -42,12 +42,12 @@ CoreRouter.use('/test', (req,res)=>{
 CoreRouter.post('/signup', async (req, res) => 
 {
     // this is our standard response object being sent to the client in the res.body
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     
     req.setEncoding('utf8');
     if(sutil.validate(['email','pass','vendor'], req.body)){
         
-        bcrypt.hash(req.body.pass, 10, (err, hash)=>{
+        sutil.bHash(req.body.pass, (err, hash)=>{
             if(err){
                 resbody.setIssue(4);
                 res.end(resbody.package());
@@ -101,7 +101,7 @@ CoreRouter.post('/signup', async (req, res) =>
 
 // handle logins
 CoreRouter.post('/login', (req, res, next) => {
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     
     req.setEncoding('utf8');
     
@@ -117,7 +117,7 @@ CoreRouter.post('/login', (req, res, next) => {
             }
             //console.log(result);
             if(result){
-                bcrypt.compare(req.body.pass, result.password, (error, hash) => {
+                sutil.bCompare(req.body.pass, result.password, (error, hash) => {
                     if(error){
                         resbody.setIssue(4,"problem de-hashing pass");
                         res.end(resbody.package());
@@ -165,7 +165,7 @@ CoreRouter.post('/login', (req, res, next) => {
 // send an email to a user to let them reset their pass word
 CoreRouter.post('/fgpss', (req, res,next) => {
     //next();
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     if(sutil.validate(['email'], req.body)){
         let code = randtoken.generate(8);
         Store.setForgotCode(req.body.email, code, (err) => {
@@ -206,19 +206,31 @@ CoreRouter.post('/fgpss', (req, res,next) => {
 });
 
 CoreRouter.post('/validatecode', (req, res) => {
-    const resbody = new sutil.res_obj();
-    if(sutil.validate(['code'], req.body)){		
-		Store.getCodeInfo(req.body.code, (err, result) => {
+    let resbody = new sutil.res_obj();
+    if(sutil.validate(['code','email'], req.body)){		
+		Store.getForgotCode(req.body.code, (err, result) => {
+            console.log('checked forgot code');
             if(err){
                 resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
 			if(result.code === req.body.code){
-				// correct code was used
-				resbody.setData({msg: "correct code for fgpass"});
-				res.end(resbody.package());
-				return;
+				console.log(`code match`);
+                Store.setTempPassword(req.body.email,(error, tempPass) => {
+                    if(error){
+                        resbody.setIssue(69,"Error generating temp pass");
+                        res.end(resbody.package());
+                        return;
+                    }
+                    if(tempPass){
+                        console.log("set temp pass");
+                        resbody.setData({msg: "correct code for fgpass", temp:tempPass});
+				        res.end(resbody.package());
+				        return;
+                    }
+                });
+
 			}
             else {
                 resbody.setData({msg: "no code found, request new code"});
@@ -231,38 +243,41 @@ CoreRouter.post('/validatecode', (req, res) => {
 });
 
 // post data here to set a update new password with link
+/*
+    Take in the following values:
+        email : the users email who is attempting to update their pass,
+        old_pass: the old password for the account,
+        new_pass: the new password they just typed in somewhere
+    
+
+*/
 CoreRouter.post('/updatepass', (req, res,next)=> {
     //next();
-    const resbody = new sutil.res_obj();
-    if(sutil.validate(['email','pass'], req.body)){       
-        bcrypt.hash(req.body.pass, 10, (err, hash)=>{
+    let resbody = new sutil.res_obj();
+    if(sutil.validate(['email','old_pass','new_pass'], req.body)){       
+        Store.updatePassword(req.body.email,req.body.old_pass,req.body.new_pass, (err, result) => {
             if(err){
-                resbody.setIssue(4);
+                resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
-        
-            if(hash) {
-                Store.setPassword(req.body.email, hash, (err) => {
-                    if(err){
-                    resbody.setIssue(7);
-                    res.end(resbody.package());
-                    }
-                });
-            }
-            else {
-                resbody.setIssue(5);
-                res.end(resbody.package());
-                return;
-            }
+
+            resbody.setData({msg:"updated password"});
+            res.end(resbody.package());
+            return;
         });
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
     }
 });
 
 
 
 CoreRouter.get('/confirmEmail', (req,res) => {
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     sutil.verify(req.query.token, (err, result) => { // jwt check
         if(err){
             resbody.setIssue(2); // bad jwt
@@ -315,31 +330,3 @@ CoreRouter.post('/ru', (req,res) => {
 });
 
 
-const hashPassword = async (password, saltRounds = 10) => {
-    try {
-        // Generate a salt
-        const salt = await bcrypt.genSalt(saltRounds)
-        
-        // Hash password
-        return await bcrypt.hash(password, salt)
-    } catch (error) {
-        console.log(error)
-    }
-    
-    // Return null if error
-    return null
-}
-
-
-const comparePassword = async (password, hash) => {
-    try {
-        // Compare password
-        
-        return await bcrypt.compare(toString(password), toString(hash))
-    } catch (error) {
-        console.log(error)
-    }
-    
-    // Return false if error
-    return false
-}

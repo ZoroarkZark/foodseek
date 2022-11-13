@@ -49,7 +49,7 @@ VendorRouter.use('', (req,res, next) => {
 
 // upload a food card to the FoodStore
 VendorRouter.post('/upl', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
     
     // our app.use should have hopefully done all the error checking and verifying
     if(sutils.validate(['item'], req.body)){
@@ -79,7 +79,7 @@ VendorRouter.post('/upl', (req,res) => {
 
 // delete a card from the foodstore
 VendorRouter.post('/del', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     if(sutils.validate(['id'], req.body)){
         FoodStore.deleteCard(Number(req.body.id), (err) => {
@@ -106,7 +106,7 @@ VendorRouter.post('/del', (req,res) => {
 
 // confirm a pickup with a user and foodcard id
 VendorRouter.post('/conf', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     if(sutils.validate(['user','id'], req.body)){
         FoodStore.getCard(req.body.id, (err, result) => {
