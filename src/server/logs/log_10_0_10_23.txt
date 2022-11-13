@@ -1,6 +1,0 @@
-(10/0):10:23:31s POST to path: /signup
-(10/0):10:23:31s {"success":0,"issues":{"code":"ER_DUP_ENTRY","errno":1062,"sqlMessage":"Duplicate entry 'poodaddy' for key 'user_data.user_email_UNIQUE'","sqlState":"23000","index":0,"sql":"INSERT INTO `user_data` (`user_email`, `password`, `vendor`) VALUES ('poodaddy', '$2b$10$OIYBiRg/ft1AwFfBJHV55.fgR02JZ21xaYQ9TLuXLh9es.OApSzi6', '1')"},"data":null}
-(10/0):10:23:36s POST to path: /login
-(10/0):10:23:36s {"success":1,"data":{"user":"poodaddy","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicG9vZGFkZHkiLCJ2ZW5kb3IiOjEsImlhdCI6MTY2ODM2MzgxNiwiZXhwIjoxNjY5MjI3ODE2fQ.fP9GflxI5EmZbqkHsB9RcVJFMK9yHYRj6ajT330DB3g","message":"user signed in!"},"issues":null}
-(10/0):10:23:42s POST to path: /test
-(10/0):10:23:43s GET to path: /test

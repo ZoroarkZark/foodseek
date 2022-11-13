@@ -1,2 +1,0 @@
-(11/13):10:27:1s GET to path: /test
-(11/13):10:27:3s POST to path: /test

@@ -9,10 +9,9 @@ const bcrypt = require('bcrypt');
 const url = require('url');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
-const { sendEmail, createOptions } = require('../utility/serverutility.js');
+const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
-const jwt_decode = require('jwt-decode');
 const e = require('express');
 
 //const Store =  sutil.UserStore;
@@ -252,23 +251,27 @@ CoreRouter.post('/updatepass', (req, res,next)=> {
 
 CoreRouter.get('/confirmEmail', (req,res) => {
     const resbody = new sutil.res_obj();
-    sutil.verify(req.query.token, (err, type) => { // jwt check
+    sutil.verify(req.query.token, (err, result) => { // jwt check
         if(err){
             resbody.setIssue(2); // bad jwt
             res.end(resbody.package());
             return;
         }
-    });
-    let decoded = jwt_decode(req.query.token);
-    let email = decoded.user;
-    Store.setValid(email, (err) => {
-        if(err){
-            resbody.setIssue(7);
+
+        let email = result.user;
+        Store.setValid(email, (err) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({msg:`Confirmed Email Successfully for ${email}`});
             res.end(resbody.package());
             return;
-        }
-        
-    })
+        });
+
+    });
 
 });
 
@@ -276,6 +279,27 @@ CoreRouter.get('/confirmEmail', (req,res) => {
 CoreRouter.use('/rem', (req,res) => {
     Store.deleteAll();
     res.send(JSON.stringify({msg:"deleted all users"}));
+});
+
+CoreRouter.post('/ru', (req,res) => {
+    let resbody = new res_obj();
+    Store.deleteUser(req.body.email, (err, result) => {
+        if(err){
+            resbody.setIssue(7);
+            res.end(resbody.package());
+            return;
+        }
+
+        if(result){
+            resbody.setData({msg: `removed user  ${req.body.email} from db`});
+            res.end(resbody.package());
+            return;
+        }
+
+        resbody.setData({msg: `op performed successfully, however no user found ${req.body.email}`});
+        res.end(resbody.package());
+        return;
+    });
 });
 
 
