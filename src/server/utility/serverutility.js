@@ -289,12 +289,11 @@ function verifytoken(token, callback){
             return callback(err, null);
         }
 
-        //vendor
-        if(result.vendor == "1"){
-            return callback(null,1);
+        if(result){
+            return callback(null,result);
         }
-        //not vendor
-        return callback(null,0); 
+
+        return callback(null,null);
     });
 }
 

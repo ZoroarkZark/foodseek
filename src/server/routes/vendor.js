@@ -26,7 +26,7 @@ VendorRouter.use('', (req,res, next) => {
         return;
     }
     console.log("verify jwt")
-    sutils.verify(req.body.jwt, (err, type) => { // jwt check
+    sutils.verify(req.body.jwt, (err, result) => { // jwt check
         console.log("back in vendor.js");
         if(err){
             console.log(err);
@@ -35,7 +35,7 @@ VendorRouter.use('', (req,res, next) => {
             return;
         }
 
-        if(!type){
+        if(result.vendor != 1){
             resbody.setIssue(3); // not a vendor type 
             res.end(resbody.package());
             return;

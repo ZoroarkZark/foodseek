@@ -41,14 +41,14 @@ UserRouter.use('', (req,res, next) => {
         return;
     }
 
-    sutils.verify(req.body.jwt, (err, type) => { // jwt check
+    sutils.verify(req.body.jwt, (err, results) => { // jwt check
         if(err){
             resbody.setIssue(2); // bad jwt
             res.end(resbody.package());
             return;
         }
 
-        if(type){
+        if(results.vendor != 0){
             resbody.setIssue(3); // not a vendor type 
             res.end(resbody.package());
             return;
