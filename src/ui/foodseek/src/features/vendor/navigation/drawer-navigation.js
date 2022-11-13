@@ -26,17 +26,7 @@ export const VendorNavigator = () => {
                 drawerType: 'front',
                 drawerPosition: 'right',
                 drawerLabelStyle: {},
-                headerLeft: () => (
-                    <BackButton
-                        style={{
-                            left: 6,
-                            color: 'grey',
-                            fontSize: 30,
-                            size: 30,
-                        }}
-                        onPress={() => navigation.goBack()}
-                    />
-                ),
+                headerLeft: () => (<></>),
                 headerRight: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                         <Avatar
@@ -64,19 +54,21 @@ export const VendorNavigator = () => {
                 })}
             />
             <Drawer.Screen
-                name="FavoritesDrawer"
-                component={stack.FavoritesNavigator}
-                options={({ navigation }) => ({
-                    drawerLabel: 'Favorites',
-                    drawerIcon: ({ color }) => (
-                        <Feather name="star" size={22} color={color} />
-                    ),
-                })}
-            />
-            <Drawer.Screen
                 name="SettingsDrawer"
-                component={stack.SettingsNavigator}
-                options={{
+                component={stack.StoreSettings}
+                options={({ navigation }) => ({
+                    headerLeft: () => (
+                    <BackButton
+                        style={{
+                            left: 6,
+                            color: 'grey',
+                            fontSize: 30,
+                            size: 30,
+                        }}
+                        onPress={() => navigation.goBack()}
+                    />
+                    ),
+                    drawerLabel: 'Settings',
                     drawerIcon: ({ color }) => (
                         <Ionicons
                             name="settings-outline"
@@ -84,7 +76,7 @@ export const VendorNavigator = () => {
                             color={color}
                         />
                     ),
-                }}
+                } )}
             />
         </Drawer.Navigator>
     )

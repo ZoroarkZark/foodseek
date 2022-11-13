@@ -122,7 +122,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         <AuthenticationContext.Provider
             value={{
                 isAuthenticated: !!user,
-                isVendor: !!user ? user.isVendor : false,
+                isVendor: user ? user.vendor===1 : false,
                 jwt,
                 loading,
                 user,

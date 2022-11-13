@@ -11,7 +11,8 @@ export const Posts = ( { navigation } ) => {
     // TODO sql server keeps going down but we need to operate on cards so this just sets the default cards before anything
     useEffect( () => {
         test(DATA)      
-    },[])
+    }, [] )
+    
 
     return (
         <PostList DATA={cards ? cards : DATA} refreshing={loading} onRefresh={() => onRefresh()} /> 

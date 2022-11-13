@@ -37,10 +37,9 @@ export const PostsNavigator = () => {
             <Stack.Screen
                 name="Posts" 
                 component={screen.Posts}
-                options={{
+                options={( { navigation, route } ) => ( {
                     
-                    headerLeft: () => {<></> }
-                }}
+                } )}
             />
             <Stack.Screen
                 name="ExpandedPost" 

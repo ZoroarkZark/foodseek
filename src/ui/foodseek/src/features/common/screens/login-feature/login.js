@@ -127,8 +127,8 @@ export const Login = ({ navigation }) => {
                     }
                     onPress={() => {
                         if ( !error ) {
-                            setEmail('za')
-                            setPassword( 'zu' )
+                            setEmail('carlington')
+                            setPassword( '123' )
                             setReady(!ready)
                         } else {
                             setUser({

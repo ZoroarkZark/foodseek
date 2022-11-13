@@ -25,18 +25,7 @@ export const SeekerNavigator = () => {
                 headerTransparent: true,
                 drawerType: 'front',
                 drawerPosition: 'right',
-                drawerLabelStyle: {},
-                headerLeft: () => (
-                    <BackButton
-                        style={{
-                            left: 6,
-                            color: 'grey',
-                            fontSize: 30,
-                            size: 30,
-                        }}
-                        onPress={() => navigation.goBack()}
-                    />
-                ),
+                headerLeft: () => (<></>),
                 headerRight: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                         <Avatar
@@ -76,7 +65,19 @@ export const SeekerNavigator = () => {
             <Drawer.Screen
                 name="SettingsDrawer"
                 component={stack.SettingsNavigator}
-                options={{
+                options={({ navigation }) => ({
+                    headerLeft: () => (
+                    <BackButton
+                        style={{
+                            left: 6,
+                            color: 'grey',
+                            fontSize: 30,
+                            size: 30,
+                        }}
+                        onPress={() => navigation.goBack()}
+                    />
+                    ),
+                    drawerLabel: 'Settings',
                     drawerIcon: ({ color }) => (
                         <Ionicons
                             name="settings-outline"
@@ -84,7 +85,7 @@ export const SeekerNavigator = () => {
                             color={color}
                         />
                     ),
-                }}
+                } )}
             />
         </Drawer.Navigator>
     )

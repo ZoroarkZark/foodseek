@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons' // used for tab icons
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { tabnav as style } from '../../../style/styleSheet'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as stack from './stack-navigation'
 // add bottom tab navigation to the application
 const VendorTab = createBottomTabNavigator()
@@ -34,14 +35,6 @@ export const VendorTabNav = () => {
                 options={{
                     tabBarLabel: 'Store',
                     tabBarIcon: () => <MaterialIcons name="storefront" />,
-                }}
-            />
-            <VendorTab.Screen
-                name="Settings"
-                component={stack.StoreSettings}
-                options={{
-                    tabBarLabel: 'Settings',
-                    tabBarIcon: () => <Ionicons name="options-outline" />,
                 }}
             />
         </VendorTab.Navigator>

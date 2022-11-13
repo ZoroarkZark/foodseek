@@ -12,7 +12,7 @@ import { ThemeContext } from '../../../context/ThemeContext'
 
 
 export const CustomDrawer = props => {
-  const { user, avatar } = useContext( AuthenticationContext )
+  const { user, avatar, onLogout} = useContext( AuthenticationContext )
   const { darkTheme, toggleTheme } = useContext( ThemeContext )
 
   const { navigation, color, backgroundColor } = props
