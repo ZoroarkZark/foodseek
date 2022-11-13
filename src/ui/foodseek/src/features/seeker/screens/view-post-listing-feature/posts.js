@@ -39,11 +39,8 @@ export const ToggleButtonExample = ({label}) => {
                 borderBottomLeftRadius: 12,
                 borderBottomRightRadius: 12,
                 width: label.length * 12,
-                height: 21,
-                color: 'black',
-                
-                
-        
+                height: 23,
+                marginRight: 4,
                 
             }}
             value={label}
@@ -94,7 +91,6 @@ export const Posts = ( { navigation } ) => {
                     <AutocompleteSearchBar placesRef={placesRef} />
                     <ScrollView
                         horizontal={true}
-                        marginHorizontal={10}
                         paddingTop={6}
                         contentInset={{ top: 0, left: 10, bottom: 0, right: 10 }}
                         showsHorizontalScrollIndicator={false}

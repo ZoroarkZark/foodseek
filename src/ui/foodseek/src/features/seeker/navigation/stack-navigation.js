@@ -1,15 +1,11 @@
 import React from 'react'
 import 'react-native-gesture-handler'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import CustomDrawerContent from '../../../components/navigation/CustomDrawerContent'
+import { BackButton } from '../../../components/common/backbutton'
 // import screens for stack navigators
 import * as screen from '../screens'
-import { nav } from '../../../style/styleSheet'
 
 const Stack = createNativeStackNavigator() // Create stack navigator component
-const Drawer = createDrawerNavigator() // TODO: see below
-
 
 // Returns a stack navigator for the User screen
 export const MapNavigator = () => {
@@ -98,17 +94,36 @@ export const SettingsNavigator = () => {
 
 
 // Returns a stack navigator for the post listing screens
-export const FavoritesNavigator = ({navigation}) => {
+export const FavoritesNavigator = () => {
     return (
         <Stack.Navigator
-        screenOptions={{
-                headerShown: false,
-                headerBackVisible: true,
-        }}>
+            initialRouteName="App"
+            screenOptions={( { navigation } ) => ( {
+                headerShown: true,
+                headerTitle: '',
+                headerTransparent: true,
+            })}>
             <Stack.Screen
-                name="Favorites" 
+                name="Favorites"
                 component={screen.Favorites}
-            />
+                options={( { navigation } ) => ( {
+                    headerLeft: () => (
+                        <BackButton
+                            style={{
+                                left: 6,
+                                color: 'grey',
+                                fontSize: 30,
+                                size: 30,
+                            }}
+                            onPress={() => {
+                                console.log( 'working' )
+                                navigation.goBack()
+                            }}
+                        />
+                    ),
+                } )}
+                    />
+                    
         </Stack.Navigator>
     )
 }
