@@ -1,0 +1,4 @@
+POST to path: /login @ 18:59:7)}
+{"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2NjgwNDkxNDgsImV4cCI6MTY2ODkxMzE0OH0.eKmK_ZC6t-TTd-_hxB5L0YlWNL2IGnsCE1pAExrcD38","message":"user signed in!"},"issues":null}
+POST to path: /vendor/list @ 18:59:29)}
+POST to path: /vendor/list @ 19:5:0)}

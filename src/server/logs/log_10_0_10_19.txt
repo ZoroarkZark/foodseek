@@ -1,0 +1,3 @@
+(10/0):10:19:15s GET to path: /test
+(10/0):10:19:45s POST to path: /signup
+(10/0):10:19:45s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}

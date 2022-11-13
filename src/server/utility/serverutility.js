@@ -305,7 +305,9 @@ class Logger {
     }
 
     writeToLog(string){
-        string = string+ "\n";
+        let date = new Date(); // get the time
+
+        string = `(${date.getMonth()}/${date.getDay()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s ${string}\n`;
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
             //console.log(`Logged ${string}`);
@@ -394,8 +396,8 @@ const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
 
 const startTime = new Date();
-const getLogFile = () => {`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
-const Log = new Logger(`../logs/log_${startTime.getHours()}_${startTime.getMinutes()}.txt`);
+const getLogFile = () => {`../logs/log_${startTime.getMonth()}_${startTime.getDay()}_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
+const Log = new Logger(`../logs/log_${startTime.getMonth()}_${startTime.getDay()}_${startTime.getHours()}_${startTime.getMinutes()}.txt`);
 
 module.exports = {
     res_obj: res_obj,
@@ -415,4 +417,4 @@ module.exports = {
 
 }
 
-const L = new Logger('../logs/log_21_56.txt');
+
