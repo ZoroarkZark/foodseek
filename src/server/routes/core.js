@@ -6,12 +6,13 @@
 
 const express = require('express')
 const bcrypt = require('bcrypt');
-
+const url = require('url');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
-
+const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
-
+var randtoken = require('rand-token');
+const e = require('express');
 
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
@@ -41,12 +42,12 @@ CoreRouter.use('/test', (req,res)=>{
 CoreRouter.post('/signup', async (req, res) => 
 {
     // this is our standard response object being sent to the client in the res.body
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     
     req.setEncoding('utf8');
     if(sutil.validate(['email','pass','vendor'], req.body)){
         
-        bcrypt.hash(req.body.pass, 10, (err, hash)=>{
+        sutil.bHash(req.body.pass, (err, hash)=>{
             if(err){
                 resbody.setIssue(4);
                 res.end(resbody.package());
@@ -71,6 +72,17 @@ CoreRouter.post('/signup', async (req, res) =>
                     message: "Succsesful signup"
                 });
                 
+                
+                const token = sutil.sign({user: req.body.email});
+                let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> to reset your password</p>';
+                let subject = 'Confirmation email';
+                let mailOptions = createOptions(req.body.email, subject, html_str);
+                let sent = sendEmail(mailOptions);
+                if(sent == 1){
+                    resbody.setIssues(10)
+                    res.end(resbody.package());
+                    return;
+                }       
                 res.end(resbody.package());
                 return;
             });
@@ -89,7 +101,7 @@ CoreRouter.post('/signup', async (req, res) =>
 
 // handle logins
 CoreRouter.post('/login', (req, res, next) => {
-    const resbody = new sutil.res_obj();
+    let resbody = new sutil.res_obj();
     
     req.setEncoding('utf8');
     
@@ -105,7 +117,7 @@ CoreRouter.post('/login', (req, res, next) => {
             }
             //console.log(result);
             if(result){
-                bcrypt.compare(req.body.pass, result.password, (error, hash) => {
+                sutil.bCompare(req.body.pass, result.password, (error, hash) => {
                     if(error){
                         resbody.setIssue(4,"problem de-hashing pass");
                         res.end(resbody.package());
@@ -152,45 +164,169 @@ CoreRouter.post('/login', (req, res, next) => {
 
 // send an email to a user to let them reset their pass word
 CoreRouter.post('/fgpss', (req, res,next) => {
-    next();
+    //next();
+    let resbody = new sutil.res_obj();
+    if(sutil.validate(['email'], req.body)){
+        let code = randtoken.generate(8);
+        Store.setForgotCode(req.body.email, code, (err) => {
+            if(err){
+			    resbody.setIssue(7);
+			    res.end(resbody.package());
+			    return;
+            }
+        })
+
+        let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
+        let subject = 'Confirmation code, forgot password';
+        let mailOptions = createOptions(req.body.email, subject, html_str);
+        let sent = sendEmail(mailOptions);
+        sendEmail(mailOptions, (err, didSend) => {
+            if(err){
+                resbody.setIssue(999,'Error sending email');
+                res.end(resbody.package());
+                return;
+            }
+            if(didSend){
+                resbody.setData({msg: "sent forgot password email"});
+                res.end(resbody.package());
+                return;
+            }
+            else{
+                resbody.setIssue(998, 'Some how no error on email send, but no results either');
+                res.end(resbody.package());
+                return;
+            }
+        });
+    }
+    else{
+        resbody.setIssues(1)
+        res.end(resbody.package());
+        return;
+    }
 });
 
-// post data here to set a new password
-CoreRouter.post('/newpass', (req, res,next)=> {
-    next();
+CoreRouter.post('/validatecode', (req, res) => {
+    let resbody = new sutil.res_obj();
+    if(sutil.validate(['code','email'], req.body)){		
+		Store.getForgotCode(req.body.code, (err, result) => {
+            console.log('checked forgot code');
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+			if(result.code === req.body.code){
+				console.log(`code match`);
+                Store.setTempPassword(req.body.email,(error, tempPass) => {
+                    if(error){
+                        resbody.setIssue(69,"Error generating temp pass");
+                        res.end(resbody.package());
+                        return;
+                    }
+                    if(tempPass){
+                        console.log("set temp pass");
+                        resbody.setData({msg: "correct code for fgpass", temp:tempPass});
+				        res.end(resbody.package());
+				        return;
+                    }
+                });
+
+			}
+            else {
+                resbody.setData({msg: "no code found, request new code"});
+				res.end(resbody.package());
+				return;
+            }
+		})
+	}
+	
 });
+
+// post data here to set a update new password with link
+/*
+    Take in the following values:
+        email : the users email who is attempting to update their pass,
+        old_pass: the old password for the account,
+        new_pass: the new password they just typed in somewhere
+    
+
+*/
+CoreRouter.post('/updatepass', (req, res,next)=> {
+    //next();
+    let resbody = new sutil.res_obj();
+    if(sutil.validate(['email','old_pass','new_pass'], req.body)){       
+        Store.updatePassword(req.body.email,req.body.old_pass,req.body.new_pass, (err, result) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({msg:"updated password"});
+            res.end(resbody.package());
+            return;
+        });
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+});
+
+
+
+CoreRouter.get('/confirmEmail', (req,res) => {
+    let resbody = new sutil.res_obj();
+    sutil.verify(req.query.token, (err, result) => { // jwt check
+        if(err){
+            resbody.setIssue(2); // bad jwt
+            res.end(resbody.package());
+            return;
+        }
+
+        let email = result.user;
+        Store.setValid(email, (err) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({msg:`Confirmed Email Successfully for ${email}`});
+            res.end(resbody.package());
+            return;
+        });
+
+    });
+
+});
+
 
 CoreRouter.use('/rem', (req,res) => {
     Store.deleteAll();
     res.send(JSON.stringify({msg:"deleted all users"}));
 });
 
+CoreRouter.post('/ru', (req,res) => {
+    let resbody = new res_obj();
+    Store.deleteUser(req.body.email, (err, result) => {
+        if(err){
+            resbody.setIssue(7);
+            res.end(resbody.package());
+            return;
+        }
 
-const hashPassword = async (password, saltRounds = 10) => {
-    try {
-        // Generate a salt
-        const salt = await bcrypt.genSalt(saltRounds)
-        
-        // Hash password
-        return await bcrypt.hash(password, salt)
-    } catch (error) {
-        console.log(error)
-    }
-    
-    // Return null if error
-    return null
-}
+        if(result){
+            resbody.setData({msg: `removed user  ${req.body.email} from db`});
+            res.end(resbody.package());
+            return;
+        }
+
+        resbody.setData({msg: `op performed successfully, however no user found ${req.body.email}`});
+        res.end(resbody.package());
+        return;
+    });
+});
 
 
-const comparePassword = async (password, hash) => {
-    try {
-        // Compare password
-        
-        return await bcrypt.compare(toString(password), toString(hash))
-    } catch (error) {
-        console.log(error)
-    }
-    
-    // Return false if error
-    return false
-}

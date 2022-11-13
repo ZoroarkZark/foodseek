@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const { res_obj } = require('../utility/serverutility.js');
 
 
 const sutils    = require('../utility/serverutility.js');
@@ -25,7 +26,7 @@ VendorRouter.use('', (req,res, next) => {
         return;
     }
     console.log("verify jwt")
-    sutils.verify(req.body.jwt, (err, type) => { // jwt check
+    sutils.verify(req.body.jwt, (err, result) => { // jwt check
         console.log("back in vendor.js");
         if(err){
             console.log(err);
@@ -34,7 +35,7 @@ VendorRouter.use('', (req,res, next) => {
             return;
         }
 
-        if(!type){
+        if(result.vendor != 1){
             resbody.setIssue(3); // not a vendor type 
             res.end(resbody.package());
             return;
@@ -48,7 +49,7 @@ VendorRouter.use('', (req,res, next) => {
 
 // upload a food card to the FoodStore
 VendorRouter.post('/upl', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
     
     // our app.use should have hopefully done all the error checking and verifying
     if(sutils.validate(['item'], req.body)){
@@ -78,7 +79,7 @@ VendorRouter.post('/upl', (req,res) => {
 
 // delete a card from the foodstore
 VendorRouter.post('/del', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     if(sutils.validate(['id'], req.body)){
         FoodStore.deleteCard(Number(req.body.id), (err) => {
@@ -105,7 +106,7 @@ VendorRouter.post('/del', (req,res) => {
 
 // confirm a pickup with a user and foodcard id
 VendorRouter.post('/conf', (req,res) => {
-    const resbody = new sutils.res_obj();
+    let resbody = new sutils.res_obj();
 
     if(sutils.validate(['user','id'], req.body)){
         FoodStore.getCard(req.body.id, (err, result) => {
@@ -138,3 +139,60 @@ VendorRouter.post('/conf', (req,res) => {
     }
 });
 
+VendorRouter.post('/checkres', (req,res) => {
+    let resbody = new sutils.res_obj();
+
+    if(sutils.validate(['vendor'], req.body)){
+        FoodStore.getVendorReserved(req.body.vendor, (err, results) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                msg:"Get reserved cards",
+                cards: results
+            });
+            res.end(resbody.package());
+            return;
+        })
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+})
+
+VendorRouter.post('/list', (req,res) => {
+    let resbody = new res_obj();
+
+    if(sutils.validate(['vendor'])){
+        FoodStore.getCardsVendor(req.body.vendor, (err, results) => {
+            if(err){
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            if(results){
+                resbody.setData({
+                    msg: "got vendor cards",
+                    cards: results
+                });
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({
+                msg: "no cards for this vendor",
+                cards: null
+            });
+
+            res.end(resbody.package());
+            return;
+
+        })
+    }
+});

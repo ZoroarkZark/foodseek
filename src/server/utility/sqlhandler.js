@@ -18,7 +18,7 @@ TEST_POS = [
 // Added a deleteUser in case some one wants to remove their acc
 class UserStore {
     constructor(){
-
+        
         // Create Connection Pool
         this.conn = database.createPool( {
             connectionLimit: 10,
@@ -28,20 +28,24 @@ class UserStore {
             password: process.env.DB_PASS,
             database: process.env.DB_ACTIVE_DB
         });
-
+        
         // Define table and column names
         this.table = "user_data";
         this.col = {
             email: "user_email",
             pass: "password",
             vend: "vendor",
-            data: "Data"
+            data: "Data",
+            travel: "travel",
+            valid: "valid",
+            code: "code",
+            exp: "codeExpire",
         };
     }
-
+    
     // pass credentials with keys [email, pass, vendor]
     insertUser(credentials, callback){
-
+        
         // SQL query
         let SQL = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?)";
         let parameters = [
@@ -53,20 +57,20 @@ class UserStore {
             credentials.pass,
             credentials.vendor
         ]
-
+        
         // query the database
         this.conn.query(SQL, parameters, (err) => {
             if(err){
                 return callback(err); // we have an error return it to the callback
             }
-
+            
             return callback(null); // no error 
         })
     }
-
+    
     //pass credentials [email] to find a user with that associated email
     getUser(email, callback){
-
+        
         //SQL query
         let SQL = "SELECT * FROM ?? WHERE ?? = ?";
         let parameters = [
@@ -74,12 +78,137 @@ class UserStore {
             this.col.email,
             email
         ];
-
+        
         this.conn.query(SQL, parameters, (err, results) => {
             if(err){
                 return callback(err, null);
             }
-
+            
+            let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
+            if(!result){
+                return callback(null, null); // no error but no result
+            }
+            return callback(null, result);
+        });
+    }
+    
+    deleteUser(email, callback){
+        let SQL = "DELETE FROM ?? WHERE ?? = ?";
+        let parameters = [
+            this.table,
+            this.col.email,
+            email
+        ];
+        
+        this.conn.query(SQL,parameters, (err,results) => {
+            if(err){
+                return callback(err,null); // could not delete
+            }
+            return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
+        });
+    }
+    
+    updatePassword(email, old_pass, new_pass, callback){
+        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ? AND ?? = ?'
+        var params = [
+            this.table,
+            this.col.pass,
+            new_pass,
+            this.col.email,
+            email,
+            this.col.pass,
+            old_pass
+        ];
+        
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                console.log(`Error updating pass for: ${email} - setPassword`);
+                console.log(err);
+                return callback(err, null);
+            }
+            
+            if(!results){
+                console.log("null result - setPassword");
+                return callback(null,null); // no error but no result
+            }
+            console.log("password updated - setPassword");
+            return callback(null, results.affectedRows);
+        });
+    }
+    
+    setValid(email, callback){
+        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
+        let valid = 1;
+        var params = [
+            this.table,
+            this.col.valid,
+            valid,
+            this.col.email,
+            email,
+        ];
+        
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                console.log(`Error settign email vaild for: ${email} - setValid`);
+                console.log(err);
+                return callback(err, null);
+            }
+            
+            //var result = (results[0]) ? results[0] : null;
+            if(!results){
+                console.log("null result - setValid");
+                return callback(null,null); // no error but no result
+            }
+            console.log("email validated - setValid");
+            return callback(null, results.affectedRows);
+        });
+    }
+    
+    setForgotCode(email, code, callback){
+        let SQL = 'UPDATE ?? SET ?? = NOW() + INTERVAL 15 MINUTE, ?? = ? WHERE ?? = ?';
+        var params = [
+            this.table,
+            this.col.exp,
+            this.col.code,
+            code,
+            this.col.email,
+            email,
+        ];
+        
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                console.log(`Error settign code for: ${email} - setForgotCode`);
+                console.log(err);
+                return callback(err, null);
+            }
+            
+            //var result = (results[0]) ? results[0] : null;
+            if(!results){
+                console.log("null result - setForgotCode");
+                return callback(null,null); // no error but no result
+            }
+            console.log("code set - setForgotCode");
+            return callback(null, results.affectedRows);
+        });
+    }
+    
+    getForgotCode(code, callback){
+        
+        //SQL query
+        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
+        let parameters = [
+            this.col.code,
+            this.table,
+            this.col.code,
+            code
+        ];
+        
+        this.conn.query(SQL, parameters, (err, results) => {
+            if(err){
+                return callback(err, null);
+            }
+            
+            
             let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
             if(!result){
                 return callback(null, null); // no error but no result
@@ -88,23 +217,67 @@ class UserStore {
         });
     }
 
-    deleteUser(email, callback){
-        let SQL = "DELETE FROM ?? WHERE ?? = ?";
-        let parameters = [
+    /**
+     *  create a random password for the user  
+     *
+     */
+    setTempPassword(email, callback){
+
+        //generated pass
+        let randPass = sutil.genToken(12);
+
+        sutil.bHash(randPass, (err, hash) => {
+            if(err){
+                return callback(err,null); // bcrypt error
+            }
+
+            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+            let params = [
+                this.table,
+                this.col.pass,
+                hash,
+                this.col.email,
+                email
+            ];
+
+            this.conn.query(SQL,params, (error, results) => {
+                if(error){
+                    return callback(error,null);
+                }
+
+                if(results){
+                    return callback(null,randPass);
+                }
+
+                return callback(null,null);
+            });
+        })
+
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
             this.table,
+            this.col.pass,
+            randPass,
             this.col.email,
             email
         ];
 
-        this.conn.query(SQL,parameters, (err,results) => {
+        this.conn.query(SQL,params, (err, results) => {
             if(err){
-                return callback(err,null); // could not delete
+                return callback(err,null);
             }
-            return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
+
+            if(results){
+                return callback(null,randPass);
+            }
+
+            return callback(null,null);
         });
     }
 
+
 }
+
 
 class FoodStore {
     constructor(options) {
@@ -115,20 +288,20 @@ class FoodStore {
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
             database: process.env.DB_ACTIVE_DB
-       });
-
-       this.table = "food_cards"
-       this.col = {
-        id: "id",
-        lat: "lat",
-        lon: "lon",
-        data: "data",
-        res: "res",
-        vendor: "vendor"
-       }
-
+        });
+        
+        this.table = "food_cards"
+        this.col = {
+            id: "id",
+            lat: "lat",
+            lon: "lon",
+            data: "data",
+            res: "res",
+            vendor: "vendor"
+        }
+        
     }
-
+    
     // changed the fields we are storing in the data object
     // removed favorite and travel bc those are meaningless
     // changing the object to have a field "pos" = [lat, long]
@@ -139,7 +312,7 @@ class FoodStore {
         let rind = Math.round((Math.random()*100)) % TEST_POS.length;
         let pos = TEST_POS[rind];
         console.log(`uploaded card: lat ${pos[0]}, lon ${pos[1]}`);
-
+        
         // meta data
         let data = JSON.stringify({
             image: "test",
@@ -147,7 +320,7 @@ class FoodStore {
             item: item,
             tags: "test"
         });
-
+        
         
         let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
         let params = [
@@ -161,20 +334,21 @@ class FoodStore {
             data,
             vendor
         ];
-
+        
         this.conn.query(SQL,params, (err) => {
             if(err) {
                 return callback(err);
             }
-
+            
             return callback(null);
         });
-
-
-
-
+        
+        
+        
+        
     }
-
+    
+    // upload whole card
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
         let data = JSON.stringify({
@@ -202,64 +376,66 @@ class FoodStore {
             }
             return callback(null); // no error
         });
-
-    }
         
-   
+    }
     
-
+    
+    
+    // return all cards
     getCardsAll(callback){
         let SQL = "SELECT * FROM ??";
         let params = [this.table];
-
+        
         this.conn.query(SQL,params, (err, results) => {
             if(err){
                 return callback(err,null);
             }
-
+            
             return callback(null, results);
         })
     }
-
+    
+    // get all cards maxdist_m from pos
     getCardsByRange(pos , maxdist_m, callback){
-            let Km = sutil.getKm(maxdist_m);
-            console.log(Km);
-            let rounded_km = Math.round(Km);
-            console.log(rounded_km)
-            
-            let lat_min = pos.lat - (rounded_km * 0.045);
-            let lat_max = pos.lat + (rounded_km * 0.045);
-            let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-            let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
-            
-            let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
-            var params = [
-                this.table,
-                this.col.lat,
-                lat_min,
-                lat_max,
-                this.col.lon,
-                lon_min,
-                lon_max
-            ]
-
-            this.conn.query(SQL, params, (err, results) => {
-                if(err){
-                    console.log(`Error getiing cards in range - getcardsbyrang`);
-                    return callback(err, null);
-                }
-                console.log(`Successfully returned cards in range - getcardsbyrange`);
-                if(!results){
-                    // no cards in given range
-                    return callback(null,null);
-                }
-
-                return callback(null, results); // no error and results 
-            });
+        let Km = sutil.getKm(maxdist_m);
+        console.log(Km);
+        let rounded_km = Math.round(Km);
+        console.log(rounded_km)
         
-       
+        let lat_min = pos.lat - (rounded_km * 0.045);
+        let lat_max = pos.lat + (rounded_km * 0.045);
+        let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+        let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
+        
+        let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+        var params = [
+            this.table,
+            this.col.lat,
+            lat_min,
+            lat_max,
+            this.col.lon,
+            lon_min,
+            lon_max
+        ]
+        
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                console.log(`Error getiing cards in range - getcardsbyrang`);
+                return callback(err, null);
+            }
+            console.log(`Successfully returned cards in range - getcardsbyrange`);
+            if(!results){
+                // no cards in given range
+                return callback(null,null);
+            }
+            
+            return callback(null, results); // no error and results 
+        });
+        
+        
     }
-
+    
+    // return all cards uploaded by a vendor
     getCardsVendor(vendor_id, callback){
         let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
         let params = [
@@ -267,21 +443,59 @@ class FoodStore {
             this.col.vendor,
             vendor_id
         ]
-
+        
         this.conn.query(SQL, params, (err, results) => {
             if(err){
                 return callback(err, null);
             }
-
+            
             
             if(!results){
                 return callback(null, null); // no error but no result
             }
             return callback(null, results);
         });
-
+        
     }
-
+    
+    // return reserved cards for a vendor (so vendors can see if their cards have been reserved by users)
+    getVendorReserved(vendor_id, callback){
+        let SQL = "SELECT * FROM  ?? WHERE ?? = ? AND ?? IS NOT NULL";
+        let params = [
+            this.table,
+            this.col.vendor = vendor_id,
+            this.col.res
+        ]
+        
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                return callback(err, null);
+            }
+            if(!results){
+                return callback(null,null);
+            }
+            
+            return callback(null,results);
+        })
+    }
+    
+    //return the card the user has
+    getUserReserved(user_id, callback){
+        let SQL = "SELECT * FROM ?? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.res,
+            user_id
+        ]
+        
+        this.conn.query(SQL, params ,(err, results) => {
+            if(err) return callback(err,null);
+            if(!results) return callback(null,null);
+            return callback(null, results); // we should only get one here so we might want to check that somewhere.
+        });
+    }
+    
+    // delete card by id 
     deleteCardsById(card_id, callback){
         let SQL = 'DELETE FROM ?? where ?? = ?';
         let params = [
@@ -299,9 +513,10 @@ class FoodStore {
             }
             return callback(null, results.affectedRows);
         });
-
+        
     }
-
+    
+    // reserve card by id and upload user email into reserved field
     reserveCard(id, username, callback){
         //change the card with card.id = id in the database to set its reserved field = username
         // You were using a Insert here but we want to use Update
@@ -315,21 +530,22 @@ class FoodStore {
             this.col.res,
             ""
         ];
-
+        
         this.conn.query(SQL, params, (err, results) => {
             if(err){
                 return callback(err, null);
             }
-
+            
             if(!results){
                 return callback(null,null);
             }
             return callback(null, results.affectedRows);
         });
-
-
+        
+        
     }
-
+    
+    // remove the user from the card
     cancelReservation(username, callback){
         let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
         let params = [
@@ -339,18 +555,18 @@ class FoodStore {
             this.col.res,
             username
         ]
-
+        
         this.conn.query(SQL,params, (err, results) => {
             if(err){
                 return callback(err,null);
             }
-
+            
             return callback(null, results);
         })
-
+        
     }
-
-
+    
+    
 }
 
 
