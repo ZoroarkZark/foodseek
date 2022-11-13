@@ -209,11 +209,11 @@ class UserStore {
             }
             
             
-            let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
-            if(!result){
+            if(!results){
                 return callback(null, null); // no error but no result
             }
-            return callback(null, result);
+            console.log(results);
+            return callback(null, results);
         });
     }
 
