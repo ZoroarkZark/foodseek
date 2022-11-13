@@ -1,6 +1,0 @@
-POST to path: /test @ 19:11:54)}
-GET to path: /test @ 19:13:32)}
-POST to path: /test @ 19:13:37)}
-GET to path: /logs @ 19:13:41)}
-POST to path: /signup @ 19:14:9)}
-{"success":1,"data":{"message":"Succsesful signup"},"issues":null}
