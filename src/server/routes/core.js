@@ -180,11 +180,23 @@ CoreRouter.post('/fgpss', (req, res,next) => {
         let subject = 'Confirmation code, forgot password';
         let mailOptions = createOptions(req.body.email, subject, html_str);
         let sent = sendEmail(mailOptions);
-        if(sent == 1){
-            resbody.setIssues(10)
-            res.end(resbody.package());
-            return;
-        }        
+        sendEmail(mailOptions, (err, didSend) => {
+            if(err){
+                resbody.setIssue(999,'Error sending email');
+                res.end(resbody.package());
+                return;
+            }
+            if(didSend){
+                resbody.setData({msg: "sent forgot password email"});
+                res.end(resbody.package());
+                return;
+            }
+            else{
+                resbody.setIssue(998, 'Some how no error on email send, but no results either');
+                res.end(resbody.package());
+                return;
+            }
+        });
     }
     else{
         resbody.setIssues(1)

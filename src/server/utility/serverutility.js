@@ -367,7 +367,7 @@ function createOptions(email, subject , html_str){
     return mailOptions;
 }
 //send email
-function sendEmail(mailOptions) {
+function sendEmail(mailOptions, callback) {
     
  
     var transport = nodemailer.createTransport({
@@ -381,11 +381,11 @@ function sendEmail(mailOptions) {
     transport.sendMail(mailOptions, function(error, info) {
         if (error) {
             //console.log(1)
-            return 1;
+            return callback(error,0);
             
         } else {
             //console.log(0)
-            return 0;
+            return callback(null, 1);
         }
     });
 }
