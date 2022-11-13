@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const url = require('url');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
-const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
+const { sendEmail, createOptions, res_obj, signUpEmail } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
 const e = require('express');
@@ -72,17 +72,24 @@ CoreRouter.post('/signup', async (req, res) =>
                     message: "Succsesful signup"
                 });
                 
-                
-                const token = sutil.sign({user: req.body.email});
-                let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> to reset your password</p>';
-                let subject = 'Confirmation email';
-                let mailOptions = createOptions(req.body.email, subject, html_str);
-                let sent = sendEmail(mailOptions);
-                if(sent == 1){
-                    resbody.setIssues(10)
-                    res.end(resbody.package());
-                    return;
-                }       
+                signUpEmail(req.body.email, (err,didSend) => {
+                    if(err){
+                        resbody.setIssue(999,'Error sending email');
+                        res.end(resbody.package());
+                        return;
+                    }
+                    if(didSend){
+                        resbody.setData({msg: "sent confirmation email"});
+                        res.end(resbody.package());
+                        return;
+                    }
+                    else{
+                        resbody.setIssue(998, 'Some how no error on email send, but no results either');
+                        res.end(resbody.package());
+                        return;
+                    }
+                });
+
                 res.end(resbody.package());
                 return;
             });
@@ -176,11 +183,7 @@ CoreRouter.post('/fgpss', (req, res,next) => {
             }
         })
 
-        let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
-        let subject = 'Confirmation code, forgot password';
-        let mailOptions = createOptions(req.body.email, subject, html_str);
-        let sent = sendEmail(mailOptions);
-        sendEmail(mailOptions, (err, didSend) => {
+        fgpssEmail(mailOptions, (err, didSend) => {
             if(err){
                 resbody.setIssue(999,'Error sending email');
                 res.end(resbody.package());

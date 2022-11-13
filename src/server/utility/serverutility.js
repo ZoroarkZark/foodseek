@@ -366,6 +366,36 @@ function createOptions(email, subject , html_str){
     };
     return mailOptions;
 }
+
+function signUpEmail(email, callback){
+    const token = jwt.sign({ user: email},devJWT, {expiresIn: "10d"});
+    let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> </p>';
+    let subject = 'Confirmation email';
+    let mailOptions = createOptions(email, subject, html_str);
+    sendEmail(mailOptions, (error,sent) =>{
+        if(error){
+            return callback(error,sent);
+        }
+        else {
+            return callback(error,sent);
+        }
+    });
+}
+
+function fgpssEmail(email, callback){
+    let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
+    let subject = 'Confirmation code, forgot password';
+    let mailOptions = createOptions(email, subject, html_str);
+    sendEmail(mailOptions, (error,sent) =>{
+        if(error){
+            return callback(error,sent);
+        }
+        else {
+            return callback(error,sent);
+        }
+    });
+}
+
 //send email
 function sendEmail(mailOptions, callback) {
     
@@ -418,6 +448,8 @@ module.exports = {
     logFile: getLogFile,
     sendEmail: sendEmail,
     createOptions: createOptions,
+    signUpEmail: signUpEmail,
+
 
 
 }
