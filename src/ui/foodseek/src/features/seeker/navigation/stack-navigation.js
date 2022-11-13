@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import 'react-native-gesture-handler'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { BackButton } from '../../../components/common/backbutton'
 // import screens for stack navigators
 import * as screen from '../screens'
+import { AutocompleteSearchBar } from '../../../components/api/GooglePlacesInput'
 
 const Stack = createNativeStackNavigator() // Create stack navigator component
 
@@ -25,6 +26,7 @@ export const MapNavigator = () => {
 
 // Returns a stack navigator for the post listing screens
 export const PostsNavigator = () => {
+    const searchRef = useRef()
     return (
         <Stack.Navigator
         screenOptions={{
@@ -32,9 +34,9 @@ export const PostsNavigator = () => {
         }}>
             <Stack.Screen
                 name="Posts" 
+                searchRef={searchRef}
                 component={screen.Posts}
-                options={( { navigation, route } ) => ( {
-                    
+                options={( { navigation } ) => ( {
                 } )}
             />
             <Stack.Screen
@@ -102,12 +104,7 @@ export const FavoritesNavigator = () => {
                 headerShown: true,
                 headerTitle: '',
                 headerTransparent: true,
-            })}>
-            <Stack.Screen
-                name="Favorites"
-                component={screen.Favorites}
-                options={( { navigation } ) => ( {
-                    headerLeft: () => (
+                headerLeft: () => (
                         <BackButton
                             style={{
                                 left: 6,
@@ -121,6 +118,12 @@ export const FavoritesNavigator = () => {
                             }}
                         />
                     ),
+            })}>
+            <Stack.Screen
+                name="Favorites"
+                component={screen.Favorites}
+                options={( { navigation } ) => ( {
+                    
                 } )}
                     />
                     
