@@ -449,7 +449,7 @@ module.exports = {
     sendEmail: sendEmail,
     createOptions: createOptions,
     signUpEmail: signUpEmail,
-
+    fgpssEmail: fgpssEmail,
 
 
 }
