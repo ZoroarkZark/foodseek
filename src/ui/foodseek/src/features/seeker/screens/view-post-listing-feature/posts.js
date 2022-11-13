@@ -3,91 +3,82 @@ import { AutocompleteSearchBar } from '../../../../components/api/GooglePlacesIn
 import PostList from '../../../../components/post/PostList' // import the component with the implemented flatlist
 import { DATA } from '../../../../components/post/TestData' // import some local dummy data for demo purposes
 import { FoodCardContext } from '../../../../context/FoodCardContext'
-import { StyleSheet, View, Text } from 'react-native'
+import {  View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native-gesture-handler'
+import { ToggleButton } from 'react-native-paper'
 
-export const FilterButton = (label, styles, toggleOn, toggleOff) => {
 
-    const [ selected, setSelected ] = useState( false )
-    const touch = {
-        activeOpacity: 1,
-        underlayColor: 'green',
-        style: selected ? styles.toggleOn : styles.toggleOff,
-        onHideUnderlay: () => toggleOn(),
-        onShowUnderlay: () => toggleOff(),
-        onPress: () => setSelected(!selected)
-    }
+
+export const ToggleButtonExample = ({label}) => {
+    const [status, setStatus] = React.useState('unchecked');
+  
+    const onButtonToggle = value => {
+      setStatus(status === 'checked' ? 'unchecked' : 'checked');
+    };
+  
     return (
-        <TouchableHighlight {...touch}>
-            <Text style={{paddingLeft: 10, paddingRight: 10}}>{label}</Text>
-        </TouchableHighlight>
-    )
-}
-
-const styles = StyleSheet.create( {
-    toggleOn: {
-        borderColor: 'green',
-        borderWidth: 1,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
-        borderBottomLeftRadius: 9,
-        borderBottomRightRadius: 9,
-        height: 18,
-
+        <ToggleButton
+            icon={() =>
+                <View>
+                    <Text style={{
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
+                        borderBottomLeftRadius: 9,
+                        borderBottomRightRadius: 9,
+                        height: 18,
+                        color: 'grey'
+                    }}>
+                        {label}
+                    </Text>
+                </View>}
+            style={{
+                borderWidth: .5,
+                borderTopLeftRadius: 12,
+                borderTopRightRadius: 12,
+                borderBottomLeftRadius: 12,
+                borderBottomRightRadius: 12,
+                width: label.length * 12,
+                height: 21,
+                color: 'black',
+                
+                
         
-    },
-    toggleOff: {
-        borderColor: 'green',
-        borderWidth: 1,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
-        borderBottomLeftRadius: 9,
-        borderBottomRightRadius: 9,
-        height: 18,
+                
+            }}
+            value={label}
+            status={status}
+            onPress={onButtonToggle}
+        >
+            <Text>
+            {label}
+            </Text>
+        </ToggleButton>
+    )
+  }
+  
+  const exampleFilters = [
+    { label: "Fast Food",},
+    { label: "Snacks",},
+    { label: "Drinks",},
+    { label: "American",},
+    { label: "Mexican",},
+    { label: "Vegan",},
+    { label: "Sort By: Nearest",},
+    { label: "Sort By: Newest",},
+    { label: "Sort By: Oldest",},
+    { label: "Salad",},
+    { label: "Sandwiches",},
+    { label: "Chinese",},
+    { label: "Thai",},
+    { label: "Mediterranean ", }
+    ]
 
-    }
-})
-
-const exampleFilters = [
-{ label: "Fast Food",},
-{ label: "Snacks",},
-{ label: "Drinks",},
-{ label: "American",},
-{ label: "Mexican",},
-{ label: "Vegan",},
-{ label: "Sort By: Nearest",},
-{ label: "Sort By: Newest",},
-{ label: "Sort By: Oldest",},
-{ label: "Salad",},
-{ label: "Sandwiches",},
-{ label: "Chinese",},
-{ label: "Thai",},
-{ label: "Mediterranean ", }
-]
 // Returns a PostList to display a list of available vendor posts to the user
 export const Posts = ( { navigation } ) => {
     const { cards, test, onRefresh, loading } = useContext( FoodCardContext )
     const filters = exampleFilters
     const placesRef = useRef()
-
-    const FilterButton = (label, styles, toggleOn, toggleOff) => {
-
-        const [ selected, setSelected ] = useState( false )
-        const touch = {
-            activeOpacity: 1,
-            underlayColor: 'green',
-            style: selected ? styles.toggleOn : styles.toggleOff,
-            onHideUnderlay: () => toggleOn(),
-            onShowUnderlay: () => toggleOff(),
-            onPress: () => setSelected(!selected)
-        }
-        return (
-            <TouchableHighlight {...touch}>
-                <Text style={{paddingLeft: 10, paddingRight: 10}}>{label}</Text>
-            </TouchableHighlight>
-        )
-    }
 
 
     // TODO sql server keeps going down but we need to operate on cards so this just sets the default cards before anything
@@ -103,10 +94,24 @@ export const Posts = ( { navigation } ) => {
                     <AutocompleteSearchBar placesRef={placesRef} />
                     <ScrollView
                         horizontal={true}
+                        marginHorizontal={10}
+                        paddingTop={6}
                         contentInset={{ top: 0, left: 10, bottom: 0, right: 10 }}
                         showsHorizontalScrollIndicator={false}
                     >
-                        {filters.map( ( filter ) => FilterButton( filter.label, styles, () => console.log( 'on' ), () => console.log( 'off' )) )}
+                        {filters.map( ( filter ) => {
+                            return (
+                                <View style={{
+                                    flexDirection: 'horizontal',
+                                    flex: 10
+                                }}>
+                                    <ToggleButtonExample flex={9} label={filter.label} />
+                                    <View flex={1}></View>
+                                </View>
+                                
+                            )
+                        } )}
+                        
                     </ScrollView>
                 </View>
             </SafeAreaView>
