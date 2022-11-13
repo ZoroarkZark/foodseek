@@ -13,7 +13,7 @@
 const file = require('fs');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
-
+var randtoken = require('rand-token');
 
 const jwt = require('jsonwebtoken');
 const devJWT = process.env.JWT_SECRET;
@@ -391,6 +391,11 @@ function sendEmail(mailOptions) {
 }
 
 
+
+
+
+
+
 const FS = new FoodStore();
 const US = new UserStore(); // instantiate these 1 time 
 
@@ -413,6 +418,7 @@ module.exports = {
     logFile: getLogFile,
     sendEmail: sendEmail,
     createOptions: createOptions,
+
 
 }
 

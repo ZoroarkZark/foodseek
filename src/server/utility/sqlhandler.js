@@ -38,6 +38,8 @@ class UserStore {
             data: "Data",
             travel: "travel",
             valid: "valid",
+            code: "code",
+            exp: "codeExpire",
         };
     }
 
@@ -160,7 +162,60 @@ class UserStore {
                     return callback(null, results.affectedRows);
                 });
         }
+
+        setForgotCode(email, code, callback){
+            let SQL = 'UPDATE ?? SET ?? = NOW() + INTERVAL 15 MINUTE, ?? = ? WHERE ?? = ?'
+            let valid = 1;
+            var params = [
+                this.table,
+                this.col.exp,
+                this.col.code,
+                code,
+                this.col.email,
+                email,
+            ];
+    
+                this.conn.query(SQL, params, (err, results) => {
+                    if(err){
+                        console.log(`Error settign code for: ${email} - setForgotCode`);
+                        console.log(err);
+                        return callback(err, null);
+                    }
+    
+                    //var result = (results[0]) ? results[0] : null;
+                    if(!results){
+                        console.log("null result - setForgotCode");
+                        return callback(null,null); // no error but no result
+                    }
+                    console.log("code set - setForgotCode");
+                    return callback(null, results.affectedRows);
+                });
+        }
         
+        getCodeInfo(code, callback){
+
+            //SQL query
+            let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
+            let parameters = [
+                this.col.code,
+                this.table,
+                this.col.code,
+                code
+            ];
+    
+            this.conn.query(SQL, parameters, (err, results) => {
+                if(err){
+                    return callback(err, null);
+                }
+    
+
+                let result = (results[0]) ? results[0] : null; //if we have the one result return the one result
+                if(!result){
+                    return callback(null, null); // no error but no result
+                }
+                return callback(null, result);
+            })
+        }
 }
 
 
