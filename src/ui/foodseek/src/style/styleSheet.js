@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
 // Placeholder: Create a home screen possibly containing a search bar and not much else
-const styles2 = StyleSheet.create({
+export const styles2 = StyleSheet.create({
     SectionStyle: {
         flexDirection: 'row',
         backgroundColor: '#000000',
@@ -52,7 +52,7 @@ const styles2 = StyleSheet.create({
     },
 })
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     SectionStyle: {
         flexDirection: 'row',
         backgroundColor: '#FFFFFF',
@@ -80,6 +80,13 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 16,
     },
+    buttonTextStyleWhite: {
+        backgroundColor: 'black',
+        color: 'white',
+        margin: 'auto',
+        paddingVertical: 0,
+        fontSize: 20,
+    },
     inputStyle: {
         flex: 1,
         color: 'black',
@@ -102,7 +109,7 @@ export const styles = StyleSheet.create({
     },
 })
 
-export default styles2
+export default styles
 
 export const map = StyleSheet.create({
     container: {

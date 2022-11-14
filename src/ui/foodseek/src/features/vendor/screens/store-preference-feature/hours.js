@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Pressable, TouchableOpacity } from 'rea
 import { DayPickerInput } from "../../../../components/common/pickerinput";
 import { TimeInput } from "../../../../components/common";
 import { TimeRange } from "../../../../components/forms";
-import styles2, { styles } from "../../../../components/styleSheet";
+import styles from '../../../../style/styleSheet';
 
 export const HoursOfOperationScreen = ({navigation}, props) => {
     const [day, setDay] = useState("monday");
@@ -123,10 +123,10 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'monday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setMondayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
-                    <Text style={styles2.buttonTextStyle}>Start Time: {mondayTime.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit"})}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setMondayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
-                    <Text style={styles2.buttonTextStyle}>End Time: {mondayEndTime.toLocaleTimeString()}</Text>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setMondayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <Text style={styles.buttonTextStyle}>Start Time: {mondayTime.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit"})}</Text>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setMondayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <Text style={styles.buttonTextStyle}>End Time: {mondayEndTime.toLocaleTimeString()}</Text>
                 {
                 mondayShow && 
                 <TimeInput value={mondayTime} onChange ={onStartChange}/>
@@ -139,10 +139,10 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'tuesday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setTuesdayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
-                    <Text style={styles2.buttonTextStyle}>Start Time: {tuesdayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setTuesdayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
-                    <Text style={styles2.buttonTextStyle}>End Time: {tuesdayEndTime.toLocaleTimeString()}</Text>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setTuesdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <Text style={styles.buttonTextStyle}>Start Time: {tuesdayTime.toLocaleTimeString()}</Text>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setTuesdayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <Text style={styles.buttonTextStyle}>End Time: {tuesdayEndTime.toLocaleTimeString()}</Text>
                 {
                 tuesdayShow && 
                 <TimeInput value={tuesdayTime} onChange ={onStartChange}/>
@@ -155,9 +155,9 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'wednesday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setWednesdayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setWednesdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {weddayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setWednesdayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setWednesdayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text>End Time: {weddayEndTime.toLocaleTimeString()}</Text>
                 {
                 wednesdayShow &&
@@ -171,9 +171,9 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'thursday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setThursdayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setThursdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {thursdayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setThursdayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setThursdayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text>End Time: {thursdayEndTime.toLocaleTimeString()}</Text>
                 {
                 thursdayShow &&
@@ -187,9 +187,9 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'friday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setFridayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setFridayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {fridayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setFridayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setFridayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text>End Time: {fridayEndTime.toLocaleTimeString()}</Text>
 
                 {
@@ -204,9 +204,9 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'saturday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setSaturdayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setSaturdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {saturdayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setSaturdayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setSaturdayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text>End Time: {saturdayEndTime.toLocaleTimeString()}</Text>
                     
                 {
@@ -221,9 +221,9 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
             case 'sunday':
                 return <View>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(false), setSundayShow(true))}><Text style={styles2.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setSundayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {sundayTime.toLocaleTimeString()}</Text>
-                    <TouchableOpacity style={styles2.buttonStyle} onPress ={() => (setisEnd(true), setSundayEndShow(true))}><Text style={styles2.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(true), setSundayEndShow(true))}><Text style={styles.buttonTextStyle}>Set End Time</Text></TouchableOpacity>
                     <Text>End Time: {sundayEndTime.toLocaleTimeString()}</Text>
                 {
                 sundayShow &&
