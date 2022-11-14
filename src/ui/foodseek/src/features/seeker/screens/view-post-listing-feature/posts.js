@@ -16,10 +16,13 @@ export const Posts = ( { navigation } ) => {
     // error and data storage for the post screen component
     const [ error, setError ] = useState( null )
     const [ posts, setPosts ] = useState( DEFAULT_CARD_ARRAY )
+    const [ sort, setSort ] = useState( null )
+    const [ tags, setTags ] = useState( null )
+    
 
     // context classes for location and food card providers
     const {location, keyword } = useContext(LocationContext)
-    const { cards, test, onRefresh, loading } = useContext( FoodCardContext )
+    const { onRefresh, loading, cardsLoading } = useContext( FoodCardContext )
 
     // search term and coordinates
     const [ searchKey, setSearchKey ] = useState( keyword )
@@ -51,8 +54,23 @@ export const Posts = ( { navigation } ) => {
     }, [])
     
     useEffect( () => {
+        // do filtering sorting and updating lists here
+        cardsLoading(true)
+        console.log( '\nSorting by: ' + sort + '\n' )
+        console.log( '\nTags list is : [' + tags + ']\n' )
+        cardsLoading(false)
+    }, [ sort, setSort, tags, setTags ] )
+    
+
+    useEffect( () => {
         // do loading behavior stuff here
-    },[loading])
+    }, [ loading ] )
+    
+
+    useEffect( () => {
+        // do error handling stuff here
+        console.log(error)
+    }, [error, setError])
 
     return (
         <><View>
@@ -65,7 +83,10 @@ export const Posts = ( { navigation } ) => {
                         tagList={tagList}
                         sortList={sortList}
                         style={style} 
-                        callback={({sort, tags}) => console.log('Sorting by: '+JSON.stringify(sort)+'\nTag(s): '+JSON.stringify(tags))}
+                            callback={( { sort, tags } ) => {
+                                setSort( sort )
+                                setTags( tags )
+                        }}
                         />
                     </View>
                     </>

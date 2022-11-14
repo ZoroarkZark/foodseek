@@ -16,6 +16,8 @@ export const FoodCardProvider = ( { children } ) => {
   const [unit, setUnit] = useState('mi') // TODO add preferred units context
   const { jwt } = useContext( AuthenticationContext )
   
+
+  // function calls the server with JWT token to request and retrieve cards
   const retrieveCards = ( loc, jwt, setResult=setCards ) => {
     setLoading( true )
     setCards( [] )
@@ -23,12 +25,12 @@ export const FoodCardProvider = ( { children } ) => {
       cardRequest( loc, jwt )
       .then( (results) => { 
         const { items } = results
-        return cardTransform( loc, speed, JSON.parse(items), unit )
+        return cardTransform( loc, speed, JSON.parse(items), unit )     // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
         setLoading( false )
-        setResult( arr )
+        setResult( arr )      // updates the state with the provided function
         console.log(arr)
         return arr
       } )
@@ -42,10 +44,12 @@ export const FoodCardProvider = ( { children } ) => {
     }
   }
 
+  // function wraps the retrieval function may not be necessary?
   const refreshCards = (loc=location, saveCards = null) => {
     retrieveCards( loc, jwt, saveCards )
   }
 
+  
   useEffect( () => {
     if ( location ) {
       refreshCards( location )
@@ -54,7 +58,7 @@ export const FoodCardProvider = ( { children } ) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, test: setCards, onRefresh: refreshCards, loading, error}}>
+    <FoodCardContext.Provider value={{cards, cardsLoading: setLoading, onRefresh: refreshCards, loading, error}}>
       {children}
     </FoodCardContext.Provider>
   )

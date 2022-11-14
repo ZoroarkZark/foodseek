@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FilterOptionsScroller } from './FilterOptionsScroller'
 
-
-
-
 export const FilterBar = ( {tagList, sortList, style, callback } ) => {
   const [ sort, setSort ] = useState( '' )
   const [ tag, setTag ] = useState( '' )
@@ -24,16 +21,17 @@ export const FilterBar = ( {tagList, sortList, style, callback } ) => {
 
   useEffect( () => {
     if ( !tag ) return
-    let temp = tags.filter( item => item !== tag )
-    if ( temp.length === tags.length ) {
-      temp = [...temp, tag]
+    let { status, value } = tag
+    if ( status === false ) {
+      setTags(tags.filter((t) => t !== value))
+    } else {
+      setTags([value, ...tags])
     }
-    setTags( temp )
   }, [tag, setTag])
 
   useEffect( () => {
     callback({sort: sort, tags: tags})
-  }, [sort, setSort, tags, setTags])
+  }, [tag, setTag, sort, setSort, tags, setTags])
 
   return (
     <>
