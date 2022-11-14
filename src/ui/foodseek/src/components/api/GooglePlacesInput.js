@@ -3,7 +3,7 @@ import { LocationContext } from '../../context/LocationContext'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { apiKey } from './.env'
 
-export const AutocompleteSearchBar = ({ placesRef, style }) => {
+export const AutocompleteSearchBar = ({ style }) => {
   const { search, keyword, setKeyword } = useContext(LocationContext)
   const [key, setKey] = useState(keyword)
   // useEffect( () => {
@@ -27,7 +27,6 @@ export const AutocompleteSearchBar = ({ placesRef, style }) => {
         // onSubmitEditing: () => search(key),
         onChangeText: (value) => setKey(value),
       }}
-      ref={placesRef}
     />
   )
 }
