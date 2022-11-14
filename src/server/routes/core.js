@@ -239,6 +239,11 @@ CoreRouter.post('/validatecode', (req, res) => {
             }
 		})
 	}
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
 	
 });
 
