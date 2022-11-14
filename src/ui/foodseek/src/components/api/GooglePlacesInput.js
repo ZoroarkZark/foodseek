@@ -22,7 +22,7 @@ export const AutocompleteSearchBar = ({ style }) => {
       keyboardShouldPersistTaps={'handled'}
       textInputProps={{
         value: key,
-        autoFocus: true,
+        autoFocus: false,
         // onSubmitEditing: () => search(key),
         onChangeText: (value) => setKey(value),
       }}

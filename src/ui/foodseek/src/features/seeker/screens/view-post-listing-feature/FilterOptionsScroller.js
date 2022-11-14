@@ -5,11 +5,11 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 // button component that defines the filter buttons
 export const ToggleButton = ( { label, callback } ) => {
-    const [status, setStatus] = React.useState('unchecked')
+    const [status, setStatus] = useState('unchecked')
 
-    const onButtonToggle = (value) => {
+    const onButtonToggle = ( value ) => {
+        callback( status === 'checked' ? '' : label )
         setStatus( status === 'checked' ? 'unchecked' : 'checked' )
-        callback(label)
     }
 
     return (
@@ -58,6 +58,7 @@ export const ToggleButton = ( { label, callback } ) => {
         const [ sortChoice, setSortChoice ] = useState( '' )
         const [ tagChoice, setTagChoice ] = useState( '' )
 
+
         useEffect( () => {
             if ( !sortChoice ) return
             setSort(sortChoice)
@@ -100,7 +101,8 @@ export const ToggleButton = ( { label, callback } ) => {
                 {/* <SortFilters options={sortOptions} value={sortChoice} setValue={setSortChoice} style={style} /> */}
                 {tagOptions.map((filter) => {
                   return (
-                        <ToggleButton
+                      <ToggleButton
+                          key={filter.label}
                           label={filter.label}
                           callback={setTagChoice}
                         />

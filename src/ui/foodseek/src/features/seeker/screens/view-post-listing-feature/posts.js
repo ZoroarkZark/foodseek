@@ -13,7 +13,6 @@ import { AutocompleteSearchBar } from '../../../../components/api/GooglePlacesIn
 // Returns a PostList to display a list of available vendor posts to the user
 export const Posts = ({ navigation }) => {
     const { cards, test, onRefresh, loading } = useContext( FoodCardContext )
-    const placesRef = useRef()
     const sortList = [ 'Nearest', 'Newest', 'Oldest' ]
     //const tagList = cards.map( ( { cuisine } ) => ( [ ...tagList, cuisine ] ) )
     const tagList = ['Chinese', 'Thai', 'Mexican']
@@ -35,24 +34,18 @@ export const Posts = ({ navigation }) => {
                 DATA={cards ? cards : DATA}
                 ListHeaderComponent={
                     <View style={{paddingTop: 60, padding: 10, paddingBottom: 65,  ...style}}>
-                    <AutocompleteSearchBar placesRef={placesRef} />
+                    <AutocompleteSearchBar />
 
                         <SearchFilterBar
-                        ref={placesRef}
                         tagList={tagList}
                         sortList={sortList}
                         style={style} 
                         callback={({sort, tags}) => console.log('Sorting by: '+JSON.stringify(sort)+'\nTag(s): '+JSON.stringify(tags))}
                         />
-
-                            
-
-</View>
-
+                    </View>
                 }
                 refreshing={loading}
                 onRefresh={() => onRefresh()} 
-                
                 />
             </View>
     </>
