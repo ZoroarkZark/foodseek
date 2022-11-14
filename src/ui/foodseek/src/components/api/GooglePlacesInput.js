@@ -21,7 +21,6 @@ export const AutocompleteSearchBar = ({ style }) => {
       onNotFound={() => console.log('no results...')}
       keyboardShouldPersistTaps={'handled'}
       textInputProps={{
-        style: style,
         value: key,
         autoFocus: true,
         // onSubmitEditing: () => search(key),

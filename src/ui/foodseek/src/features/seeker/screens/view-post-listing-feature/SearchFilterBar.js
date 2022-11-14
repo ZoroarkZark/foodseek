@@ -5,7 +5,7 @@ import { View } from 'react-native'
 
 
 
-export const SearchFilterBar = ( { ref, tagList, sortList, style, callback } ) => {
+export const SearchFilterBar = ( {tagList, sortList, style, callback } ) => {
   const [ sort, setSort ] = useState( '' )
   const [ tag, setTag ] = useState( '' )
   const [ tags, setTags ] = useState( [] )
@@ -38,7 +38,7 @@ export const SearchFilterBar = ( { ref, tagList, sortList, style, callback } ) =
 
   return (
     <>
-        <AutocompleteSearchBar placesRef={ref} style={{position: 'absolute', top: 120, bottom: 160, left: 10, right: 10, ...style}} />
+        {/* <AutocompleteSearchBar placesRef={ref} style={{position: 'absolute', top: 120, bottom: 160, left: 10, right: 10, ...style}} /> */}
         <FilterOptionsScroller filters={filters} setSort={setSort} setTag={setTag} style={style} />
     </>
   )

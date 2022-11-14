@@ -33,9 +33,9 @@ export const Posts = ({ navigation }) => {
         <><View>
             <PostsSection
                 DATA={cards ? cards : DATA}
-                ListHeaderComponent={<View style={{alignContent: 'center'}}>
-                    
-                    <AutocompleteSearchBar placesRef={placesRef} style={{backgroundColor: '#fff', width: useWindowDimensions().width-20, paddingTop: 60, padding: 10, paddingBottom: 65,  ...style}} />
+                ListHeaderComponent={
+                    <View style={{paddingTop: 60, padding: 10, paddingBottom: 65,  ...style}}>
+                    <AutocompleteSearchBar placesRef={placesRef} />
 
                         <SearchFilterBar
                         ref={placesRef}

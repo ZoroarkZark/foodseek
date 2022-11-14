@@ -11,7 +11,7 @@ export const PostsSection = ({DATA, renderSectionHeader, ListHeaderComponent, re
           data: DATA,
           keyExtractor: ( data ) => data.id,
           renderItem: ( { item, expandPost } ) => ( <PostCard data={item} expandPost={expandPost} /> ),
-          renderSectionHeader: renderSectionHeader
+          
         },
         
       ]}
