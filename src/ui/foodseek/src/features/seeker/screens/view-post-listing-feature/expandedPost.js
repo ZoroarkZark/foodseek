@@ -5,23 +5,25 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
-import { styles } from "../../../../components/styleSheet";
+import styles from '../../../../style/styleSheet'
 // Probably change to the styles inside of features
 
 export const ExpandPost = (props) => {
     const data = props.data;
-    const { id, cuisine, item } = props.route.params;
+    const { id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
     const identity = JSON.stringify(id);
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 
     return (
     <View>
-    <ImageBackground source={require('../../../../../assets/icons/beer-outline.png')} resizeMode= "contain" style={{borderColor: "black", borderWidth: 6, borderTopRightRadius: 20, borderBottomRightRadius: 20, borderTopLeftRadius: 20, borderBottomLeftRadius: 20, width: 360, height: 320}}>
-        <View style={{position: 'absolute', top: 0, left: 10, right: 0, bottom: 0, justifyContent: 'center', textAlign: 'center', paddingTop: 220 }}>    
-            <Text 
-              numberOfLines={1}>{cuisine} </Text>
-            <Text 
-              numberOfLines={1}>{item} </Text>    
+    <ImageBackground source={image} resizeMode= "stretch" style={{borderColor: "black", borderWidth: 6, width: 360, height: 300}}>
+        <View style={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-start', textAlign: 'left', paddingTop: 240, flexDirection:'row' , flexWrap:'wrap'}}>    
+            <Text style={styles.buttonTextStyleWhite}
+              numberOfLines={1}>Name: {item}</Text>
+        </View>
+        <View style={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-start', textAlign: 'left', paddingTop: 265, flexDirection:'row' , flexWrap:'wrap'}}>
+            <Text style={styles.buttonTextStyleWhite}
+              numberOfLines={1}>Food: {cuisine}</Text>    
         </View>
     </ImageBackground>
     
@@ -29,13 +31,15 @@ export const ExpandPost = (props) => {
     
     <Section>
         <SectionContent>
-            <Text> Restaurant: </Text>
+            <Text> Restaurant: {vendor.name}  </Text>
+            <Text> </Text> 
+            <Text> Phone Number: {phoneNumber}  </Text>
+            <Text> </Text> 
+            <Text> Address: {address} </Text>
             <Text> </Text>
-            <Text> Address:  </Text>
+            <Text> Time to Arrive: {time} </Text>
             <Text> </Text>
-            <Text> Time to Arrive: </Text>
-            <Text> </Text>
-            <Text> Current Distance: </Text>
+            <Text> Current Distance: {distance} </Text>
         </SectionContent>
     </Section>
 
