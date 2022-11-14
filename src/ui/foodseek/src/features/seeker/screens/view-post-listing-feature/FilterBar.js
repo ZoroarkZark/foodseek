@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { AutocompleteSearchBar } from '../../../../components/api/GooglePlacesInput'
 import { FilterOptionsScroller } from './FilterOptionsScroller'
-import { View } from 'react-native'
 
 
 
-export const SearchFilterBar = ( {tagList, sortList, style, callback } ) => {
+
+export const FilterBar = ( {tagList, sortList, style, callback } ) => {
   const [ sort, setSort ] = useState( '' )
   const [ tag, setTag ] = useState( '' )
   const [ tags, setTags ] = useState( [] )
@@ -38,7 +37,6 @@ export const SearchFilterBar = ( {tagList, sortList, style, callback } ) => {
 
   return (
     <>
-        {/* <AutocompleteSearchBar placesRef={ref} style={{position: 'absolute', top: 120, bottom: 160, left: 10, right: 10, ...style}} /> */}
         <FilterOptionsScroller filters={filters} setSort={setSort} setTag={setTag} style={style} />
     </>
   )

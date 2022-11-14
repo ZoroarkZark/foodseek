@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { BackButton } from '../../../components/common/backbutton'
 // import screens for stack navigators
 import * as screen from '../screens'
-import { AutocompleteSearchBar } from '../../../components/api/GooglePlacesInput'
+import { AutocompleteSearchBar } from '../../../components/api/AutocompleteSearchBar'
 
 const Stack = createNativeStackNavigator() // Create stack navigator component
 
