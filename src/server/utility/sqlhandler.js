@@ -348,6 +348,36 @@ class FoodStore {
         
     }
     
+
+    uploadMore(pack, callback){
+        let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
+        let data = {
+            image: "default.png",
+            cuisine: "default",
+            item: pack.item,
+            tags: pack.tags
+        }
+
+        let params = [
+            this.table,
+            this.col.lat,
+            this.col.lon,
+            this.col.data,
+            this.col.vendor,
+            pack.loc[0],
+            pack.loc[1],
+            JSON.stringify(data),
+            "ACME"
+        ];
+
+        this.conn.query(SQL, params, (err) => {
+            if(err) return callback(err);
+
+            return callback(null);
+        });
+    }
+
+    // 
     // upload whole card
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
