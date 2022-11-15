@@ -8,10 +8,12 @@ import * as stack from './stack-navigation'
 const SeekerTab = createBottomTabNavigator()
 
 // function returns a bottom tab navigator component for seeker type user
-export const SeekerNavigator = () => {
+export const SeekerTabNav = () => {
     return (
         <SeekerTab.Navigator
-            screenOptions={style.screenOptions}
+            screenOptions={{
+                headerShown: false,
+            }}
         >
             <SeekerTab.Screen
                 name="PostList"

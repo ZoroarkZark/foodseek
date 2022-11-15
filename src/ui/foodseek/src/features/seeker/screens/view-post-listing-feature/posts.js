@@ -1,19 +1,133 @@
-import React, { useContext, useCallback, useState, useEffect } from 'react'
-import { ScrollViewDismissKeyboard } from '../../../../components/common'
-import PostList from '../../../../components/post/PostList' // import the component with the implemented flatlist
-import { DATA } from '../../../../components/post/TestData' // import some local dummy data for demo purposes
+// TODO: remove this dummy data and move to config or testing
+import { DATA } from '../../../../components/post/TestData' 
+import React, { useContext, useEffect, useState } from 'react'
+import { View } from 'react-native'
+
+// globals: imports provide the food card services and location services
 import { FoodCardContext } from '../../../../context/FoodCardContext'
+import { LocationContext } from '../../../../context/LocationContext'
+
+// rendering: imports provide the viewable components to render
+import { PostsSectionList } from './PostsSectionList'
+import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
+import { FilterBar } from './FilterBar'
+
+// TODO: move to config for testing
+const DEFAULT_CARD_ARRAY = DATA ? DATA : []
 
 // Returns a PostList to display a list of available vendor posts to the user
 export const Posts = ( { navigation } ) => {
-    const { cards, test, onRefresh, loading } = useContext( FoodCardContext )
+    // error and data storage for the post screen component
+    const [ error, setError ] = useState( null )
+    const [ posts, setPosts ] = useState( DEFAULT_CARD_ARRAY )
+    const [ sort, setSort ] = useState( null )
+    const [ tags, setTags ] = useState( null )
+    
 
-    // TODO sql server keeps going down but we need to operate on cards so this just sets the default cards before anything
+    // context classes for location and food card providers
+    const { location: loc, keyword: key } = useContext( LocationContext )
+    const { onRefresh, loading: refreshing, setLoading } = useContext( FoodCardContext )
+
+    // search term and coordinates
+    const [ keyword, setKeyword ] = useState( key )
+    const [ location, setLocation ] = useState( loc )
+
+    // TODO:
+    const sortList = [ 'Nearest', 'Newest', 'Oldest' ]
+    const tagList = ['Chinese', 'Thai', 'Mexican']
+    const style = {}
+    
+
+    // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
+    const updatePosts = ( update ) => {
+        if ( !update ) {
+            setError( new Error( 'refreshPosts: yielded no new updates' ) )
+            return
+        }
+        setPosts( update )
+    }
+
+    // function called when new list requests are made to update the display
+    const refreshPosts = () => {
+        onRefresh(location, updatePosts)
+    }
+
+    // initializes the list to populate based on the default app location
     useEffect( () => {
-        test(DATA)      
-    },[])
+        onRefresh()
+    }, [] )
+    
+    // defines the props for the Posts SectionList (the view for the screen)
+    const props = {
+        data: posts,
+        onRefresh: refreshPosts,
+        setKeyword,
+        setLocation,
+        tagList,
+        sortList,
+        style,
+        setSort,
+        setTags,
+        refreshing,
+    }
+    
+    // re-render/ control filtering and sorting 
+    useEffect( () => {
+        // do filtering sorting and updating lists here
+        setLoading(true)
+        console.log( '\nSorting by: ' + sort + '\n' )
+        console.log( '\nTags list is : [' + tags + ']\n' )
+        setLoading(false)
+    }, [ sort, setSort, tags, setTags ] )
+    
+    // re-render/ control loading behavior
+    useEffect( () => {
+        // do loading behavior stuff here
+    }, [ refreshing ] )
+    
+    // re-render/ control error or helper messages
+    useEffect( () => {
+        // do error handling stuff here
+        if (!error) return
+    }, [error, setError])
 
+    // Render the Post Listing Screen component
     return (
-        <PostList DATA={cards ? cards : DATA} refreshing={loading} onRefresh={() => onRefresh()} /> 
+        <View>
+            <PostsSectionList
+                {...{ ...props }}
+                ListHeaderComponent={
+                    <>
+                        <View
+                            style={{ paddingTop: 110, padding: 10, paddingBottom: 10, ...style }}
+                        >
+                            <AutocompleteSearchBar
+                                {...
+                                {
+                                    setKeyword,
+                                    setLocation,
+                                    search: refreshPosts,
+                                }
+                                }
+                            />
+                            <FilterBar
+                                {...
+                                {
+                                    tagList,
+                                    sortList,
+                                    style,
+                                    callback: 
+                                        ( { sort, tags } ) => {
+                                            setSort( sort )
+                                            setTags( tags )
+                                        },
+                                }
+                                }
+                            />
+                        </View>
+                    </>
+                }
+                 />
+        </View>
     )
 }

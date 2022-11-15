@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { getLatitude, getLongitude } from 'geolib'
 import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest } from '../scripts/deviceinterface'
@@ -7,7 +8,9 @@ import { computeTravel } from '../util'
 // function sends login request to the server with email and password
 export const cardRequest = ( loc, jwt ) => {
   let path = 'user/list'
-  return fetchRequest( path, "post", { loc: loc, jwt: jwt } )
+  const latitude = getLatitude( loc )
+  const longitude = getLongitude( loc )
+  return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
@@ -45,7 +48,7 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
       }
     } )
     return mappedResults
-  } catch (error) {
+  } catch ( error ) {
     console.log( error )
     throw error
 

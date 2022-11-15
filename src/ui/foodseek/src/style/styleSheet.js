@@ -134,4 +134,13 @@ export const tabnav = StyleSheet.create({
     },
     
 } )
+
+
+export const nav = StyleSheet.create({
+    
+    screenOptions : {
+        headerShown: false,
+    },
+    
+} )
   

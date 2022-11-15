@@ -5,6 +5,7 @@ import { AuthenticationContextProvider } from './src/context/AuthenticationConte
 import { ThemeContextProvider } from './src/context/ThemeContext'
 import * as Linking from 'expo-linking'
 import { LogBox } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 // another deep linking thing
 const prefix = Linking.createURL( '/' )
 LogBox.ignoreLogs(['Constants.platform.ios.model','working with Linking to avoid creating a broken build'])
@@ -49,7 +50,9 @@ export default function App () {
     return (
         <ThemeContextProvider>
             <AuthenticationContextProvider>
-                <Navigation linking={linking} />
+                <SafeAreaProvider>
+                    <Navigation linking={linking} />
+                </SafeAreaProvider>
             </AuthenticationContextProvider>
         </ThemeContextProvider>
     )
