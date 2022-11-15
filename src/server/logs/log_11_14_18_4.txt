@@ -1,0 +1,3 @@
+(11/14):18:4:39s GET to path: /test
+(11/14):18:4:40s POST to path: /login
+(11/14):18:4:40s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0Nzc4ODAsImV4cCI6MTY2OTM0MTg4MH0.Kmm2SlgRntbnt3Oy-Mb2S6gWTAcSB90v9V60EQ8iF1I","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}

@@ -131,6 +131,7 @@ CoreRouter.post('/login', (req, res, next) => {
                             user: req.body.email,
                             vendor: result.vendor,
                             jwt: token,
+                            gplacesKey: process.env.GPLACEKEY,
                             message: "user signed in!"
                         }
                             
@@ -237,7 +238,7 @@ CoreRouter.post('/validatecode', (req, res) => {
 				res.end(resbody.package());
 				return;
             }
-		})
+		});
 	}
     else{
         resbody.setIssue(1);

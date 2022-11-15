@@ -1,0 +1,57 @@
+(11/14):17:10:19s GET to path: /test
+(11/14):17:10:20s POST to path: /login
+(11/14):17:10:20s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzQ2MjAsImV4cCI6MTY2OTMzODYyMH0.Ox6vuCKl6zyrc5EFddctgGUvw9yXOf26UyHGFwM4xPg","message":"user signed in!"},"issues":null}
+(11/14):17:16:49s GET to path: /test
+(11/14):17:16:51s POST to path: /login
+(11/14):17:16:51s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUwMTEsImV4cCI6MTY2OTMzOTAxMX0.id12RiLt8Y9PYG-8tCA7QS_GL_LtvA1-3PJYHyC0UcA","message":"user signed in!"},"issues":null}
+(11/14):17:19:41s GET to path: /test
+(11/14):17:19:43s POST to path: /login
+(11/14):17:19:43s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUxODMsImV4cCI6MTY2OTMzOTE4M30.SY18QtnjRIXoh9ffiLsQGcc6P5mtMzvyknwYfqE9nrA","message":"user signed in!"},"issues":null}
+(11/14):17:20:7s GET to path: /test
+(11/14):17:20:9s POST to path: /login
+(11/14):17:20:9s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUyMDksImV4cCI6MTY2OTMzOTIwOX0.4xwcOIIabTlcqSOH9iczm6VpZfTZ8Uf2_Qx9fGsChRI","message":"user signed in!"},"issues":null}
+(11/14):17:20:36s GET to path: /test
+(11/14):17:20:38s POST to path: /login
+(11/14):17:20:38s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUyMzgsImV4cCI6MTY2OTMzOTIzOH0.XKcwfk6iU69XqmAxsUknxKZ5-PyI15p_-p4jbakPj_0","message":"user signed in!"},"issues":null}
+(11/14):17:21:5s GET to path: /test
+(11/14):17:21:6s POST to path: /login
+(11/14):17:21:6s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUyNjYsImV4cCI6MTY2OTMzOTI2Nn0.Unjl86U6H2a5dU0E16utF_a7i_ifHJX2Odxk4IjFl3s","message":"user signed in!"},"issues":null}
+(11/14):17:21:19s GET to path: /test
+(11/14):17:21:21s POST to path: /login
+(11/14):17:21:21s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUyODEsImV4cCI6MTY2OTMzOTI4MX0.S506wfPLyL5-XwySmaypMoJTeEAtto7OJhi3iZVfovs","message":"user signed in!"},"issues":null}
+(11/14):17:21:53s GET to path: /test
+(11/14):17:21:54s POST to path: /login
+(11/14):17:21:54s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUzMTQsImV4cCI6MTY2OTMzOTMxNH0.Ff3U3fKAqqvK7oAE5uX1Zbn-dAu6jpu4DRsERRIhd2I","message":"user signed in!"},"issues":null}
+(11/14):17:22:48s GET to path: /test
+(11/14):17:22:50s POST to path: /login
+(11/14):17:22:50s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUzNzAsImV4cCI6MTY2OTMzOTM3MH0.qnCYiEO2w8Q3gabMN1lTlFkbaSYYbDn2taNPY_Ws-hk","message":"user signed in!"},"issues":null}
+(11/14):17:23:0s GET to path: /test
+(11/14):17:23:1s POST to path: /login
+(11/14):17:23:1s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzUzODEsImV4cCI6MTY2OTMzOTM4MX0.TjERLW6qZBi8XdH9tq4EBVcdifmYnR1K1kK3-W0aHNo","message":"user signed in!"},"issues":null}
+(11/14):17:25:2s GET to path: /test
+(11/14):17:25:3s POST to path: /login
+(11/14):17:25:3s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzU1MDMsImV4cCI6MTY2OTMzOTUwM30.ZNK6rjqNEF8Wa9n0-hQHv-LtGmMSRRQ35nrwXR3hAhY","message":"user signed in!"},"issues":null}
+(11/14):17:25:55s GET to path: /test
+(11/14):17:25:57s POST to path: /login
+(11/14):17:25:57s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzU1NTcsImV4cCI6MTY2OTMzOTU1N30.pDAdqZolUWCb71X1W_uvAdY_vl5zBk0xekqt6OLGvxQ","message":"user signed in!"},"issues":null}
+(11/14):17:27:1s GET to path: /test
+(11/14):17:27:3s POST to path: /login
+(11/14):17:27:3s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzU2MjMsImV4cCI6MTY2OTMzOTYyM30.J0qgimGKw_sMeh1BfDNAYrJjepykR5MSuUMCwBvQa2U","message":"user signed in!"},"issues":null}
+(11/14):17:27:31s GET to path: /test
+(11/14):17:27:33s POST to path: /login
+(11/14):17:27:33s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzU2NTMsImV4cCI6MTY2OTMzOTY1M30._8lMttCwRIHlhoNGtqU8zt4ys9HOFdRl3al4g5hUaFk","message":"user signed in!"},"issues":null}
+(11/14):17:27:34s POST to path: /vendor/upl
+(11/14):17:27:34s {"success":1,"data":{"msg":"upladed card!"},"issues":null}
+(11/14):17:37:11s GET to path: /test
+(11/14):17:37:12s POST to path: /login
+(11/14):17:37:12s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzYyMzIsImV4cCI6MTY2OTM0MDIzMn0.u1pYcU2j1x0vAkfeS16ATVhPcfQhhc7w8NGvSFiuzi8","message":"user signed in!"},"issues":null}
+(11/14):17:37:31s GET to path: /test
+(11/14):17:37:33s POST to path: /login
+(11/14):17:37:33s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzYyNTMsImV4cCI6MTY2OTM0MDI1M30.PqxX3Lghe2CHyfJorFzvNJQy22cJblMOgsPwcnL_TL0","message":"user signed in!"},"issues":null}
+(11/14):17:38:30s GET to path: /test
+(11/14):17:38:32s POST to path: /login
+(11/14):17:38:32s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzYzMTIsImV4cCI6MTY2OTM0MDMxMn0.bI_TwjO2X6W9zDRZ2q8exPY0nwCuWyODRyhrYMWpzik","message":"user signed in!"},"issues":null}
+(11/14):17:38:33s POST to path: /test
+(11/14):17:38:48s GET to path: /test
+(11/14):17:38:49s POST to path: /login
+(11/14):17:38:49s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0NzYzMjksImV4cCI6MTY2OTM0MDMyOX0.hGjQU3qERvbqC-2Jny15JAi7d0Yac8PEXC_yGamUgvg","message":"user signed in!"},"issues":null}

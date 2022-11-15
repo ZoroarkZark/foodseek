@@ -391,7 +391,10 @@ class FoodStore {
                 return callback(err,null);
             }
             
-            return callback(null, results);
+            if(!results){
+                return callback(null, null);
+            }
+            return callback(null,results);
         })
     }
     
