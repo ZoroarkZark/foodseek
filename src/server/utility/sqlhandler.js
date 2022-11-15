@@ -3,6 +3,12 @@ const database = require('mysql');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
 
+const Aws = require('aws-sdk')   
+const AWK = process.env.AWS_ACCESS_KEY_ID;
+const AWSK = process.env.AWS_ACCESS_KEY_SECRET;
+const BN = AWS_BUCKET_NAME; 
+const s3 = new Aws.S3({AWK,AWSK}); 
+
 const sutil = require('../utility/serverutility.js');
 
 TEST_POS = [
@@ -297,7 +303,8 @@ class FoodStore {
             lon: "lon",
             data: "data",
             res: "res",
-            vendor: "vendor"
+            vendor: "vendor",
+            img: "image",
         }
         
     }
@@ -350,33 +357,50 @@ class FoodStore {
     
     // upload whole card
     uploadCard(fooddata, callback){
-        let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
-        let data = JSON.stringify({
-            image : fooddata.image,
+        let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ??) VALUES (?, ?, ?, ?, ?)";
+
+        let Data = JSON.stringify({
+            //image : fooddata.image,
             cuisine : fooddata.cuisine,
             item : fooddata.item,
         })
-        var params = [
-            this.table,
-            //this.food_ID,
-            this.col.lat,
-            this.col.lon,
-            this.col.data,
-            this.col.vendor,
-            //fooddata.id,
-            fooddata.pos[0],
-            fooddata.pos[1],
-            data, 
-            fooddata.vendor,
-        ]
+        let s3params = {
+            Bucket: BN,                              // bucket that we made earlier
+            Key: fooddata.cuisine,                   // Name of the image
+            Body: fooddata.image,                    // Body which will contain the image in buffer format
+            ACL: "public-read-write",                 // defining the permissions to get the public link
+            ContentType: "image/jpeg"                 // Necessary to define the image content-type to view the photo in the browser with the link
+        };
+       
         
-        this.conn.query(SQL, params, (err) => {
-            if(err){
-                return callback(err);
+        s3.upload(s3params,(error, data)=>{
+            if(error){
+                res.status(500).send({"err":error})  // if we get any error while uploading error message will be returned.
             }
-            return callback(null); // no error
-        });
-        
+
+            var params = [
+                this.table,
+                //this.food_ID,
+                this.col.lat,
+                this.col.lon,
+                this.col.data,
+                this.col.vendor,
+                this.col.img,
+                //fooddata.id,
+                fooddata.pos[0],
+                fooddata.pos[1],
+                Data, 
+                fooddata.vendor,
+                data.Location,
+            ]
+
+            this.conn.query(SQL, params, (err) => {
+                if(err){
+                    return callback(err);
+                }
+                return callback(null); // no error
+            });
+        })
     }
     
     
