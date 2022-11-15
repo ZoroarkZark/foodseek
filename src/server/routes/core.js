@@ -5,19 +5,20 @@
 // Forgot Pass    : /fgpass
 
 const express = require('express')
-const bcrypt = require('bcrypt');
-const url = require('url');
+const fs = require('fs');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
 const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
 const e = require('express');
+const path = require('path');
 
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
 
 module.exports = {CoreRouter}
+
 
 CoreRouter.use('/wipecards', (req,res) => {
     let resbody = new sutil.res_obj();
@@ -32,6 +33,39 @@ CoreRouter.use('/wipecards', (req,res) => {
         res.end(resbody.package());
         return;
     })
+})
+
+
+CoreRouter.post('/imgtest',(req,res) => {
+    req.setEncoding('base64');
+
+    let file = req.query.file;
+    
+    let chunks = [];
+
+    req.on('data', (data) => {
+        let buff =  Buffer.from(data, 'base64');
+        chunks.push(buff);
+    });
+
+    req.on('end', ()=> {
+        let data = Buffer.concat(chunks);
+        fs.writeFile(path.resolve(__dirname, file), data, (err) => {
+            if(err) throw err;
+            console.log("wrote to file");
+        })
+    });
+
+    /* console.log(req.body);
+    let buff = Buffer.from(req.body, 'base64');
+
+    fs.writeFile('test.png', buff, (err) => {
+        if (err) throw err;
+        console.log("saved file");
+    })
+
+    res.end(JSON.stringify({"msg":"got img"}));
+    return; */
 })
 
 CoreRouter.use('/test', (req,res)=>{

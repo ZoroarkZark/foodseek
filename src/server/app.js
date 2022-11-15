@@ -30,6 +30,7 @@ const Log = sutil.Logger;
 //utils for parsing the body into a json we can interact with
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.raw({extended:true}));
 
 // CORS : Cross Origins request something (not actaully something i just forgot)
 // this is needed to allow devices to connect to our server
@@ -47,7 +48,7 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 		Log.writeToLog(str);
 		req.on('data', (data) => { 
 			console.log("late");
-			console.log(data);
+			//console.log(data);
 			//console.log(Object.keys(data));
 		});
 	
