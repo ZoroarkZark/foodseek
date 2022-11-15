@@ -55,7 +55,10 @@ export const CustomDrawer = props => {
           color={color}
         />
       )}
-      onPress={() => onLogout()}
+        onPress={() => {
+          navigation.closeDrawer()
+          onLogout()
+        }}
       {...props}
     />
 
