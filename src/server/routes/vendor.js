@@ -77,6 +77,37 @@ VendorRouter.post('/upl', (req,res) => {
 
 });
 
+VendorRouter.post('/upl2', (req,res) => {
+    let resbody = new sutils.res_obj();
+    
+    if(sutils.validate(['item','loc','tags','timestamp'], req.body)){
+        let pkg = {
+            item: req.body.item,
+            loc: req.body.loc,
+            tags: req.body.tags,
+            timestamp: req.body.timestamp
+        }
+
+        FoodStore.uploadMore(pkg, (err) => {
+            if(err){
+                console.debug(err);
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
+            }
+
+            resbody.setData({msg: "uploaded card"});
+            res.end(resbody.package());
+            return;
+        })
+    }
+    else{
+        resbody.setIssue(1);
+        res.end(resbody.package());
+        return;
+    }
+});
+
 // delete a card from the foodstore
 VendorRouter.post('/del', (req,res) => {
     let resbody = new sutils.res_obj();

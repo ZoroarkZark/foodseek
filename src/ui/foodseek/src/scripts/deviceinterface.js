@@ -12,6 +12,8 @@ const endpoint = "http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000
  *  .catch( (err) => {// it will only error on networking issues, or parsing. A bad login, or duplicate acc should still return a res_obj just with a non null issues field})
 */
 
+// Add support for images
+// Gonna do some testing 
 export async function fetchRequest(url, method, payload){
     // get everything ready for the actual fetch call
     url = buildURL(endpoint,url);
