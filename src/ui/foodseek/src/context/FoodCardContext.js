@@ -58,7 +58,7 @@ export const FoodCardProvider = ( { children } ) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, cardsLoading: setLoading, onRefresh: refreshCards, loading, error}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error}}>
       {children}
     </FoodCardContext.Provider>
   )

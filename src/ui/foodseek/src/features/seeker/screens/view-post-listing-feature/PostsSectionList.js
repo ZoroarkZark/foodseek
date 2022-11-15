@@ -2,14 +2,16 @@ import React from 'react'
 import { RefreshControl, SectionList } from 'react-native'
 import PostCard from '../../../../components/post/PostCard'
 
-export const PostsSection = ({DATA, ListHeaderComponent, refreshing, onRefresh}) => {
+// Posts Section List is a SectionList that produces a search bar, filter buttons, and a list of post cards for display (SectionList: https://reactnative.dev/docs/sectionlist)
+export const PostsSectionList = props => {
+  const {data, ListHeaderComponent, refreshing, onRefresh} = props
   return (
     <SectionList 
       keyboardShouldPersistTaps='handled'
-      ListHeaderComponent={ListHeaderComponent}
+      ListHeaderComponent={( { ...props } ) => <ListHeaderComponent {...props} />}
       sections={[
         {
-          data: DATA,
+          data: data,
           keyExtractor: ( data ) => data.id,
           renderItem: ( { item, expandPost } ) => ( <PostCard data={item} expandPost={expandPost} /> ),
           
