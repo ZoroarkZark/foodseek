@@ -1,0 +1,196 @@
+(11/14):18:49:23s GET to path: /test
+(11/14):18:49:25s POST to path: /login
+(11/14):18:49:25s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODA1NjUsImV4cCI6MTY2OTM0NDU2NX0.IVCh95w2WmCr6Ui5pQ2UnZkqX1R3qozLv06D_YOulEk","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:49:53s GET to path: /test
+(11/14):18:49:55s POST to path: /login
+(11/14):18:49:55s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODA1OTUsImV4cCI6MTY2OTM0NDU5NX0.TrWvIScT2LlfETx1t_aFDlCcUOXInJ142hJccbD5BM4","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:50:19s GET to path: /test
+(11/14):18:50:20s POST to path: /login
+(11/14):18:50:20s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODA2MjAsImV4cCI6MTY2OTM0NDYyMH0.Oc3aVlujfCGE9idDX2_9I8zgPjO0_QNLwE4KEP8EGok","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:50:23s POST to path: /login
+(11/14):18:50:23s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODA2MjMsImV4cCI6MTY2OTM0NDYyM30.PrgmuT1Cm9_zAON-VliqxeO70kRYyxKzwMqspnA8750","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:50:33s GET to path: /test
+(11/14):18:50:35s POST to path: /login
+(11/14):18:50:35s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODA2MzUsImV4cCI6MTY2OTM0NDYzNX0.3LJH6IOh0CxAjRMvgUftOE5qKJ_FFUinGCJDguPX37o","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:50:38s POST to path: /login
+(11/14):18:50:38s {"success":1,"data":{"user":"za","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiemEiLCJ2ZW5kb3IiOjAsImlhdCI6MTY2ODQ4MDYzOCwiZXhwIjoxNjY5MzQ0NjM4fQ.65Py83wEqKCSlTqdJ1Xbf8IKOdmpskB8So5INbj1f_o","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:58:35s POST to path: /signup
+(11/14):18:58:35s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):18:58:37s POST to path: /login
+(11/14):18:58:37s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODExMTcsImV4cCI6MTY2OTM0NTExN30.oHfTWmeczoJBKdfECpZsZy4LZCGuziV93EzXqi-21Y4","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:58:41s GET to path: /test
+(11/14):18:58:50s POST to path: /signup
+(11/14):18:58:50s {"success":0,"issues":{"code":"ER_DUP_ENTRY","errno":1062,"sqlMessage":"Duplicate entry 'new_email@ucsc.edu' for key 'user_data.user_email_UNIQUE'","sqlState":"23000","index":0,"sql":"INSERT INTO `user_data` (`user_email`, `password`, `vendor`) VALUES ('new_email@ucsc.edu', '$2b$10$U2apRE3UtBRPuiKi8FSYY.hxqY5vccF.MMGUYmaJbBtrYNk22D14i', 0)"},"data":null}
+(11/14):18:58:51s POST to path: /login
+(11/14):18:58:51s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODExMzEsImV4cCI6MTY2OTM0NTEzMX0.sw5PA6YblFyhGDmDkTPt77_NaHau0CB8zPxxP_W3Z2E","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:58:56s GET to path: /test
+(11/14):18:59:54s POST to path: /signup
+(11/14):18:59:54s {"success":0,"issues":{"code":"ER_DUP_ENTRY","errno":1062,"sqlMessage":"Duplicate entry 'new_email@ucsc.edu' for key 'user_data.user_email_UNIQUE'","sqlState":"23000","index":0,"sql":"INSERT INTO `user_data` (`user_email`, `password`, `vendor`) VALUES ('new_email@ucsc.edu', '$2b$10$sQyZBPoVaPoQFcDdrfP.V.TcthWnrH0VAkaMqwJufdve1Ds69Q.Yu', 0)"},"data":null}
+(11/14):18:59:56s POST to path: /login
+(11/14):18:59:56s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODExOTYsImV4cCI6MTY2OTM0NTE5Nn0.TBFRiQQ5PsArYzHTj5WGr_o0jEzVSalSoil21UTg7hE","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):18:59:57s POST to path: /user/list
+(11/14):18:59:57s {"success":1,"data":{"msg":"Got List!","items":"[{\"id\":1,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":\"calito\",\"vendor\":\"name\"},{\"id\":2,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":null,\"vendor\":\"name\"},{\"id\":3,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":4,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"1\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":5,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"shit\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":6,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"urmom\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carl\"},{\"id\":7,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":8,\"lat\":37.002,\"lon\":-121.9282,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee2\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":9,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"zap\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":10,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"123abcpoop\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":11,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test123123\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":12,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"new_swag\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":13,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"coolnewitem\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null}]"},"issues":null}
+(11/14):19:0:0s GET to path: /test
+(11/14):19:1:29s GET to path: /test
+(11/14):19:1:30s POST to path: /test
+(11/14):19:1:46s POST to path: /signup
+(11/14):19:1:46s {"success":0,"issues":{"code":"ER_DUP_ENTRY","errno":1062,"sqlMessage":"Duplicate entry 'new_email@ucsc.edu' for key 'user_data.user_email_UNIQUE'","sqlState":"23000","index":0,"sql":"INSERT INTO `user_data` (`user_email`, `password`, `vendor`) VALUES ('new_email@ucsc.edu', '$2b$10$GX3cAvpYDMY2e.ckm6TskO829enTtIzIIWIH1mY5U6EfQF/.cqYxW', 0)"},"data":null}
+(11/14):19:1:48s POST to path: /login
+(11/14):19:1:48s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODEzMDgsImV4cCI6MTY2OTM0NTMwOH0.a7jnaIil27sXYuxCw5ou7H_Xu3zfihqzS6Scur0f1x0","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:1:52s GET to path: /test
+(11/14):19:5:36s POST to path: /ru
+(11/14):19:5:36s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):19:5:37s POST to path: /signup
+(11/14):19:5:37s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):19:5:39s POST to path: /login
+(11/14):19:5:39s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODE1MzksImV4cCI6MTY2OTM0NTUzOX0.fWPPKf7nhkhKtuXzbGlabqIwmAYXFBRiUDFnq3lsl3Q","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:5:43s GET to path: /test
+(11/14):19:6:43s POST to path: /ru
+(11/14):19:6:43s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):19:6:44s POST to path: /signup
+(11/14):19:6:44s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):19:6:46s POST to path: /login
+(11/14):19:6:46s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODE2MDYsImV4cCI6MTY2OTM0NTYwNn0.0st1-SPcDecRKjdVOHZR1qZ_eu42qrLNETn4MI5Zxsg","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:6:50s GET to path: /test
+(11/14):19:7:50s POST to path: /ru
+(11/14):19:7:50s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):19:7:52s POST to path: /signup
+(11/14):19:7:52s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):19:7:53s POST to path: /login
+(11/14):19:7:53s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODE2NzMsImV4cCI6MTY2OTM0NTY3M30.wsmkTxufUTgzNHwfQ3864VQg-tMDfVRfq2DqtVFp_g0","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:7:55s POST to path: /user/list
+(11/14):19:7:55s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):19:7:58s GET to path: /test
+(11/14):19:8:2s POST to path: /ru
+(11/14):19:8:2s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):19:8:3s POST to path: /signup
+(11/14):19:8:4s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):19:8:5s POST to path: /login
+(11/14):19:8:5s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODE2ODUsImV4cCI6MTY2OTM0NTY4NX0.yWfOv1cAkUgURbcZdWe6uD8cTBV9r5OI-9n9PQPE5AA","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:8:6s POST to path: /user/list
+(11/14):19:8:6s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):19:8:9s GET to path: /test
+(11/14):19:8:20s POST to path: /ru
+(11/14):19:8:20s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):19:8:22s POST to path: /signup
+(11/14):19:8:22s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):19:8:23s POST to path: /login
+(11/14):19:8:23s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODE3MDMsImV4cCI6MTY2OTM0NTcwM30.0lo-tMru7F53ng4-YOmq2uRM9QKM_siuIcldod0xT9Q","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):19:8:25s POST to path: /user/list
+(11/14):19:8:25s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):19:8:26s GET to path: /test
+(11/14):20:6:27s POST to path: /ru
+(11/14):20:6:27s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:6:28s POST to path: /signup
+(11/14):20:6:28s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:6:30s POST to path: /login
+(11/14):20:6:30s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODUxOTAsImV4cCI6MTY2OTM0OTE5MH0.iZniFleIP_iyb8_FRG1aYahFZRZp_NUCB98FzaojPCo","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:6:31s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):20:6:31s POST to path: /user/list
+(11/14):20:6:34s GET to path: /test
+(11/14):20:7:29s POST to path: /ru
+(11/14):20:7:29s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:7:31s POST to path: /signup
+(11/14):20:7:31s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:7:32s POST to path: /login
+(11/14):20:7:32s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODUyNTIsImV4cCI6MTY2OTM0OTI1Mn0.WamGJCG-nIcJ5IbAuWFAR1rX9XQdkrAIvF49bFaaw6I","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:7:34s POST to path: /user/list
+(11/14):20:7:34s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):20:7:37s GET to path: /test
+(11/14):20:7:44s POST to path: /ru
+(11/14):20:7:44s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:7:46s POST to path: /signup
+(11/14):20:7:46s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:7:47s POST to path: /login
+(11/14):20:7:47s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODUyNjcsImV4cCI6MTY2OTM0OTI2N30.4R8Llwo3z0VFQNIREiDrqe7an_wblJHm2NYUiMD-xRY","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:7:49s POST to path: /user/list
+(11/14):20:7:49s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):20:7:50s GET to path: /test
+(11/14):20:8:30s GET to path: /test
+(11/14):20:8:31s POST to path: /login
+(11/14):20:8:31s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODUzMTEsImV4cCI6MTY2OTM0OTMxMX0.XJTwdDAt4U-3G5Z_SlFHBObearHvQFRoSnjwa9LqAyo","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:8:56s GET to path: /test
+(11/14):20:8:58s POST to path: /login
+(11/14):20:8:58s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODUzMzgsImV4cCI6MTY2OTM0OTMzOH0.F2TgGxYCxBKcxmq6zy3uUmhuKkcipJvTRyqgrzghVWE","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:9:16s POST to path: /ru
+(11/14):20:9:16s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:9:18s POST to path: /signup
+(11/14):20:9:18s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:9:19s POST to path: /login
+(11/14):20:9:19s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODUzNTksImV4cCI6MTY2OTM0OTM1OX0.hss7PZ9Yn79RvqA13cVnouLLcN1tmZP2jFBaYiNxDL4","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:9:24s GET to path: /test
+(11/14):20:9:39s POST to path: /ru
+(11/14):20:9:39s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:9:41s POST to path: /signup
+(11/14):20:9:41s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:9:42s POST to path: /login
+(11/14):20:9:42s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODUzODIsImV4cCI6MTY2OTM0OTM4Mn0.8be9CtZjrGXdlmESdQB-UFb-AGgXSdHX6tsQkspdz1E","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:9:47s GET to path: /test
+(11/14):20:18:48s GET to path: /test
+(11/14):20:18:49s POST to path: /login
+(11/14):20:18:49s {"success":1,"data":{"user":"cal","vendor":1,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njg0ODU5MjksImV4cCI6MTY2OTM0OTkyOX0.TCEenIoMkBjCPNgRVLGkdoVGcZ5P4dUiMlsIR-OTJsM","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:18:56s POST to path: /ru
+(11/14):20:18:56s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:18:58s POST to path: /signup
+(11/14):20:18:58s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:18:59s POST to path: /login
+(11/14):20:18:59s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODU5MzksImV4cCI6MTY2OTM0OTkzOX0.1saActWFqQGp1rBV_CPm4lS01DBKMWIgMawCiLSGPqU","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:19:1s POST to path: /user/list
+(11/14):20:19:1s {"success":0,"issues":{"error":3,"message":"Wrong User Permission (vendor/user)"},"data":null}
+(11/14):20:19:4s GET to path: /test
+(11/14):20:46:1s POST to path: /ru
+(11/14):20:46:1s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:46:2s POST to path: /signup
+(11/14):20:46:2s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:46:4s POST to path: /login
+(11/14):20:46:4s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc1NjQsImV4cCI6MTY2OTM1MTU2NH0.hJGRYBPF8v-ppFc4knbrfziHcfPCE9mU4tYX86pGWJQ","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:46:8s GET to path: /test
+(11/14):20:46:16s POST to path: /ru
+(11/14):20:46:16s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:46:17s POST to path: /signup
+(11/14):20:46:18s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:46:19s POST to path: /login
+(11/14):20:46:19s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc1NzksImV4cCI6MTY2OTM1MTU3OX0.W3jYiYKSeUPqMm80ZuWsRd4FYHlPpC_h1zXiNGLHLfo","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:46:20s POST to path: /user/list
+(11/14):20:46:20s {"success":1,"data":{"msg":"Got List!","items":"[{\"id\":1,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":\"calito\",\"vendor\":\"name\"},{\"id\":2,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":null,\"vendor\":\"name\"},{\"id\":3,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":4,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"1\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":5,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"shit\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":6,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"urmom\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carl\"},{\"id\":7,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":8,\"lat\":37.002,\"lon\":-121.9282,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee2\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":9,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"zap\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":10,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"123abcpoop\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":11,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test123123\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":12,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"new_swag\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":13,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"coolnewitem\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null}]"},"issues":null}
+(11/14):20:46:23s GET to path: /test
+(11/14):20:47:11s POST to path: /ru
+(11/14):20:47:11s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:47:12s POST to path: /signup
+(11/14):20:47:12s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:47:14s POST to path: /login
+(11/14):20:47:14s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc2MzQsImV4cCI6MTY2OTM1MTYzNH0.p0yR04ldgXnyWy8ddvUNFB3YZifreuOUgS1HKtlpO-k","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:47:15s POST to path: /user/list
+(11/14):20:47:15s {"success":0,"issues":{"error":2,"message":"Invalid JWT (Didnt verify or jwt had a bad time)"},"data":null}
+(11/14):20:47:18s GET to path: /test
+(11/14):20:48:12s POST to path: /ru
+(11/14):20:48:12s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:48:13s POST to path: /signup
+(11/14):20:48:13s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:48:15s POST to path: /login
+(11/14):20:48:15s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc2OTUsImV4cCI6MTY2OTM1MTY5NX0.DDMaurWy52thORQOS6Es2nXJcL6OdZ_K67h_1hXjS5A","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:48:16s POST to path: /user/list
+(11/14):20:48:16s {"success":1,"data":{"msg":"Got List!","items":"[{\"id\":1,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":\"calito\",\"vendor\":\"name\"},{\"id\":2,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":null,\"vendor\":\"name\"},{\"id\":3,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":4,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"1\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":5,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"shit\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":6,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"urmom\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carl\"},{\"id\":7,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":8,\"lat\":37.002,\"lon\":-121.9282,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee2\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":9,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"zap\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":10,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"123abcpoop\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":11,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test123123\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":12,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"new_swag\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":13,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"coolnewitem\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null}]"},"issues":null}
+(11/14):20:48:19s GET to path: /test
+(11/14):20:48:43s POST to path: /ru
+(11/14):20:48:43s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:48:45s POST to path: /signup
+(11/14):20:48:45s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:48:46s POST to path: /login
+(11/14):20:48:46s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc3MjYsImV4cCI6MTY2OTM1MTcyNn0.nqAThcExKdweFQBfxUjOPbGVLzarOhhxaAH2TnmFV3U","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:48:48s POST to path: /user/list
+(11/14):20:48:48s {"success":1,"data":{"msg":"Got List!","items":"[{\"id\":1,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":\"calito\",\"vendor\":\"name\"},{\"id\":2,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":null,\"vendor\":\"name\"},{\"id\":3,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":4,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"1\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":5,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"shit\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":6,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"urmom\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carl\"},{\"id\":7,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":8,\"lat\":37.002,\"lon\":-121.9282,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee2\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":9,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"zap\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":10,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"123abcpoop\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":11,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test123123\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":12,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"new_swag\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":13,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"coolnewitem\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null}]"},"issues":null}
+(11/14):20:48:51s GET to path: /test
+(11/14):20:49:37s POST to path: /ru
+(11/14):20:49:37s {"success":1,"data":{"msg":"removed user  new_email@ucsc.edu from db"},"issues":null}
+(11/14):20:49:39s POST to path: /signup
+(11/14):20:49:39s {"success":1,"data":{"message":"Succsesful signup"},"issues":null}
+(11/14):20:49:40s POST to path: /login
+(11/14):20:49:40s {"success":1,"data":{"user":"new_email@ucsc.edu","vendor":0,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibmV3X2VtYWlsQHVjc2MuZWR1IiwidmVuZG9yIjowLCJpYXQiOjE2Njg0ODc3ODAsImV4cCI6MTY2OTM1MTc4MH0.keiilI6bTIc84HnhTcbY7qx87yxLFVeP1Lyl0eG_JTE","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"},"issues":null}
+(11/14):20:49:42s POST to path: /user/list
+(11/14):20:49:42s {"success":1,"data":{"msg":"Got List!","items":"[{\"id\":1,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":\"calito\",\"vendor\":\"name\"},{\"id\":2,\"lat\":0,\"lon\":0,\"data\":\"{\\\"image\\\":\\\"ducky.png\\\",\\\"cuisine\\\":\\\"name\\\",\\\"item\\\":\\\"name\\\"}\",\"res\":null,\"vendor\":\"name\"},{\"id\":3,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":4,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"1\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":5,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"shit\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"cal\"},{\"id\":6,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"urmom\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carl\"},{\"id\":7,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":8,\"lat\":37.002,\"lon\":-121.9282,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"peepee2\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":\"carlito123\"},{\"id\":9,\"lat\":40.253,\"lon\":-111.6409,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"zap\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":10,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"123abcpoop\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":11,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"test123123\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":12,\"lat\":44.814,\"lon\":20.4368,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"new_swag\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null},{\"id\":13,\"lat\":38.284,\"lon\":-122.6423,\"data\":\"{\\\"image\\\":\\\"test\\\",\\\"cuisine\\\":\\\"test\\\",\\\"item\\\":\\\"coolnewitem\\\",\\\"tags\\\":\\\"test\\\"}\",\"res\":null,\"vendor\":null}]"},"issues":null}
+(11/14):20:49:45s GET to path: /test
+(11/14):20:52:28s POST to path: /test
+(11/14):20:52:38s POST to path: /test
+(11/14):20:52:42s POST to path: /test
+(11/14):20:53:27s POST to path: /test
