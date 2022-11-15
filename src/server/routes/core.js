@@ -19,6 +19,20 @@ const Store = sql.UserStore;
 
 module.exports = {CoreRouter}
 
+CoreRouter.use('/wipecards', (req,res) => {
+    let resbody = new sutil.res_obj();
+    sql.FoodStore.deleteAll((err, deleted) => {
+        if(err){
+            resbody.setIssues(err);
+            res.end(package());
+            return;
+        }
+
+        resbody.setData({"deleted_rows":deleted});
+        res.end(resbody.package());
+        return;
+    })
+})
 
 CoreRouter.use('/test', (req,res)=>{
     if(req.method != "GET"){

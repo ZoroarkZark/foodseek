@@ -548,6 +548,25 @@ class FoodStore {
         });
         
     }
+
+    deleteAll(callback){
+        let SQL = 'DELETE FROM ??';
+        let params = [
+            this.table,
+        ]
+
+        this.conn.query(SQL, params, (err, results) => {
+            if(err){
+                return callback(err,null);
+            }
+
+            if(!results){
+                return callback(null,null);
+            }
+
+            return callback(null,results.affectedRows);
+        })
+    }
     
     // reserve card by id and upload user email into reserved field
     reserveCard(id, username, callback){
