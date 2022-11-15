@@ -14,6 +14,7 @@ require('dotenv').config({path: path.resolve(__dirname, "../../.env")}); // fix 
 const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 const vendorRouter = require('./routes/vendor.js').VendorRouter;
+const ImageRouter = require('./routes/images.js').ImageRouter;
 
 const sutil = require('./utility/serverutility.js');
 const { res_obj } = require('./utility/serverutility.js');
@@ -73,6 +74,7 @@ app.get('/logs', (req,res)=> {
 app.use('/' ,coreRouter); // mount core routes
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
+app.use('/images/', ImageRouter);
 
 // keeps this app open on the specifed port
 app.listen(port, () => {
