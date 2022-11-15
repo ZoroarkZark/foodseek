@@ -20,7 +20,7 @@ export const PostsSectionList = props => {
       ]}
       refreshing={refreshing}
       onRefresh={() => onRefresh()}
-      refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} /> }
+      refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
       extraData={refreshing}
     />
   )

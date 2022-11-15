@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import * as Location from 'expo-location'
 
-const SANTA_CRUZ_COORDINATES = { latitude: '36.974117', longitude: '-122.030792' }
+const SANTA_CRUZ_COORDINATES = { latitude: 36.974117, longitude: -122.030792 }
 
 export const LocationContext = createContext()
 
@@ -47,7 +47,6 @@ export const LocationProvider = ( { children } ) => {
     setKeyword( searchKeyword )
     setLocation( searchLoc )
   }
-
 
   // useEffect( () => {
   //   if ( !keyword.length ) {

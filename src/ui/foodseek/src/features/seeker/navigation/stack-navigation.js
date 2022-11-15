@@ -112,8 +112,7 @@ export const FavoritesNavigator = () => {
                                 fontSize: 30,
                                 size: 30,
                             }}
-                            onPress={() => {
-                                console.log( 'working' )
+                        onPress={() => {
                                 navigation.goBack()
                             }}
                         />

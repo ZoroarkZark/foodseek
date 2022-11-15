@@ -1,15 +1,19 @@
-import React, {  useEffect, useState } from 'react'
+import React, {  useContext, useEffect, useState } from 'react'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { apiKey } from './.env'
+// import { apiKey } from './.env'
 import { getLatitude, getLongitude } from 'geolib'
+import { AuthenticationContext } from '../../context/AuthenticationContext'
+import { LocationContext } from '../../context/LocationContext'
 
 
 
 // Wrapper for the GooglePlacesAutocomplete component
 export const AutocompleteSearchBar = props => {
+  const { googlePlacesKey: apiKey } = useContext( AuthenticationContext )
+  const {location} = useContext(LocationContext)
   const { setKeyword, setLocation, search, style } = props
   const [ key, setKey ] = useState( '' )                                                    // stores the search key
-  const [ coordinates, setCoordinates ] = useState( {latitude: null, longitude: null} )     // stores the coordinate set {latitude: , longitude: }
+  const [ coordinates, setCoordinates ] = useState( location )     // stores the coordinate set {latitude: , longitude: }
 
   // the function called when the user selects an autocomplete option from the dropdown results
   const onPress = ( data, details = null ) => {

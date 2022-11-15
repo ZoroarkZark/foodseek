@@ -16,6 +16,7 @@ export const AuthenticationContextProvider = ({ children }) => {
     const [ error, setError ] = useState( '' ) // create state holder for storing error state for logging in
     const [ jwt, setJWT ] = useState( '' )          // TODO: store more securely jwt
     const [ avatar, setAvatar ] = useState( defaultAvatar )
+    const [ gplacesKey, setGPlacesKey ] = useState( null )
     
 
     // checks if incoming user is valid or null and updates the user
@@ -36,6 +37,7 @@ export const AuthenticationContextProvider = ({ children }) => {
                 if ( u.success === 0 ) {
                     throw new Error( u.issues.message, { cause: u.issues } )
                 }
+                setGPlacesKey(u.gplacesKey)
                 setJWT(u.jwt)
                 setUser(u) // pretend its parsed for now 
                 setLoading(false)
@@ -128,6 +130,7 @@ export const AuthenticationContextProvider = ({ children }) => {
                 user,
                 avatar,
                 error,
+                googlePlacesKey: gplacesKey,
                 onResetPassword,
                 onNewPassword,
                 onLogin,

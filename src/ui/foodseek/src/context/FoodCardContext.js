@@ -31,7 +31,6 @@ export const FoodCardProvider = ( { children } ) => {
         setError( null )
         setLoading( false )
         setResult( arr )      // updates the state with the provided function
-        console.log(arr)
         return arr
       } )
       .catch( ( err ) => {

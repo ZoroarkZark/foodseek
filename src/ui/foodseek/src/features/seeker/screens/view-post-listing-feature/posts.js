@@ -25,7 +25,7 @@ export const Posts = ( { navigation } ) => {
     
 
     // context classes for location and food card providers
-    const {location: loc, keyword: key } = useContext(LocationContext)
+    const { location: loc, keyword: key } = useContext( LocationContext )
     const { onRefresh, loading: refreshing, setLoading } = useContext( FoodCardContext )
 
     // search term and coordinates
@@ -41,7 +41,6 @@ export const Posts = ( { navigation } ) => {
     // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
     const updatePosts = ( update ) => {
         if ( !update ) {
-            console.log('heres the update'+update)
             setError( new Error( 'refreshPosts: yielded no new updates' ) )
             return
         }
@@ -62,7 +61,8 @@ export const Posts = ( { navigation } ) => {
     const props = {
         data: posts,
         onRefresh: refreshPosts,
-        setKeyword, setLocation,
+        setKeyword,
+        setLocation,
         tagList,
         sortList,
         style,
@@ -89,7 +89,6 @@ export const Posts = ( { navigation } ) => {
     useEffect( () => {
         // do error handling stuff here
         if (!error) return
-        console.log('hi')
     }, [error, setError])
 
     // Render the Post Listing Screen component
