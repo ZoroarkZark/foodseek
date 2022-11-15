@@ -209,11 +209,11 @@ class UserStore {
             }
             
             
+            
             if(!results){
                 return callback(null, null); // no error but no result
             }
-            console.log(results);
-            return callback(null, results);
+            return callback(null, results[0]);
         });
     }
 
@@ -391,7 +391,10 @@ class FoodStore {
                 return callback(err,null);
             }
             
-            return callback(null, results);
+            if(!results){
+                return callback(null, null);
+            }
+            return callback(null,results);
         })
     }
     
