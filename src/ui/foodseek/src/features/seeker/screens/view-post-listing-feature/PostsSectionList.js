@@ -8,7 +8,7 @@ export const PostsSectionList = props => {
   return (
     <SectionList 
       keyboardShouldPersistTaps='handled'
-      ListHeaderComponent={( { ...props } ) => <ListHeaderComponent {...props} />}
+      ListHeaderComponent={ListHeaderComponent}
       sections={[
         {
           data: data,
@@ -18,7 +18,9 @@ export const PostsSectionList = props => {
         },
         
       ]}
-      refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
+      refreshing={refreshing}
+      onRefresh={() => onRefresh()}
+      refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} /> }
       extraData={refreshing}
     />
   )

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { apiKey } from './.env'
 import { getLatitude, getLongitude } from 'geolib'
@@ -6,7 +6,8 @@ import { getLatitude, getLongitude } from 'geolib'
 
 
 // Wrapper for the GooglePlacesAutocomplete component
-export const AutocompleteSearchBar = ({ setKeyword, setLocation, search, style }) => {
+export const AutocompleteSearchBar = props => {
+  const { setKeyword, setLocation, search, style } = props
   const [ key, setKey ] = useState( '' )                                                    // stores the search key
   const [ coordinates, setCoordinates ] = useState( {latitude: null, longitude: null} )     // stores the coordinate set {latitude: , longitude: }
 

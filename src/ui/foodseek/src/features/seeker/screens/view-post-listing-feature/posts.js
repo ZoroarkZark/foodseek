@@ -9,7 +9,8 @@ import { LocationContext } from '../../../../context/LocationContext'
 
 // rendering: imports provide the viewable components to render
 import { PostsSectionList } from './PostsSectionList'
-import { PostsListHeaderComponent } from './PostsListHeaderComponent'
+import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
+import { FilterBar } from './FilterBar'
 
 // TODO: move to config for testing
 const DEFAULT_CARD_ARRAY = DATA ? DATA : []
@@ -31,7 +32,7 @@ export const Posts = ( { navigation } ) => {
     const [ keyword, setKeyword ] = useState( key )
     const [ location, setLocation ] = useState( loc )
 
-
+    // TODO:
     const sortList = [ 'Nearest', 'Newest', 'Oldest' ]
     const tagList = ['Chinese', 'Thai', 'Mexican']
     const style = {}
@@ -40,6 +41,7 @@ export const Posts = ( { navigation } ) => {
     // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
     const updatePosts = ( update ) => {
         if ( !update ) {
+            console.log('heres the update'+update)
             setError( new Error( 'refreshPosts: yielded no new updates' ) )
             return
         }
@@ -61,7 +63,6 @@ export const Posts = ( { navigation } ) => {
         data: posts,
         onRefresh: refreshPosts,
         setKeyword, setLocation,
-        search: refreshPosts,
         tagList,
         sortList,
         style,
@@ -87,13 +88,47 @@ export const Posts = ( { navigation } ) => {
     // re-render/ control error or helper messages
     useEffect( () => {
         // do error handling stuff here
-        console.log(error)
+        if (!error) return
+        console.log('hi')
     }, [error, setError])
 
     // Render the Post Listing Screen component
     return (
         <View>
-            <PostsSectionList ListHeaderComponent={() => <PostsListHeaderComponent {...props} />} {...props} />
+            <PostsSectionList
+                {...{ ...props }}
+                ListHeaderComponent={
+                    <>
+                        <View
+                            style={{ paddingTop: 110, padding: 10, paddingBottom: 10, ...style }}
+                        >
+                            <AutocompleteSearchBar
+                                {...
+                                {
+                                    setKeyword,
+                                    setLocation,
+                                    search: refreshPosts,
+                                }
+                                }
+                            />
+                            <FilterBar
+                                {...
+                                {
+                                    tagList,
+                                    sortList,
+                                    style,
+                                    callback: 
+                                        ( { sort, tags } ) => {
+                                            setSort( sort )
+                                            setTags( tags )
+                                        },
+                                }
+                                }
+                            />
+                        </View>
+                    </>
+                }
+                 />
         </View>
     )
 }

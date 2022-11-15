@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { FilterOptionsScroller } from './FilterOptionsScroller'
 
-export const FilterBar = ( {tagList, sortList, style, callback } ) => {
+export const FilterBar = props => {
+  const {tagList, sortList, style, callback } = props
   const [ sort, setSort ] = useState( '' )
   const [ tag, setTag ] = useState( '' )
   const [ tags, setTags ] = useState( [] )
@@ -35,7 +36,7 @@ export const FilterBar = ( {tagList, sortList, style, callback } ) => {
 
   return (
     <>
-        <FilterOptionsScroller filters={filters} setSort={setSort} setTag={setTag} style={style} />
+        <FilterOptionsScroller {...{filters, setSort, setTag, style}} />
     </>
   )
 }

@@ -1,12 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
-import { FilterBar } from './FilterBar'
 
 
 // provides the search bar and filter buttons scroll to be rendered above the post cards
 export const PostsListHeaderComponent = props => {
-    const { setKeyword, setLocation, search, tagList, sortList, style, setSort, setTags } = props
+    const { setKeyword, setLocation, search, tagList, sortList, style, setSort, setTags, AutocompleteSearchBar, FilterBar } = props
     return (
         <>
         <View

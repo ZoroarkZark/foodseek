@@ -4,7 +4,8 @@ import { ToggleButton as TB } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 
 // button component that defines the filter buttons
-export const ToggleButton = ( { label, callback } ) => {
+export const ToggleButton = props => {
+    const { label, callback } = props
     const [ status, setStatus ] = useState( 'unchecked' )
 
     const onButtonToggle = ( value ) => {
@@ -53,11 +54,11 @@ export const ToggleButton = ( { label, callback } ) => {
     
 
 // horizontal list of filter buttons
-    export const FilterOptionsScroller = ( {filters, setSort, setTag, style} ) => {
+export const FilterOptionsScroller = props => {
+    const { filters, setSort, setTag, style } = props
         const { sortOptions, tagOptions } = filters
         const [ sortChoice, setSortChoice ] = useState( '' )
         const [ tagChoice, setTagChoice ] = useState( '' )
-        const [ record, setRecord ] = useState( true )
         
 
 
