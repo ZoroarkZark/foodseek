@@ -39,7 +39,7 @@ const Odin = () => {
     },
     left: {
       position: 'absolute',
-      left: 11,
+      left: 13,
       bottom: 50,
       height: 70,
       width: 125,
@@ -47,7 +47,7 @@ const Odin = () => {
     right: {
       position: 'absolute',
       right: 24,
-      top: 28,
+      top: 29,
       height: 90,
       width: 113,
     }
@@ -55,6 +55,8 @@ const Odin = () => {
 
   return (
     <View style={styles.container}>
+      <Text>One moment, please.</Text>
+      <Text>We're getting everything ready for you!</Text>
       <ImageBackground source={require('../../../assets/OdinBody.png')} style={{height: 160, width: 120}}>
         <Animated.Image source={require('../../../assets/OdinLeftArm.png')} style={[styles.left, {transform: [{rotate: LeftRotateData}]}]}/>
         <Animated.Image source={require('../../../assets/OdinRightArm.png')} style={[styles.right, {transform: [{rotate: RightRotateData}]}]}/>

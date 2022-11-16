@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
-import { Avatar } from '../../../../components/common'
+import { Avatar, Odin } from '../../../../components/common'
 
 export const SeekerSettings = () => {
     const { user } = useContext(AuthenticationContext)

@@ -8,6 +8,7 @@ import {
     PasswordInput,
     EmailInput,
     ScrollViewDismissKeyboard,
+    Odin,
 } from '../../../../components/common'
 
 // ATTENTION: THIS IS ONLY A TESTING Development build... to be removed at release
@@ -66,8 +67,9 @@ export const Login = ({ navigation }) => {
                 >
                     Enter password...
                 </PasswordInput>
-
-                <Button
+                {loading ? (
+                    <Odin></Odin>
+                ) : (<Button
                     text={loading ? 'Loading' : 'Continue'}
                     onPress={() => {
                         // I deleted what ever was here during testing stuff
@@ -81,7 +83,7 @@ export const Login = ({ navigation }) => {
                     }}
                     style={{ marginTop: 20, marginBottom: 20 }}
                     //disabled={loading}
-                />
+                />)}
                 <TextButton
                     style={styles.textButton}
                     onPress={() => navigation.navigate('Signup')}
