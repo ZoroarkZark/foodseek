@@ -94,14 +94,12 @@ CoreRouter.post('/signup', async (req, res) =>
                 let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> to reset your password</p>';
                 let subject = 'Confirmation email';
                 let mailOptions = createOptions(req.body.email, subject, html_str);
-                let sent = sendEmail(mailOptions);
-                if(sent == 1){
-                    resbody.setIssue(10)
+                sendEmail(mailOptions ,(err,sent) => {
+                    resbody.setData({msg:"Signed up successfully! check email for validation code"});
                     res.end(resbody.package());
                     return;
-                }       
-                res.end(resbody.package());
-                return;
+                });
+                
             });
             
             
