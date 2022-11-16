@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, View } from 'react-native'
+import { Animated, Easing, Text, View } from 'react-native'
 import ViewMap from '../../../../components/common/map.js'
 import { map as style } from '../../../../style/styleSheet.js'
 import { Ionicons } from '@expo/vector-icons'
@@ -7,7 +7,24 @@ import TextButton from '../../../../components/common/textbutton.js'
 import { LocationContext } from '../../../../context/LocationContext.js'
 import { Marker } from 'react-native-maps'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext.js'
+import { useSharedValue } from 'react-native-reanimated'
 
+// stretchy container will contain the search bar
+
+
+const StretchyContainer = () => {
+    const translateX = setVal( 0 )
+    const isSliding = useSharedValue( false )
+    
+    const size = 
+    
+
+}
+
+const searchStyle = {elevatedElement: {
+    zIndex: 3, // works on ios
+    elevation: 3, // works on android
+  }}
 export const Map = ( { navigation, route } ) => {
     const {user} = useContext(AuthenticationContext)
     const { deviceLocation, getLocation, setLocation } = useContext(LocationContext)
