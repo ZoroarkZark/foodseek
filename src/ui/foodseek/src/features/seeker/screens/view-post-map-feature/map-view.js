@@ -5,8 +5,8 @@ import React, {
     useRef,
     useMemo,
     useCallback,
-    forwardRef,
     memo,
+    forwardRef,
 } from 'react'
 import { Text, TextInputProps, View } from 'react-native'
 import ViewMap from '../../../../components/common/map.js'
@@ -19,17 +19,18 @@ import { AuthenticationContext } from '../../../../context/AuthenticationContext
 import BottomSheet, {
     BottomSheetSectionList,
     BottomSheetTextInput,
+    useBottomSheet,
 } from '@gorhom/bottom-sheet'
 import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar.js'
 import { FoodCardContext } from '../../../../context/FoodCardContext.js'
+import { useSharedValue } from 'react-native-reanimated'
+import { useFocusEffect } from '@react-navigation/native'
+
 
 // stretchy container will contain the search bar
 
-const BottomSheetSearchInputComponent = forwardRef <
-    
-    AutocompleteSearchBar
-    >( ( { setKeyword, setLocation, search, onFocus, onBlur, ...rest }, ref ) => {
-    
+const BottomSheetSearchInputComponent = ( { setKeyword, setLocation, search, onFocus, onBlur, ...rest }) => {
+    const shouldHandleKeyboardEvents = useSharedValue(true)
     //#region callbacks
     const handleOnFocus = useCallback(
         (args) => {
@@ -51,13 +52,15 @@ const BottomSheetSearchInputComponent = forwardRef <
     )
     //#endregion
 
+    const { expand } = useBottomSheet()
+    useEffect(() => expand(), [])
+
     return (
         <View
             style={{ paddingTop: 110, padding: 10, paddingBottom: 10 }}
         >
             <AutocompleteSearchBar
                 {...{
-                    ref,
                     setKeyword,
                     setLocation,
                     search,
@@ -68,7 +71,7 @@ const BottomSheetSearchInputComponent = forwardRef <
         />
         </View>
     )
-})
+}
 
 const BottomSheetSearchInput = memo( BottomSheetSearchInputComponent )
 BottomSheetSearchInput.displayName = 'BottomSheetSearchInput'
@@ -80,8 +83,6 @@ const BottomSheetContainer = ({ setCards, onLocate }) => {
     const { onRefresh } = useContext(FoodCardContext)
     const [keyword, setKeyword] = useState(key)
     const [location, setLocation] = useState(loc)
-
-    const sheetRef = useRef < BottomSheet > null
 
     const search = useCallback(() => {
         onRefresh(location, setCards)
@@ -138,13 +139,14 @@ const BottomSheetContainer = ({ setCards, onLocate }) => {
     
 
     return (
-        <View style={{}}>
+        <View >
             <BottomSheet
-                ref={sheetRef}
+                focusHook={useFocusEffect}
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChange}
-                keyboardBehavior="fillParent"
+                keyboardBehavior='fillParent'
+                animateOnMount={true}
             >
                 <BottomSheetSectionList
                     sections={sections}
@@ -161,7 +163,6 @@ const BottomSheetContainer = ({ setCards, onLocate }) => {
 export const Map = ({ navigation, route }) => {
     const { user } = useContext( AuthenticationContext )
     const { cards: initialData } = useContext( FoodCardContext )
-    
     const { deviceLocation, getLocation, setLocation } = useContext( LocationContext )
 
     const [ cards, setCards ] = useState( initialData )
@@ -203,6 +204,8 @@ export const Map = ({ navigation, route }) => {
         })
         setLocation(deviceLocation)
     }, [ deviceLocation ] )
+
+    
     
 
 
@@ -210,8 +213,10 @@ export const Map = ({ navigation, route }) => {
         <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
+            
             <View style={style.container}>
-                <BottomSheetContainer {...{ setCards, onLocate }} />
+            <BottomSheetContainer style={{zIndex: 3, // works on ios
+        elevation: 3}} {...{ setCards, onLocate }} />
                 <ViewMap style={style} showUser={showUser} region={mapRegion}>
                     {mapRegion && <Marker coordinate={mapRegion} />}
                 </ViewMap>
