@@ -33,7 +33,6 @@ const Odin = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -54,14 +53,14 @@ const Odin = () => {
   })
 
   return (
-    <View style={styles.container}>
-      <Text>One moment, please.</Text>
-      <Text>We're getting everything ready for you!</Text>
-      <ImageBackground source={require('../../../assets/OdinBody.png')} style={{height: 160, width: 120}}>
-        <Animated.Image source={require('../../../assets/OdinLeftArm.png')} style={[styles.left, {transform: [{rotate: LeftRotateData}]}]}/>
-        <Animated.Image source={require('../../../assets/OdinRightArm.png')} style={[styles.right, {transform: [{rotate: RightRotateData}]}]}/>
-      </ImageBackground>
-    </View>
+      <View style={styles.container}>
+        <Text>One moment, please.</Text>
+        <Text>We're getting everything ready for you!</Text>
+        <ImageBackground source={require('../../../assets/OdinBody.png')} style={{height: 160, width: 120}}>
+          <Animated.Image source={require('../../../assets/OdinLeftArm.png')} style={[styles.left, {transform: [{rotate: LeftRotateData}]}]}/>
+          <Animated.Image source={require('../../../assets/OdinRightArm.png')} style={[styles.right, {transform: [{rotate: RightRotateData}]}]}/>
+        </ImageBackground>
+      </View>
   )
 }
 
