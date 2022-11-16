@@ -11,7 +11,7 @@ import { LocationContext } from '../../context/LocationContext'
 export const AutocompleteSearchBar = props => {
   const { googlePlacesKey: apiKey } = useContext( AuthenticationContext )
   const {location} = useContext(LocationContext)
-  const { setKeyword, setLocation, search, style } = props
+  const { setKeyword, setLocation, search, style, ...rest } = props
   const [ key, setKey ] = useState( '' )                                                    // stores the search key
   const [ coordinates, setCoordinates ] = useState( location )     // stores the coordinate set {latitude: , longitude: }
 
@@ -56,7 +56,8 @@ export const AutocompleteSearchBar = props => {
         value: key,
         autoFocus: false,
         onSubmitEditing: () => search(),
-        onChangeText: (value) => setKey(value),
+        onChangeText: ( value ) => setKey( value ),
+        ...{...rest}
       }}
     />
   )
