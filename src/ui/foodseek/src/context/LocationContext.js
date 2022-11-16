@@ -11,7 +11,12 @@ export const LocationProvider = ( { children } ) => {
   const [ loading, setLoading ] = useState( false )
   const [ error, setError ] = useState( null )
   const [ keyword, setKeyword ] = useState( 'Santa Cruz' )
-  const [coordinateKeys, setCoordinateKeys] = useState({latitude: 'latitude', longitude: 'longitude'})
+  const [ coordinateKeys, setCoordinateKeys ] = useState( {
+    latitude: 'latitude',
+    longitude: 'longitude',
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  })
   
   const onLocate = async () => {
     setLoading(true)

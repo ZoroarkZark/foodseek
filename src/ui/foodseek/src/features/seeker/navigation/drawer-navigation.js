@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useRef, useMemo, useContext, useCallback, createRef } from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { Feather, Ionicons } from '@expo/vector-icons'
 
@@ -10,13 +10,52 @@ import { BackButton } from '../../../components/common/backbutton'
 import { Avatar } from '../../../components/common'
 import { AuthenticationContext } from '../../../context/AuthenticationContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { BottomSheetContainer } from '../screens/view-post-map-feature/search-bottom-sheet'
+import { FoodCardContext } from '../../../context/FoodCardContext'
+import { LocationContext } from '../../../context/LocationContext'
+import { StyleSheet, View } from 'react-native'
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 
 const Drawer = createDrawerNavigator()
 
 export const SeekerNavigator = () => {
-    const { avatar } = useContext(AuthenticationContext)
+    const { avatar } = useContext( AuthenticationContext )
+    const { setCards } = useContext( FoodCardContext )
+    const { location, setLocation } = useContext( LocationContext )
+    const sheetRef = createRef(null);
+
+  // variables
+  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
+
+  // callbacks
+  const handleSheetChange = useCallback((index) => {
+    console.log("handleSheetChange", index);
+  }, []);
+  const handleSnapPress = useCallback((index) => {
+    sheetRef.current?.snapToIndex(index);
+  }, []);
+  const handleClosePress = useCallback(() => {
+    sheetRef.current?.close();
+  }, []);
+    
+    
+    const onLocate = useCallback( ( loc ) => {
+        if ( !loc ) return
+        setLocation({...location, ...loc})
+    }, [])
 
     return (
+        // <View>
+    <View style={styles.container}>
+      <BottomSheet
+        ref={sheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChange}
+      >
+        {/* <BottomSheetContainer 
+            {...{ setCards, onLocate }} 
+            > */}
         <Drawer.Navigator
             initialRouteName="App"
             screenOptions={({ navigation }) => ({
@@ -87,6 +126,17 @@ export const SeekerNavigator = () => {
                     ),
                 } )}
             />
-        </Drawer.Navigator>
-    )
+            </Drawer.Navigator>
+        {/* </BottomSheetContainer>
+        </View> */}
+        </BottomSheet>
+    </View>
+            )
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 200,
+    },
+  });
