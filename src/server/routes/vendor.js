@@ -20,9 +20,7 @@ VendorRouter.use('', (req,res, next) => {
     let resbody = new sutils.res_obj();
     req.setEncoding('utf8');
 
-    let custom_json = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
-
-    if(!sutils.validate(['jwt'], req.body) && !sutils.validate(['jwt'], custom_json)){ // Validate the body and jwt field
+    if(!sutils.validate(['jwt'], req.body)){ // Validate the body and jwt field, header for the image upload
         resbody.setIssue(1);
         res.end(resbody.package());
         return;
@@ -87,7 +85,8 @@ VendorRouter.post('/upl2', (req,res) => {
             item: req.body.item,
             loc: req.body.loc,
             tags: req.body.tags,
-            timestamp: req.body.timestamp
+            timestamp: req.body.timestamp,
+            img_url: "empty"
         }
 
         FoodStore.uploadMore(pkg, (err) => {
@@ -110,46 +109,6 @@ VendorRouter.post('/upl2', (req,res) => {
     }
 });
 
-VendorRouter.post('/imgtest',(req,res) => {
-    let resbody = new res_obj();
-    req.setEncoding('base64');
-
-    let file = req.query.file;
-    
-    let chunks = [];
-
-    let in_data = req.get('Custom-Json');
-    req.locals.card_data = JSON.parse(in_data);
-
-    req.on('data', (data) => {
-        let buff =  Buffer.from(data, 'base64');
-        chunks.push(buff);
-    });
-
-    req.on('end', ()=> {
-        let data = Buffer.concat(chunks);
-        let str = ''+data;
-        let img_str = str.split(',');
-        console.log(req.locals.card_data);
-        fs.writeFile(path.resolve(__dirname, file), img_str[1], {encoding: 'base64'}, (err) => {
-            if(err) throw err;
-            console.log("wrote to file");
-        })
-        resbody.setData({"msg":"uploaded img"});
-
-    });
-
-    /* console.log(req.body);
-    let buff = Buffer.from(req.body, 'base64');
-
-    fs.writeFile('test.png', buff, (err) => {
-        if (err) throw err;
-        console.log("saved file");
-    })
-
-    res.end(JSON.stringify({"msg":"got img"}));
-    return; */
-})
 
 
 // delete a card from the foodstore
