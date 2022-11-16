@@ -5,19 +5,20 @@
 // Forgot Pass    : /fgpass
 
 const express = require('express')
-const bcrypt = require('bcrypt');
-const url = require('url');
+const fs = require('fs');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
 const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
 const e = require('express');
+const path = require('path');
 
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
 
 module.exports = {CoreRouter}
+
 
 CoreRouter.use('/wipecards', (req,res) => {
     let resbody = new sutil.res_obj();
@@ -33,6 +34,8 @@ CoreRouter.use('/wipecards', (req,res) => {
         return;
     })
 })
+
+
 
 CoreRouter.use('/test', (req,res)=>{
     if(req.method != "GET"){

@@ -14,6 +14,7 @@ require('dotenv').config({path: path.resolve(__dirname, "../../.env")}); // fix 
 const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 const vendorRouter = require('./routes/vendor.js').VendorRouter;
+const ImageRouter = require('./routes/images.js').ImageRouter;
 
 const sutil = require('./utility/serverutility.js');
 const { res_obj } = require('./utility/serverutility.js');
@@ -30,6 +31,7 @@ const Log = sutil.Logger;
 //utils for parsing the body into a json we can interact with
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.raw({extended:true}));
 
 // CORS : Cross Origins request something (not actaully something i just forgot)
 // this is needed to allow devices to connect to our server
@@ -47,7 +49,7 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 		Log.writeToLog(str);
 		req.on('data', (data) => { 
 			console.log("late");
-			console.log(data);
+			//console.log(data);
 			//console.log(Object.keys(data));
 		});
 	
@@ -72,6 +74,7 @@ app.get('/logs', (req,res)=> {
 app.use('/' ,coreRouter); // mount core routes
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
+app.use('/images/', ImageRouter);
 
 // keeps this app open on the specifed port
 app.listen(port, () => {

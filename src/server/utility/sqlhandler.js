@@ -297,7 +297,9 @@ class FoodStore {
             lon: "lon",
             data: "data",
             res: "res",
-            vendor: "vendor"
+            vendor: "vendor",
+            img_url: "img_url",
+            timestamp: "timestamp"
         }
         
     }
@@ -315,7 +317,6 @@ class FoodStore {
         
         // meta data
         let data = JSON.stringify({
-            image: "test",
             cuisine: "test",
             item: item,
             tags: "test"
@@ -348,11 +349,13 @@ class FoodStore {
         
     }
     
+    uploadWImage(pack,imageURL, callback){
+
+    }
 
     uploadMore(pack, callback){
-        let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
+        let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)";
         let data = {
-            image: "default.png",
             cuisine: "default",
             item: pack.item,
             tags: pack.tags
@@ -364,10 +367,12 @@ class FoodStore {
             this.col.lon,
             this.col.data,
             this.col.vendor,
+            this.col.img_url,
             pack.loc[0],
             pack.loc[1],
             JSON.stringify(data),
-            "ACME"
+            pack.vendor,
+            pack.img_url
         ];
 
         this.conn.query(SQL, params, (err) => {
