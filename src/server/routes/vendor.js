@@ -20,7 +20,7 @@ VendorRouter.use('', (req,res, next) => {
     let resbody = new sutils.res_obj();
     req.setEncoding('utf8');
 
-    if(sutils.validate(['jwt'], req.body) == false){ // Validate the body and jwt field
+    if(!sutils.validate(['jwt'], req.body)){ // Validate the body and jwt field, header for the image upload
         resbody.setIssue(1);
         res.end(resbody.package());
         return;
@@ -85,7 +85,8 @@ VendorRouter.post('/upl2', (req,res) => {
             item: req.body.item,
             loc: req.body.loc,
             tags: req.body.tags,
-            timestamp: req.body.timestamp
+            timestamp: req.body.timestamp,
+            img_url: "empty"
         }
 
         FoodStore.uploadMore(pkg, (err) => {
@@ -107,6 +108,8 @@ VendorRouter.post('/upl2', (req,res) => {
         return;
     }
 });
+
+
 
 // delete a card from the foodstore
 VendorRouter.post('/del', (req,res) => {
