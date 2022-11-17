@@ -12,6 +12,9 @@ import { PostsSectionList } from './PostsSectionList'
 import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
 import { FilterBar } from './FilterBar'
 
+// Provides Odin
+import { Odin } from '../../../../components/common/Odin'
+
 // TODO: move to config for testing
 const DEFAULT_CARD_ARRAY = DATA ? DATA : []
 

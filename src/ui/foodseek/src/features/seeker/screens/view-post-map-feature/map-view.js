@@ -5,10 +5,12 @@ import { map as style } from '../../../../style/styleSheet.js'
 import { Ionicons } from '@expo/vector-icons'
 import TextButton from '../../../../components/common/textbutton.js'
 import { LocationContext } from '../../../../context/LocationContext.js'
+import { Odin } from '../../../../components/common'
 import { Marker } from 'react-native-maps'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext.js'
 
 export const Map = ( { navigation, route } ) => {
+    const [loading, setLoading] = useState(false)
     const {user} = useContext(AuthenticationContext)
     const { deviceLocation, getLocation, setLocation } = useContext(LocationContext)
     const [showUser, setShowUser] = useState(false) // state used to show or hide user on map
@@ -55,6 +57,8 @@ export const Map = ( { navigation, route } ) => {
         <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
+            {!loading ? (
+            <>
             <View style={style.container}>
                 <ViewMap
                     style={style}
@@ -71,6 +75,10 @@ export const Map = ( { navigation, route } ) => {
                 <Ionicons name="location-outline" />
                 <Text>Current Location</Text>
             </TextButton>
+            </>
+            ) : (
+                <Odin></Odin>
+            )}
         </View>
     )
 }
