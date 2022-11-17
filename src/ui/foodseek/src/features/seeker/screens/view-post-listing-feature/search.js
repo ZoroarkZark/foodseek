@@ -15,10 +15,11 @@ import {
 } from '../../../../components/common'
 
 
-export const Search = ( {navigation} ) => {
+export const Search = ( { navigation } ) => {
     const [search, setSearch] = useState('');
-    const [location, setLocation] = useState('');
+    const [cuisine, setCuisine] = useState('');
 
+    
     return (
         <ScrollViewDismissKeyboard>
         <View>
@@ -33,21 +34,21 @@ export const Search = ( {navigation} ) => {
 
 
             </Text>
-            <Text> Location </Text>
+            <Text> Cuisine </Text>
             <SearchInput
-                    value={location}
-                    onChangeText={(text) => setLocation(text)}
+                    value={cuisine}
+                    onChangeText={(text) => setCuisine(text)}
             >
-                    Search location...
+                    Search cuisine...
             </SearchInput>
             <TextButton
                     style={styles.textButton}
                     onPress={() => {
-                        if ((search === '') && (location === '')){
+                        if ((search === '') && (cuisine === '')){
                            alert("Nothing entered into search bar. Please enter something in.")
                         }
-                        else if ((search != '') && (location != '')){
-                            navigation.navigate('Posts')
+                        else if ((search != '') && (cuisine != '')){
+                            navigation.navigate('Posts', {searchName: search})
                         }
                         else {
                            alert("Incomplete input. Please enter in any remaining fields.")

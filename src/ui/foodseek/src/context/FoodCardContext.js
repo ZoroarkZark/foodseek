@@ -10,6 +10,7 @@ export const FoodCardProvider = ( { children } ) => {
   const [ cards, setCards ] = useState( [] )
   const [ loading, setLoading ] = useState( false )
   const [ error, setError ] = useState( null )
+  const [ filtered, setFiltered ] = useState ( false );
   const [ location, setLocation ] = useState( { latitude: '36.974117', longitude: '-122.030792' } ) // TODO add location context
   const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters per second
   const [unit, setUnit] = useState('mi') // TODO add preferred units context

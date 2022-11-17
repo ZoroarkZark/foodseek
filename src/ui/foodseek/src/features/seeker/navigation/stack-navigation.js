@@ -53,6 +53,7 @@ export const PostsNavigator = () => {
                 name="Posts" 
                 component={screen.Posts}
                 options={{ title: 'Posts' }}
+                initialParams={{searchName: ""}}
             />
             <Stack.Screen
                 name="ExpandedPost" 
