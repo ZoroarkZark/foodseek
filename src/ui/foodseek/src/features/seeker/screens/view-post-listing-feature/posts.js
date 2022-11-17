@@ -36,8 +36,9 @@ export const Posts = ( { navigation } ) => {
     const [ location, setLocation ] = useState( loc )
 
     // TODO:
-    const sortList = [ 'Nearest', 'Newest', 'Oldest' ]
-    const tagList = ['Chinese', 'Thai', 'Mexican']
+    const [ sortList, setSortList ] = useState( [ 'Nearest', 'Newest', 'Oldest' ] )
+    const [ tagList, setTagList ] = useState( [ 'Chinese', 'Thai', 'Mexican' ] )
+    
     const style = {}
     
 
@@ -92,7 +93,9 @@ export const Posts = ( { navigation } ) => {
     useEffect( () => {
         // do error handling stuff here
         if (!error) return
-    }, [error, setError])
+    }, [ error, setError ] )
+
+    
 
     // Render the Post Listing Screen component
     return (
