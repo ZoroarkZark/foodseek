@@ -5,7 +5,7 @@ import { Feather, Ionicons } from '@expo/vector-icons'
 import { VendorTabNav } from './tab-navigation'
 import { CustomDrawer } from './custom-drawer'
 
-import * as stack from './stack-navigation'
+import * as screen from '../screens'
 import { BackButton } from '../../../components/common/backbutton'
 import { Avatar } from '../../../components/common'
 import { AuthenticationContext } from '../../../context/AuthenticationContext'
@@ -55,7 +55,7 @@ export const VendorNavigator = () => {
             />
             <Drawer.Screen
                 name="SettingsDrawer"
-                component={stack.StoreSettings}
+                component={screen.StoreSettings}
                 options={({ navigation }) => ({
                     headerLeft: () => (
                     <BackButton
@@ -69,6 +69,14 @@ export const VendorNavigator = () => {
                     />
                     ),
                     drawerLabel: 'Settings',
+                    drawerIcon: ({ color }) => (   
+                        <Ionicons
+                            name="settings-outline"
+                            size={22}
+                            color={color}
+                        />
+                    ),
+                    drawerLabel: 'Settings',
                     drawerIcon: ({ color }) => (
                         <Ionicons
                             name="settings-outline"
@@ -78,6 +86,32 @@ export const VendorNavigator = () => {
                     ),
                 } )}
             />
+            <Drawer.Screen
+                name="HoursDrawer"
+                component={screen.HoursOfOperationScreen}
+                options={({ navigation }) => ({
+                    headerLeft: () => (
+                    <BackButton
+                        style={{
+                            left: 6,
+                            color: 'grey',
+                            fontSize: 30,
+                            size: 30,
+                        }}
+                        onPress={() => navigation.goBack()}
+                    />
+                    ),
+                    drawerLabel: 'Hours',
+                    drawerIcon: ({ color }) => (
+                        <Ionicons
+                            name="settings-outline"
+                            size={22}
+                            color={'grey'}
+                        />
+                    ),
+                } )}
+            />
+            
         </Drawer.Navigator>
     )
 }
