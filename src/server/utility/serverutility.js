@@ -273,8 +273,8 @@ function bCompare(input, comparison, callback){
         if(err){
             return callback(err,null);
         }
-
-        return callback(null,true); // return true
+        
+        return (result) ? callback(null,true) : callback(null,false); // return true
     });
 }
 

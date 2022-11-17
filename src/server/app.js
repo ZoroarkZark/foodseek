@@ -41,18 +41,13 @@ app.use(express.json());
 
 
 app.use('', (req, res, next) => { // Using this as a general request logger 
-	console.log(req.path);
+	//console.log(req.path);
 	
+		console.log('\n');
 		req.setEncoding('utf8');
 		let str = `${req.method} to path: ${req.path}`;
 		console.log(str);
 		Log.writeToLog(str);
-		req.on('data', (data) => { 
-			console.log("late");
-			//console.log(data);
-			//console.log(Object.keys(data));
-		});
-	
 	next();
 });
 
