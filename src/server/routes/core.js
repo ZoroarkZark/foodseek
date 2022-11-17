@@ -80,7 +80,13 @@ CoreRouter.post('/signup', async (req, res) =>
             Store.insertUser(credentials, (err) => {
                 if(err) {
                     console.error(err);
-                    resbody.setIssues(err);
+                    if(err.code === 'ER_DUP_ENTRY'){ // we know this error 
+                        resbody.setIssue(6);
+                        res.end(resbody.package());
+                        return;
+                    }
+
+                    resbody.setIssues(err); // some other sql problem
                     res.end(resbody.package());
                     return;
                 }

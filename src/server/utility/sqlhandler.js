@@ -349,10 +349,6 @@ class FoodStore {
         
     }
     
-    uploadWImage(pack,imageURL, callback){
-
-    }
-
     uploadMore(pack, callback){
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)";
         let data = {
