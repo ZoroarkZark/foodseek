@@ -85,26 +85,19 @@ CoreRouter.post('/signup', async (req, res) =>
                     return;
                 }
                 
-                resbody.setData({
-                    message: "Succsesful signup"
+                sutil.signUpEmail(credentials.email, (err, sent) => {
+                    if(err){
+                        console.log(err);
+                        resbody.setData({msg:"Signup Successful, Issues sending validation email (may not be an email)"}); // we will probably want to use this to make sure they sign up with a real email so this will most likely return a issue not data
+                        res.end(resbody.package());
+                        return;
+                    }
+
+                   resbody.setData({msg:"Signup successful, check email for validation email"});
+                   res.end(resbody.package());
+                   return;
                 });
-                
-                
-                const token = sutil.sign({user: req.body.email});
-                let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> to reset your password</p>';
-                let subject = 'Confirmation email';
-                let mailOptions = createOptions(req.body.email, subject, html_str);
-                let sent = sendEmail(mailOptions);
-                if(sent == 1){
-                    resbody.setIssue(10)
-                    res.end(resbody.package());
-                    return;
-                }       
-                res.end(resbody.package());
-                return;
             });
-            
-            
         });
     }
     else{
@@ -192,29 +185,20 @@ CoreRouter.post('/fgpss', (req, res,next) => {
 			    res.end(resbody.package());
 			    return;
             }
-        })
 
-        let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
-        let subject = 'Confirmation code, forgot password';
-        let mailOptions = createOptions(req.body.email, subject, html_str);
-        let sent = sendEmail(mailOptions);
-        sendEmail(mailOptions, (err, didSend) => {
-            if(err){
-                resbody.setIssue(999,'Error sending email');
+            sutil.fgpssEmail(req.body.email, code, (err, sent) => {
+                if(err){
+                    resbody.setIssues(err);
+                    res.end(resbody.package());
+                    return;
+                }
+
+                resbody.setData({msg:"Sent forgot pass email successfully"});
                 res.end(resbody.package());
                 return;
-            }
-            if(didSend){
-                resbody.setData({msg: "sent forgot password email"});
-                res.end(resbody.package());
-                return;
-            }
-            else{
-                resbody.setIssue(998, 'Some how no error on email send, but no results either');
-                res.end(resbody.package());
-                return;
-            }
-        });
+            })
+
+        })
     }
     else{
         resbody.setIssue(1)

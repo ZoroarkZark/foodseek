@@ -212,7 +212,6 @@ function getDistance(lat1, lon1, lat2, lon2){
     const miles = dist_km * factor;
     return miles;
 }
-// creat mailOptions
 function createOptions(email, subject , html_str){
     
     var mailOptions = {
@@ -223,6 +222,36 @@ function createOptions(email, subject , html_str){
     };
     return mailOptions;
 }
+
+function signUpEmail(email, callback){
+    const token = jwt.sign({ user: email},devJWT, {expiresIn: "10d"});
+    let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> </p>';
+    let subject = 'Confirmation email';
+    let mailOptions = createOptions(email, subject, html_str);
+    sendEmail(mailOptions, (error,sent) =>{
+        if(error){
+            return callback(error,null);
+        }
+        else {
+            return callback(null,sent);
+        }
+    });
+}
+
+function fgpssEmail(email, code, callback){
+    let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
+    let subject = 'Confirmation code, forgot password';
+    let mailOptions = createOptions(email, subject, html_str);
+    sendEmail(mailOptions, (error,sent) =>{
+        if(error){
+            return callback(error,null);
+        }
+        else {
+            return callback(null,sent);
+        }
+    });
+}
+
 //send email
 function sendEmail(mailOptions, callback) {
     
@@ -246,6 +275,7 @@ function sendEmail(mailOptions, callback) {
         }
     });
 }
+
 
 
 function genToken(size){
@@ -296,11 +326,12 @@ module.exports = {
     getDistance: getDistance,
     Logger: Log,
     logFile: getLogFile,
-    sendEmail: sendEmail,
     createOptions: createOptions,
     genToken: genToken,
     bHash: bHash,
-    bCompare: bCompare
+    bCompare: bCompare,
+    signUpEmail: signUpEmail,
+    fgpssEmail: fgpssEmail
 
 
 }
