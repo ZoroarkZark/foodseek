@@ -226,12 +226,12 @@ class UserStore {
         //generated pass
         let randPass = sutil.genToken(12);
 
-        sutil.bHash(randPass, (err, hash) => {
-            if(err){
+        sutil.bHash(randPass, (err, hash) => { // hash to make login work with de-hash
+            if(err){ // error hashing password 
                 return callback(err,null); // bcrypt error
             }
 
-            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?"; // sql query to update user info 
             let params = [
                 this.table,
                 this.col.pass,
@@ -240,39 +240,18 @@ class UserStore {
                 email
             ];
 
-            this.conn.query(SQL,params, (error, results) => {
-                if(error){
+            this.conn.query(SQL,params, (error, results) => { // perform the query
+                if(error){ // return the error we got trying to update to the temp pass
                     return callback(error,null);
                 }
 
-                if(results){
+                if(results){ // return our generated pass to the server if we successfully set it 
                     return callback(null,randPass);
                 }
 
-                return callback(null,null);
+                return callback(null,null); // return nothing if no errors but no password was updated 
             });
         })
-
-        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-        let params = [
-            this.table,
-            this.col.pass,
-            randPass,
-            this.col.email,
-            email
-        ];
-
-        this.conn.query(SQL,params, (err, results) => {
-            if(err){
-                return callback(err,null);
-            }
-
-            if(results){
-                return callback(null,randPass);
-            }
-
-            return callback(null,null);
-        });
     }
 
 
