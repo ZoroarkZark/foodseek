@@ -11,9 +11,11 @@ import { LocationContext } from '../../../../context/LocationContext'
 import { PostsSectionList } from './PostsSectionList'
 import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
 import { FilterBar } from './FilterBar'
+import { SearchInput } from '../../../../components/common'
 
 // Provides Odin
 import { Odin } from '../../../../components/common/Odin'
+import { Button } from 'react-native-rapi-ui'
 
 // TODO: move to config for testing
 const DEFAULT_CARD_ARRAY = DATA ? DATA : []
@@ -34,6 +36,7 @@ export const Posts = ( { navigation } ) => {
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
     const [ location, setLocation ] = useState( loc )
+    const [ searchTerm, setSearchTerm ] = useState ( '' )
 
     // TODO:
     const [ sortList, setSortList ] = useState( [ 'Nearest', 'Newest', 'Oldest' ] )
@@ -55,6 +58,19 @@ export const Posts = ( { navigation } ) => {
     const refreshPosts = () => {
         onRefresh(location, updatePosts)
     }
+
+    // filters out the cards that are shown based on the current text field
+    function filterPosts (array, searchTerm) {
+        console.log(array);
+        let newArray = array.filter((element) => {
+            if (element.tags){
+            element.tags.includes(searchTerm)
+            }
+        }
+        );
+        console.log("New Array:" + newArray);
+        return newArray;
+    } 
 
     // initializes the list to populate based on the default app location
     useEffect( () => {
@@ -116,6 +132,24 @@ export const Posts = ( { navigation } ) => {
                                 }
                                 }
                             />
+                            <SearchInput
+                                value={searchTerm}
+                                onChangeText={(text) => setSearchTerm(text)}
+                            >
+                                 Search...
+                            </SearchInput>
+                            <Button title={"Start Search"} onPress={() => {
+                                if (searchTerm != '') 
+                                { 
+                                    console.log("Search term:" + searchTerm)
+                                    var newCards = filterPosts(posts, searchTerm);
+                                    updatePosts(newCards);
+                                } 
+                                else
+                                {
+                                    alert("Need to fill out search term field before submitting.")
+                                }
+                            }}/>
                             <FilterBar
                                 {...
                                 {

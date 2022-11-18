@@ -31,7 +31,7 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
         const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
         let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
         let hour = (travel.time / 60).toFixed(0)                      // get hours
-        const { id, vendor, data: { cuisine }, data: { item }, res } = card  // destructure object to get desired card properties
+        const { id, data: {tags}, vendor, data: { cuisine }, data: { item }, res } = card  // destructure object to get desired card properties
       return {
         ...card,
         id: id,
@@ -45,7 +45,7 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
         address: `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
         phoneNumber: "0001222112",  // Fill in with phone number
         reserved: res,
-        tags: [vendor, cuisine, item]
+        tags: tags
       }
     } )
     return mappedResults
