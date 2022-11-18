@@ -82,7 +82,7 @@ class res_obj {
     // just return the string version of this object
     package(){
         let js = JSON.stringify(this);
-        Log.writeToLog(js);
+        //Log.writeToLog(js);
         console.log(`Packaging response as : ${js}`);
         return js;
     }
@@ -162,8 +162,8 @@ class Logger {
 
     writeToLog(string){
         let date = new Date(); // get the time'
-        
-        string = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s ${string}\n`;
+        let extra_space = (date.getSeconds() < 9) ? " " : "";
+        string = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s  ${extra_space}|  ${string}\n`;
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
             //console.log(`Logged ${string}`);

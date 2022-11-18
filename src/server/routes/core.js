@@ -5,33 +5,27 @@
 // Forgot Pass    : /fgpass
 
 const express = require('express')
-const fs = require('fs');
 const sutil = require('../utility/serverutility.js');
 const sql = require('../utility/sqlhandler.js')
 const { sendEmail, createOptions, res_obj } = require('../utility/serverutility.js');
 const CoreRouter = express.Router();
 var randtoken = require('rand-token');
-const e = require('express');
-const path = require('path');
-
 //const Store =  sutil.UserStore;
 const Store = sql.UserStore;
 
 module.exports = {CoreRouter}
 
 
-CoreRouter.use('/wipecards', (req,res) => {
-    let resbody = new sutil.res_obj();
+
+CoreRouter.use('/wipecards', (req,res,next) => {
+    let resbody = res.locals.resbody;
     sql.FoodStore.deleteAll((err, deleted) => {
         if(err){
-            resbody.setIssues(err);
-            res.end(package());
-            return;
+            return next(err);
         }
-
+        
         resbody.setData({"deleted_rows":deleted});
-        res.end(resbody.package());
-        return;
+        return res.end(resbody.package());
     })
 })
 
@@ -53,64 +47,50 @@ CoreRouter.use('/test', (req,res)=>{
     }
 });
 
+
+
 // handle signups
 // Checking for fields in the body { email, pass, vendor}
 // returns a response_object 
-CoreRouter.post('/signup', async (req, res) => 
+CoreRouter.post('/signup', async (req, res, next) => 
 {
-    // this is our standard response object being sent to the client in the res.body
-    let resbody = new sutil.res_obj();
-    
+    let resbody = res.locals.resbody; // Get the response object, and the credentials from the request 
+    let credentials = {
+        email: req.body.email,
+        vendor: req.body.vendor,
+        pass: "",
+    }
     req.setEncoding('utf8');
-    if(sutil.validate(['email','pass','vendor'], req.body)){
+    
+    sutil.bHash(req.body.pass, (err, hash)=>{  // Hash the input password to store in the database
+        if(err){
+            return next(4);
+        }
+
+        credentials.pass = hash; // store the hash in credentials
         
-        sutil.bHash(req.body.pass, (err, hash)=>{
-            if(err){
-                resbody.setIssue(4);
-                res.end(resbody.package());
-                return;
+        Store.insertUser(credentials, (err) => { // Insert the user into the database
+            if(err) {
+                return next(err);
             }
             
-            let credentials = {
-                email: req.body.email,
-                pass: hash,
-                vendor: req.body.vendor
-            }
-            
-            Store.insertUser(credentials, (err) => {
-                if(err) {
-                    console.error(err);
-                    if(err.code === 'ER_DUP_ENTRY'){ // we know this error 
-                        resbody.setIssue(6);
-                        res.end(resbody.package());
-                        return;
-                    }
-
-                    resbody.setIssues(err); // some other sql problem
-                    res.end(resbody.package());
-                    return;
-                }
-                
-                sutil.signUpEmail(credentials.email, (err, sent) => {
+            if(credentials.email.indexOf("@") >=0){ // send validation email to email addresses
+                sutil.signUpEmail(credentials.email, (err, sent) => { // send the user an email for validation
                     if(err){
-                        console.log(err);
-                        resbody.setData({msg:"Signup Successful, Issues sending validation email (may not be an email)"}); // we will probably want to use this to make sure they sign up with a real email so this will most likely return a issue not data
-                        res.end(resbody.package());
-                        return;
+                        return next(err);
                     }
-
-                   resbody.setData({msg:"Signup successful, check email for validation email"});
-                   res.end(resbody.package());
-                   return;
+                
+                    resbody.setData({msg:"Signup successful, check email for validation email"});
+                    return next();
                 });
-            });
+            }else{ 
+                resbody.setData({msg:"Signup complete, no email provided"});
+                return next();
+            }
         });
-    }
-    else{
-        resbody.setIssue(1)
-        res.end(resbody.package());
-        return;
-    }
+    });
+    
+    
     
 });
 
@@ -139,10 +119,10 @@ CoreRouter.post('/login', (req, res, next) => {
                         res.end(resbody.package());
                         return;
                     }
-                        
+                    
                     if(hash){
                         const token = sutil.sign({user: req.body.email, vendor: result.vendor});    
-                            
+                        
                         data = {
                             user: req.body.email,
                             vendor: result.vendor,
@@ -150,7 +130,7 @@ CoreRouter.post('/login', (req, res, next) => {
                             gplacesKey: process.env.GPLACEKEY,
                             message: "user signed in!"
                         }
-                            
+                        
                         resbody.setData(data);
                         res.end(resbody.package());
                         return;
@@ -187,23 +167,23 @@ CoreRouter.post('/fgpss', (req, res,next) => {
         let code = randtoken.generate(8);
         Store.setForgotCode(req.body.email, code, (err) => {
             if(err){
-			    resbody.setIssue(7);
-			    res.end(resbody.package());
-			    return;
+                resbody.setIssue(7);
+                res.end(resbody.package());
+                return;
             }
-
+            
             sutil.fgpssEmail(req.body.email, code, (err, sent) => {
                 if(err){
                     resbody.setIssues(err);
                     res.end(resbody.package());
                     return;
                 }
-
+                
                 resbody.setData({msg:"Sent forgot pass email successfully"});
                 res.end(resbody.package());
                 return;
             })
-
+            
         })
     }
     else{
@@ -216,15 +196,15 @@ CoreRouter.post('/fgpss', (req, res,next) => {
 CoreRouter.post('/validatecode', (req, res) => {
     let resbody = new sutil.res_obj();
     if(sutil.validate(['code','email'], req.body)){		
-		Store.getForgotCode(req.body.code, (err, result) => {
+        Store.getForgotCode(req.body.code, (err, result) => {
             console.log('checked forgot code');
             if(err){
                 resbody.setIssue(7);
                 res.end(resbody.package());
                 return;
             }
-			if(result.code === req.body.code){
-				console.log(`code match`);
+            if(result.code === req.body.code){
+                console.log(`code match`);
                 Store.setTempPassword(req.body.email,(error, tempPass) => {
                     if(error){
                         resbody.setIssue(69,"Error generating temp pass");
@@ -234,34 +214,34 @@ CoreRouter.post('/validatecode', (req, res) => {
                     if(tempPass){
                         console.log("set temp pass");
                         resbody.setData({msg: "correct code for fgpass", temp:tempPass});
-				        res.end(resbody.package());
-				        return;
+                        res.end(resbody.package());
+                        return;
                     }
                 });
-
-			}
+                
+            }
             else {
                 resbody.setIssue(70,"no code found");
-				res.end(resbody.package());
-				return;
+                res.end(resbody.package());
+                return;
             }
-		});
-	}
+        });
+    }
     else{
         resbody.setIssue(1);
         res.end(resbody.package());
         return;
     }
-	
+    
 });
 
 // post data here to set a update new password with link
 /*
-    Take in the following values:
-        email : the users email who is attempting to update their pass,
-        old_pass: the old password for the account,
-        new_pass: the new password they just typed in somewhere
-    
+Take in the following values:
+email : the users email who is attempting to update their pass,
+old_pass: the old password for the account,
+new_pass: the new password they just typed in somewhere
+
 
 */
 CoreRouter.post('/updatepass', (req, res,next)=> {
@@ -274,7 +254,7 @@ CoreRouter.post('/updatepass', (req, res,next)=> {
                 res.end(resbody.package());
                 return;
             }
-
+            
             resbody.setData({msg:"updated password"});
             res.end(resbody.package());
             return;
@@ -297,7 +277,7 @@ CoreRouter.get('/confirmEmail', (req,res) => {
             res.end(resbody.package());
             return;
         }
-
+        
         let email = result.user;
         Store.setValid(email, (err) => {
             if(err){
@@ -305,14 +285,14 @@ CoreRouter.get('/confirmEmail', (req,res) => {
                 res.end(resbody.package());
                 return;
             }
-
+            
             resbody.setData({msg:`Confirmed Email Successfully for ${email}`});
             res.end(resbody.package());
             return;
         });
-
+        
     });
-
+    
 });
 
 
@@ -329,17 +309,16 @@ CoreRouter.post('/ru', (req,res) => {
             res.end(resbody.package());
             return;
         }
-
+        
         if(result){
             resbody.setData({msg: `removed user  ${req.body.email} from db`});
             res.end(resbody.package());
             return;
         }
-
+        
         resbody.setData({msg: `op performed successfully, however no user found ${req.body.email}`});
         res.end(resbody.package());
         return;
     });
 });
-
 

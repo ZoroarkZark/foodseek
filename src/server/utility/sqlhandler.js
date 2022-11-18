@@ -96,6 +96,9 @@ class UserStore {
         // query the database
         this.conn.query(SQL, parameters, (err) => {
             if(err){
+                if(err.code === "ER_DUP_ENTRY"){
+                    return callback(6); // duplicate entry code 
+                }
                 return callback(err); // we have an error return it to the callback
             }
             
@@ -367,6 +370,7 @@ class UserStore {
      *  
      *  console.log(`Set new temp pass for user ${email} as ${new_pass}`);
      * })
+     * 
      */
     setTempPassword(email, callback){
 
@@ -400,7 +404,6 @@ class UserStore {
             });
         })
     }
-
 
 }
 
