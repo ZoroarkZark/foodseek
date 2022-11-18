@@ -30,16 +30,18 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
       const mappedResults = results.map( ( card ) => {
         const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
         let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
-        let hour = (travel.time / 60).toFixed(0)                      // get hours
-        const { id, data: {tags}, vendor, data: { cuisine }, data: { item }, res } = card  // destructure object to get desired card properties
+        let hour = ( travel.time / 60 ).toFixed( 0 )                      // get hours
+        const { data } = card
+        const {cuisine, image, item, tags} = JSON.parse(data)
+        const { id, vendor, res } = card  // destructure object to get desired card properties
       return {
         ...card,
         id: id,
         image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
         vendor: { name: "Fergus the Ferret's Funland" }, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing
-        cuisine: "Fish", // genre/category of vendor menu, ||| original var: cuisine
-        item: "Fishy sticks", // name of the food item being posted ||| original var: item
+        cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
+        item: item, // name of the food item being posted ||| original var: item
         travel: `${travel.distance.toFixed(1)} mi`, // computed travel distance string format: 1.7 mi 
         time: `${hour > 0 ? `${hour} hr` : ''} ${min} min`, //time format: 16 min
         address: `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address

@@ -60,15 +60,11 @@ export const Posts = ( { navigation } ) => {
     }
 
     // filters out the cards that are shown based on the current text field
-    function filterPosts (array, searchTerm) {
-        console.log(array);
-        let newArray = array.filter((element) => {
-            if (element.tags){
-            element.tags.includes(searchTerm)
-            }
-        }
-        );
-        console.log("New Array:" + newArray);
+    function filterPosts ( array, searchTerm ) {
+        const newArray = array.filter((element) => {
+            if (!element.tags) return false
+            return element.tags.includes(searchTerm)
+        });
         return newArray;
     } 
 
@@ -95,8 +91,6 @@ export const Posts = ( { navigation } ) => {
     useEffect( () => {
         // do filtering sorting and updating lists here
         setLoading(true)
-        console.log( '\nSorting by: ' + sort + '\n' )
-        console.log( '\nTags list is : [' + tags + ']\n' )
         setLoading(false)
     }, [ sort, setSort, tags, setTags ] )
     
@@ -141,7 +135,6 @@ export const Posts = ( { navigation } ) => {
                             <Button title={"Start Search"} onPress={() => {
                                 if (searchTerm != '') 
                                 { 
-                                    console.log("Search term:" + searchTerm)
                                     var newCards = filterPosts(posts, searchTerm);
                                     updatePosts(newCards);
                                 } 
