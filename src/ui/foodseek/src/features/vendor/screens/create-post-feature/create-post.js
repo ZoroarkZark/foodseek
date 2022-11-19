@@ -6,7 +6,7 @@ import { ScrollViewDismissKeyboard, Title } from '../../../../components/common'
 import Container from '../../../../components/styling/Container'
 import TextWrapper from '../../../../components/styling/TextWrapper';
 
-export const CreatePost = ({ route, navigation }) => {
+export const CreatePost = ( { route, navigation } ) => {
     const [foodName, setFoodName] = useState('');
     const [timeAvailable, setTimeAvailable] = useState('');
     const uri = (route.params) ? route.params.uri : "";

@@ -30,6 +30,14 @@ export const Cam = ({ navigation }) => {
         }
     }
 
+    useEffect( () => {
+        if (!image) return
+        navigation.navigate('PostFood', { uri : image })
+    }, [pictureTaken, setTaken])
+
+    
+    
+
     if (permission === undefined){
         return (
             <Text>Requesting Permissions...</Text>
@@ -55,7 +63,7 @@ export const Cam = ({ navigation }) => {
             </View>
         )
     } else {
-        navigation.navigate('PostFood', { uri : image })
+        // navigation.navigate('PostFood', { uri : image })
     }
 }
 
