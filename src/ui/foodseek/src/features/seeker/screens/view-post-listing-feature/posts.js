@@ -129,20 +129,27 @@ export const Posts = ( { navigation } ) => {
                             <SearchInput
                                 value={searchTerm}
                                 onChangeText={(text) => setSearchTerm(text)}
+                                onSubmitEditing={() => {{
+                                    if (searchTerm != '') 
+                                    { 
+                                        var newCards = filterPosts(posts, searchTerm);
+                                        if (newCards === undefined || newCards.length == 0){
+                                            alert("Sorry! Couldn't find any results! Reloading list.")
+                                            refreshPosts(); 
+                                        }
+                                        else {
+                                            updatePosts(newCards);
+                                        }
+
+                                    } 
+                                    else
+                                    {
+                                        refreshPosts();
+                                    }
+                                }}}
                             >
                                  Search...
                             </SearchInput>
-                            <Button title={"Start Search"} onPress={() => {
-                                if (searchTerm != '') 
-                                { 
-                                    var newCards = filterPosts(posts, searchTerm);
-                                    updatePosts(newCards);
-                                } 
-                                else
-                                {
-                                    alert("Need to fill out search term field before submitting.")
-                                }
-                            }}/>
                             <FilterBar
                                 {...
                                 {

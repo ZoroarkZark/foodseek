@@ -6,6 +6,7 @@ const SearchInput = ({
     children,
     value,
     onChangeText,
+    onSubmitEditing,
     placeholder = 'Search...',
     style = {
         height: 40,
@@ -19,6 +20,7 @@ const SearchInput = ({
         value={value}
         placeholder={children ? children : placeholder}
         onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
     ></TextInput>
 )
 
