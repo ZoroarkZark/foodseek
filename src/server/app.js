@@ -28,7 +28,11 @@ const app = express();
 const startTime = new Date();
 const Log = sutil.Logger;
 
-
+/**
+ *  Valid keys for our defined paths
+ *  if no keys are required value is set to true
+ *  if no path for the given route some other middelware will handle
+ */
 const VALID_KEYS = {
     "/signup"       	: ["email","pass","vendor"],
     "/login"        	: ["email","pass"],
@@ -61,13 +65,13 @@ app.use(bodyParser.raw({extended:true}));
 // this is needed to allow devices to connect to our server
 app.use(cors());
 
-app.use(express.json());
+app.use(express.json()); // Get the body in JSON form
 
 
 app.use('', (req, res, next) => { // Using this as a general request logger 
 	//console.log(req.path);
 	
-		console.log('\n');
+		console.log('\nIncoming Request');
 		req.setEncoding('utf8');
 		let str = `${req.method} to path: ${req.path}`;
 		console.log(str);
