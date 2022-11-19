@@ -1,56 +1,61 @@
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { Camera as camera, CameraType } from 'expo-camera'
+import React, { useState, useEffect, useRef} from 'react'
+import { Camera, CameraType } from 'expo-camera'
 import { Image } from 'react-native'
 
-export const Camera = ({ navigation }) => {
-    const [direction, setDirection] = useState(CameraType.back)
-    const [permission, requestPermission] = camera.useCameraPermissions()
+export const Cam = ({ navigation }) => {
+    const cameraRef = useRef(null)
+    const [permission, setPermission] = useState()
+    const [image, setImage] = useState(null)
     const [pictureTaken, setTaken] = useState(false)
 
-    if (!permission) {
-        return <View />
-    }
-
-    if (!permission.granted) {
-        return (
-            <View style={styles.container}>
-                <Text style={{ textAlign: 'center' }}>
-                    Give us permission to see you bitch
-                </Text>
-                <Button onPress={requestPermission} title="grant permission" />
-            </View>
-        )
-    }
+    useEffect(() => {
+        (async () => {
+            const cStatus = await Camera.requestCameraPermissionsAsync()
+            if (cStatus.status === 'granted') {
+                setPermission(true)
+            }
+            else {
+                setPermission(false)
+            }
+        })();
+    }, []);
 
     const snap = async () => {
-        if (this.camera) {
-            this.photo = await this.camera.takePictureAsync()
-            console.log(this.photo.uri)
+        if (cameraRef) {
+            const data = await cameraRef.current.takePictureAsync()
+            console.log(data)
+            setImage(data.uri)
             setTaken(true)
         }
     }
 
-    if (!pictureTaken) {
+    if (permission === undefined){
+        return (
+            <Text>Requesting Permissions...</Text>
+        )
+    } else if (!permission){
+        return(
+            <Text>Permissions Denied. Please change in device settings.</Text>
+        )
+    } else if (!pictureTaken) {
         return (
             <View style={styles.container}>
-                <camera
+                <Camera
                     style={styles.camera}
-                    type={direction}
-                    ref={(ref) => {
-                        this.camera = ref
-                    }}
+                    type={CameraType.back}
+                    ref={cameraRef}
                 >
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={snap}>
-                            <Text style={styles.text}>Take Picture!!!</Text>
+                            <Text style={styles.text}>Snap!</Text>
                         </TouchableOpacity>
                     </View>
-                </camera>
+                </Camera>
             </View>
         )
     } else {
-        navigation.navigate('PostFood', { uri : this.photo.uri})
+        navigation.navigate('PostFood', { uri : image })
     }
 }
 

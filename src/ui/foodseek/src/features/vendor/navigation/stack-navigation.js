@@ -30,7 +30,7 @@ export const CreatePost = () => {
             />
             <Stack.Screen
                 name="Camera"
-                component={screen.Camera}
+                component={screen.Cam}
                 options={{ title: 'Camera' }}
             />
         </Stack.Navigator>
