@@ -11,9 +11,11 @@ import { LocationContext } from '../../../../context/LocationContext'
 import { PostsSectionList } from './PostsSectionList'
 import { AutocompleteSearchBar } from '../../../../components/api/AutocompleteSearchBar'
 import { FilterBar } from './FilterBar'
+import { SearchInput } from '../../../../components/common'
 
 // Provides Odin
 import { Odin } from '../../../../components/common/Odin'
+import { Button } from 'react-native-rapi-ui'
 
 // TODO: move to config for testing
 const DEFAULT_CARD_ARRAY = DATA ? DATA : []
@@ -34,6 +36,7 @@ export const Posts = ( { navigation } ) => {
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
     const [ location, setLocation ] = useState( loc )
+    const [ searchTerm, setSearchTerm ] = useState ( '' )
 
     // TODO:
     const [ sortList, setSortList ] = useState( [ 'Nearest', 'Newest', 'Oldest' ] )
@@ -55,6 +58,15 @@ export const Posts = ( { navigation } ) => {
     const refreshPosts = () => {
         onRefresh(location, updatePosts)
     }
+
+    // filters out the cards that are shown based on the current text field
+    function filterPosts ( array, searchTerm ) {
+        const newArray = array.filter((element) => {
+            if (!element.tags) return false
+            return element.tags.includes(searchTerm)
+        });
+        return newArray;
+    } 
 
     // initializes the list to populate based on the default app location
     useEffect( () => {
@@ -79,8 +91,6 @@ export const Posts = ( { navigation } ) => {
     useEffect( () => {
         // do filtering sorting and updating lists here
         setLoading(true)
-        console.log( '\nSorting by: ' + sort + '\n' )
-        console.log( '\nTags list is : [' + tags + ']\n' )
         setLoading(false)
     }, [ sort, setSort, tags, setTags ] )
     
@@ -116,6 +126,30 @@ export const Posts = ( { navigation } ) => {
                                 }
                                 }
                             />
+                            <SearchInput
+                                value={searchTerm}
+                                onChangeText={(text) => setSearchTerm(text)}
+                                onSubmitEditing={() => {{
+                                    if (searchTerm != '') 
+                                    { 
+                                        var newCards = filterPosts(posts, searchTerm);
+                                        if (newCards === undefined || newCards.length == 0){
+                                            alert("Sorry! Couldn't find any results! Reloading list.")
+                                            refreshPosts(); 
+                                        }
+                                        else {
+                                            updatePosts(newCards);
+                                        }
+
+                                    } 
+                                    else
+                                    {
+                                        refreshPosts();
+                                    }
+                                }}}
+                            >
+                                 Search...
+                            </SearchInput>
                             <FilterBar
                                 {...
                                 {
