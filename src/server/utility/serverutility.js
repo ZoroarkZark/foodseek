@@ -353,7 +353,13 @@ function bCompare(input, comparison, callback){
     });
 }
 
+function getKM(miles){
+    return miles * 1.609344;
+}
 
+function getM(Km){
+    return Km * 0.62137119;
+}
 
 
 const startTime = new Date();
