@@ -162,8 +162,12 @@ class Logger {
 
     writeToLog(string){
         let date = new Date(); // get the time'
-        let extra_space = (date.getSeconds() < 9) ? " " : "";
-        string = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s  ${extra_space}|  ${string}\n`;
+        let dateStr = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s`
+        let pad = 17 - dateStr.length; // pad size
+        dateStr = dateStr.trimEnd();
+        dateStr = dateStr.padEnd(pad," ");
+
+        string = `${dateStr}|  ${string}\n`;
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
             //console.log(`Logged ${string}`);

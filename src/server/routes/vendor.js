@@ -65,6 +65,7 @@ VendorRouter.post('/upl2', (req,res,next) => {
     
     FoodStore.uploadMore(pkg, (err) => {
         if(err){
+            console.debug(err);
             return next(7);
         }
         
