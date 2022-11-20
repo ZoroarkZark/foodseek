@@ -58,7 +58,7 @@ ImageRouter.use('', (req,res, next) => {
 
 });
 
-ImageRouter.post('/imgtest', async (req,res) => {
+ImageRouter.post('/imgtest', async (req,res,next) => {
     req.setEncoding('base64');
 
     let resbody = new sutils.res_obj();
