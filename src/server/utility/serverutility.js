@@ -147,7 +147,7 @@ function validate(fields, object){
 /**
  * creates and signs the jason web token
  * @param {object} data : holds the user and vendor data 
- * @returns the signed jwt 
+ * @returns the signed jason web token 
  */
 function signtoken(data){
     // create the token 
