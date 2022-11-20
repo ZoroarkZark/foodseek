@@ -60,7 +60,8 @@ VendorRouter.post('/upl2', (req,res,next) => {
         loc: req.body.loc,
         tags: req.body.tags,
         timestamp: req.body.timestamp,
-        img_url: "empty"
+        img_url: "empty",
+        vendor: req.body.vendor
     }
     
     FoodStore.uploadMore(pkg, (err) => {

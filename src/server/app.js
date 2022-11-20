@@ -48,7 +48,7 @@ const VALID_KEYS = {
 	"/user/reserve" 	: ["jwt","id","user"],
 	"/user/cancel"  	: ["jwt","user"],
 	"/vendor/upl"		: ["jwt","item"],
-	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp"],
+	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp","vendor"],
 	"/vendor/del"		: ["jwt", "id"],
 	"/vendor/conf"		: ["jwt","user","id"],
 	"/vendor/checkres"	: ["jwt","vendor"]
