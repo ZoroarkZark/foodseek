@@ -121,7 +121,8 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
     const renderSwitch = (day) => {
         switch(day){
             case 'monday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
+                    
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setMondayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text style={styles.buttonTextStyle}>Start Time: {mondayTime.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit"})}</Text>
@@ -137,7 +138,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }       
                 </View>
             case 'tuesday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setTuesdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text style={styles.buttonTextStyle}>Start Time: {tuesdayTime.toLocaleTimeString()}</Text>
@@ -153,7 +154,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }
                 </View>
             case 'wednesday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setWednesdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {weddayTime.toLocaleTimeString()}</Text>
@@ -169,7 +170,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }
                 </View>
             case 'thursday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setThursdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {thursdayTime.toLocaleTimeString()}</Text>
@@ -185,7 +186,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }
                 </View>
             case 'friday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setFridayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {fridayTime.toLocaleTimeString()}</Text>
@@ -202,7 +203,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }
                 </View>
             case 'saturday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setSaturdayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {saturdayTime.toLocaleTimeString()}</Text>
@@ -219,7 +220,7 @@ export const HoursOfOperationScreen = ({navigation}, props) => {
                 }
                 </View>
             case 'sunday':
-                return <View>
+                return <View style={{padding: 20, margin: 10, top: 50}}>
                     <DayPickerInput value={day} onValueChange={setDay}>DAY</DayPickerInput>
                     <TouchableOpacity style={styles.buttonStyle} onPress ={() => (setisEnd(false), setSundayShow(true))}><Text style={styles.buttonTextStyle}>Set Start Time</Text></TouchableOpacity>
                     <Text>Start Time: {sundayTime.toLocaleTimeString()}</Text>
