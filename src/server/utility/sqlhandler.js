@@ -479,6 +479,9 @@ class FoodStore {
     }
     
     uploadMore(pack, callback){
+        //console.log("in uploadmore")
+        //console.log(pack);
+        //console.log(Object.keys(pack));
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)";
         let data = {
             cuisine: "default",
@@ -560,6 +563,9 @@ class FoodStore {
     
     // get all cards maxdist_m from pos
     getCardsByRange(pos , maxdist_m, callback){
+        //console.log("in sql range")
+        //console.log(pos)
+        //console.log(maxdist_m)
         let Km = sutil.getKm(maxdist_m);
         console.log(Km);
         let rounded_km = Math.round(Km);

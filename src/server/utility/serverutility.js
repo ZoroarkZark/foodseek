@@ -374,7 +374,6 @@ module.exports = {
     verify: verifytoken,
     getKm: getKM,
     getM: getM,
-    getDistance: getDistance,
     Logger: Log,
     logFile: getLogFile,
     createOptions: createOptions,
