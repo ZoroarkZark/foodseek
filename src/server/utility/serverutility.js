@@ -37,7 +37,6 @@ common_issues = {
 class res_obj {
     // defualt constructor
     // all fields set to uninitilized
-
     constructor(){
         this.success = 0;
         this.logger = getLogFile();
@@ -46,22 +45,30 @@ class res_obj {
 
     // only call one of these
 
-    // on success 
-    // set the returned data 
+    /**
+     * sets the returned data on succcess and sets issues to null
+     * @param {object} data : takes any obect to be returned to front end
+     */ 
     setData(data){
         this.success = 1;
         this.data = data;
         this.issues = null;
     }
 
-    // on failure of operation
-    // set the returned issue
+    /**
+     * sets the issue based on the corresponding number on opperation failuer
+     * @param {int} issues : the issue number
+     */
     setIssues(issues){
         this.success = 0;
         this.issues = issues;
         this.data = null;
     }
-
+    /**
+     * sets the issue object on opperation failure
+     * @param {int} code : the error 
+     * @param {string} msg : the message 
+     */
     setIssue(code, msg=''){
         this.success = 0;
         this.issues = {
@@ -79,7 +86,11 @@ class res_obj {
 
     }
 
-    // just return the string version of this object
+    
+    /**
+     * 
+     * @returns the string version of this object
+     */
     package(){
         let js = JSON.stringify(this);
         //Log.writeToLog(js);
@@ -111,7 +122,12 @@ class food_card{
     returns false if either the object is null, or fields are not present
     returns true if all fields are present in a non-null object
 */
-
+/**
+ * searches the object for the fields 
+ * @param {string} fields : the fields to search for in the object
+ * @param {*} object : the object to be searched
+ * @returns True if all feilds present in object, false otherwise
+ */
 function validate(fields, object){
     if(!object){ 
         return false;
@@ -128,18 +144,23 @@ function validate(fields, object){
 }
 
 // JWT sign and verifcation
+/**
+ * creates and signs the jason web token
+ * @param {object} data : holds the user and vendor data 
+ * @returns the signed jason web token 
+ */
 function signtoken(data){
     // create the token 
     const token = jwt.sign({ user: data.user, vendor: data.vendor},devJWT, {expiresIn: "10d"});
 
     return token;
 }
-
-// Asynchronously verify a token
-// err    : return callback(err,null) bad jwt
-// user   : return callback(null,0)
-// vendor : return callback(null,1)
-// example: sutil.verify(in_token, (err, vendor) => { if err throw err; if vendor do vendor stuff, else is a user}
+/**
+ * Verifies the jwt is valid
+ * @param {object} token : the token to be verified 
+ * @param {*} callback : err : return callback(err,null) bad jwt , user : return callback(null,0),  vendor : return callback(null,1)
+ * @example : sutil.verify(in_token, (err, vendor) => { if err throw err; if vendor do vendor stuff, else is a user}
+ */
 function verifytoken(token, callback){
     jwt.verify(token, devJWT, (err, result) => {
         if(err){
@@ -154,12 +175,16 @@ function verifytoken(token, callback){
     });
 }
 
+
 class Logger {
     constructor(file){
         //folder to place log file
         this.fpath = path.resolve(__dirname, file);
     }
-
+    /**
+     * adds string to another string with date and time and adds to file
+     * @param {string} string : any
+     */
     writeToLog(string){
         let date = new Date(); // get the time'
         let dateStr = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s`
@@ -173,7 +198,10 @@ class Logger {
             //console.log(`Logged ${string}`);
         })
     }
-
+    /**
+     *  reads the logs and returns the read data
+     * @param {*} callback : err , data => returns error on issue, returns read data 
+     */
     readLogs(callback){
         file.readFile(this.fpath, 'utf8', (err,data) => {
             if(err) return callback(err,null);
@@ -193,29 +221,13 @@ class Logger {
 
 }
 
-function getKM(miles){
-    return miles * 1.609344;
-}
-
-function getM(Km){
-    return Km * 0.62137119;
-}
-
-function getDistance(lat1, lon1, lat2, lon2){
-    let dLat = (lat2 - lat1) * Math.PI / 180.0;
-    let dLon = (lon2 - lon1) * Math.PI / 180.0;
-    // convert to radians
-    lat1 = (lat1) * Math.PI / 180.0;
-    lat2 = (lat2) * Math.PI / 180.0;
-    // apply formula
-    let a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-    let rad = 6371;
-    let dist_km = 2 * Math.asin(Math.sqrt(a));
-    // conversion factor
-    const factor = 0.621371
-    const miles = dist_km * factor;
-    return miles;
-}
+/**
+ * creates the options for the sendEmail function 
+ * @param {string} email : The email of the user we are emailing
+ * @param {string} subject : The subject of the email
+ * @param {string} html_str : The body of the email as an HTML string
+ * @returns 
+ */
 function createOptions(email, subject , html_str){
     
     var mailOptions = {
@@ -226,7 +238,11 @@ function createOptions(email, subject , html_str){
     };
     return mailOptions;
 }
-
+/**
+ * sends the sign up email to email
+ * @param {string} email : the recipient of the email
+ * @param {*} callback   : returns (null, sent), on error returns (error,null)
+ */
 function signUpEmail(email, callback){
     const token = jwt.sign({ user: email},devJWT, {expiresIn: "10d"});
     let html_str = '<p>Use this link to confirm email, kindly use this <a href="http://localhost:3000/confirmEmail?token=' + token + '">link</a> </p>';
@@ -241,7 +257,12 @@ function signUpEmail(email, callback){
         }
     });
 }
-
+/**
+ * sends the forgot password email 
+ * @param {string} email : the recipient of the email
+ * @param {string} code  : the code to confirm the forgot password claim
+ * @param {*} callback   : returns (null, sent), on error returns (error,null)
+ */
 function fgpssEmail(email, code, callback){
     let html_str = '<p>Use this code: ' + code + ' to proceed with updating your password</p>';
     let subject = 'Confirmation code, forgot password';
@@ -256,7 +277,11 @@ function fgpssEmail(email, code, callback){
     });
 }
 
-//send email
+/**
+ * sends the email based on the mailoptions
+ * @param {object} mailOptions : holds the data for the email process => from, to, subject, and body as html string
+ * @param {*} callback         : returns (null, 1), on error returns (error,0)
+ */
 function sendEmail(mailOptions, callback) {
     
  
@@ -281,7 +306,11 @@ function sendEmail(mailOptions, callback) {
 }
 
 
-
+/**
+ * generates a random token based on size
+ * @param {int} size : the length of the token
+ * @returns the token generated
+ */
 function genToken(size){
     let token = randtoken.generate(size);
     return token;
@@ -289,6 +318,12 @@ function genToken(size){
 
 // hash an input with bcrypt and return callback(null, hashed)
 // on error callback(err,null)
+/**
+ * hash an input with bcrypt 
+ * @param {string} input : the strign to be encryped 
+ * @param {*} callback   : return callback(null, hashed) on error callback(err,null)
+ * 
+ */
 function bHash(input, callback){
     bcrypt.hash(input, 10, (err, hash) => {
         if(err){
@@ -302,6 +337,12 @@ function bHash(input, callback){
 //compare an input to something else (comparison) using bcrypt
 // failure : callback(err,null)
 // success : callback(null,true)
+/**
+ * compare an input to something else (comparison) using bcrypt
+ * @param {string} input        : string to be compared
+ * @param {string} comparison   : string to be compared
+ * @param {*} callback          : failure : callback(err,null), success : callback(null,true)
+ */
 function bCompare(input, comparison, callback){
     bcrypt.compare(input,comparison, (err, result) => {
         if(err){
