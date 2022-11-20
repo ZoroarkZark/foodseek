@@ -187,12 +187,10 @@ class Logger {
      */
     writeToLog(string){
         let date = new Date(); // get the time'
-        let dateStr = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}s`
-        let pad = 17 - dateStr.length; // pad size
+        let dateStr = `(${date.getMonth()+1}/${date.getDate()}):${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
         dateStr = dateStr.trimEnd();
-        dateStr = dateStr.padEnd(pad," ");
-
-        string = `${dateStr}|  ${string}\n`;
+        dateStr = dateStr.padEnd(20," ");
+        string = `${dateStr}-   ${string}\n`;
         file.appendFile(this.fpath, string, (err) => {
             if(err) throw err;
             //console.log(`Logged ${string}`);
