@@ -9,7 +9,10 @@ const Stack = createNativeStackNavigator() // Create stack navigator component
 // Returns a stack navigator for the history of posts for that vendor
 export const ViewPost = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+            headerShown: false,
+        }}>
             <Stack.Screen
                 name="PostHistory" 
                 component={screen.PostHistory}
@@ -22,16 +25,19 @@ export const ViewPost = () => {
 // Returns a stack navigator for create post flow
 export const CreatePost = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+            headerShown: false,
+        }}>
             <Stack.Screen
                 name="PostFood"
                 component={screen.CreatePost}
-                options={{ title: 'Post Food' }}
+
             />
             <Stack.Screen
                 name="Camera"
                 component={screen.Cam}
-                options={{ title: 'Camera' }}
+
             />
         </Stack.Navigator>
     )
@@ -40,7 +46,10 @@ export const CreatePost = () => {
 // Returns a stack navigator for the storefront view of the vendor
 export const StoreProfile = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+            headerShown: false,
+        }}>
             <Stack.Screen
                 name="StoreProfile" 
                 component={screen.StoreProfile}
@@ -53,7 +62,10 @@ export const StoreProfile = () => {
 // Returns a stack navigator for the store settings
 export const StoreSettings = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+            headerShown: false,
+        }}>
             <Stack.Screen
                 name="StoreSettings" 
                 component={screen.StoreSettings}

@@ -17,8 +17,18 @@ export const AutocompleteSearchBar = props => {
 
   // the function called when the user selects an autocomplete option from the dropdown results
   const onPress = ( data, details = null ) => {
-    console.log( data )
-    console.log('details: ',details)
+    const { structured_formatting } = data
+    console.log('structured_formatting', JSON.stringify(structured_formatting))
+    const { current_opening_hours, opening_hours, geometry } = details
+    const {periods} = current_opening_hours
+    console.log( 'current_opening_hours', current_opening_hours, '\nperiods', JSON.stringify( periods ) )
+    const p = opening_hours.periods
+    console.log( 'opening_hours', opening_hours, '\nperiods', JSON.stringify( p  ))
+    console.log( 'geometry', geometry )
+    const { viewport: { northeast }, viewport: { southwest } } = geometry
+    console.log( 'ne', JSON.stringify( northeast ) )
+    console.log( 'sw', JSON.stringify(southwest) )
+    // console.log( 'details: ', details )
     let { description = null } = data
         let latitude = getLatitude( details.geometry.location )       // get the coordinates from the google places API response
         let longitude = getLongitude( details.geometry.location )     
