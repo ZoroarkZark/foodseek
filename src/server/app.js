@@ -28,6 +28,34 @@ const app = express();
 const startTime = new Date();
 const Log = sutil.Logger;
 
+/**
+ *  Valid keys for our defined paths
+ *  if no keys are required value is set to true
+ *  if no path for the given route some other middelware will handle
+ */
+const VALID_KEYS = {
+    "/signup"       	: ["email","pass","vendor"],
+    "/login"        	: ["email","pass"],
+    "/fgpass"       	: ["email"],
+    "/validatecode" 	: ["email","code"],
+    "/updatepass"   	: ["email","old_pass","new_pass"],
+    "/confirmEmail" 	: true,
+    "/rem"          	: true,
+    "/ru"           	: ["email"],
+    "/test"         	: true,
+	"/user/list"		: ["jwt"],
+	"/user/lr"			: ["jwt","lat","lon","dist"],
+	"/user/reserve" 	: ["jwt","id","user"],
+	"/user/cancel"  	: ["jwt","user"],
+	"/vendor/upl"		: ["jwt","item"],
+	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp"],
+	"/vendor/del"		: ["jwt", "id"],
+	"/vendor/conf"		: ["jwt","user","id"],
+	"/vendor/checkres"	: ["jwt","vendor"]
+};
+
+
+
 //utils for parsing the body into a json we can interact with
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
@@ -37,13 +65,13 @@ app.use(bodyParser.raw({extended:true}));
 // this is needed to allow devices to connect to our server
 app.use(cors());
 
-app.use(express.json());
+app.use(express.json()); // Get the body in JSON form
 
 
 app.use('', (req, res, next) => { // Using this as a general request logger 
 	//console.log(req.path);
 	
-		console.log('\n');
+		console.log('\nIncoming Request');
 		req.setEncoding('utf8');
 		let str = `${req.method} to path: ${req.path}`;
 		console.log(str);
@@ -51,18 +79,13 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 	next();
 });
 
-app.get('/logs', (req,res)=> {
-	Log.readLogs((err, data) => {
-		if(err){
-			res.end(JSON.stringify({err:"error loading logs"}));
-			return;
-		}
-
-		res.end(JSON.stringify(
-			{logs: data}
-		));
-		return;
-	})
+// Attach a single resbody to be used across multiple middleware
+// Removed need to create a new object each time, also lets us pass it out for handling
+app.use('',(req,res,next) => {
+    let resbody = new sutil.res_obj();
+    res.locals.resbody = resbody;
+    
+    validateKeys(req,res,next);
 });
 
 
@@ -70,6 +93,69 @@ app.use('/' ,coreRouter); // mount core routes
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
 app.use('/images/', ImageRouter);
+
+/**
+ * Middle ware function to check for our valid keys in the bodies of requests
+ * @param {*} req : request object 
+ * @param {*} res : response object
+ * @param {*} next : next middleware in the stack
+ * @returns Goes to next middle ware if pass tests, go to error middleware if fail
+ */
+function validateKeys(req, res, next){
+    console.log(`Keys for ${req.path} =`,VALID_KEYS[req.path]);
+    if(req.path in Object.keys(VALID_KEYS)){ // path is in dict
+        if(VALID_KEYS[req.path] != true){ // key is not default true case 
+            if(!sutil.validate(VALID_KEYS[req.path],req.body)){ // keys are not present within the request body
+                return next(1); // send error code 1: bad body (body shaming?)
+            }
+        }
+
+    }
+    next();
+    
+}
+
+/**
+ * Handle errors from express middleware
+ * @param {*} err : error code or object
+ * @param {*} req : request
+ * @param {*} res : response
+ * @param {*} next : next middleware object
+ * @returns Responds with appropriate error code to request
+ */
+function errorHandle(err,req,res,next){
+    let resbody = res.locals.resbody;
+    if(typeof err === "number"){
+        resbody.setIssue(err);
+    }
+    else if(typeof err === "object"){
+        resbody.setIssues(err);
+    }
+
+	console.log(`Logging:`,res.locals.resbody.issues);
+	let str = JSON.stringify(res.locals.resbody.issues);
+	res.end(resbody.package());
+	Log.writeToLog(str); // log 
+	return;
+
+
+}
+
+// custom error handler
+app.use((err,req,res,next)=>{
+    res.status = 200;
+    console.log("Error Handler Call");
+    errorHandle(err,req,res,next);
+})
+
+// Final middleware to respond and log
+app.use((req,res,next)=>{
+	console.log(`Logging:`,res.locals.resbody.data);
+	res.end(res.locals.resbody.package());
+	let str = JSON.stringify(res.locals.resbody.data);
+	Log.writeToLog(str);
+	return;
+})
 
 // keeps this app open on the specifed port
 app.listen(port, () => {

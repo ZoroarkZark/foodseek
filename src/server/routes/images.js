@@ -42,22 +42,15 @@ ImageRouter.use('', (req,res, next) => {
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
 
     if(!sutils.validate(['jwt'], header_data)){ // Validate the body and jwt field, header for the image upload
-        resbody.setIssue(1);
-        res.end(resbody.package());
-        return;
+        return next(1); // fields not passed
     }
     sutils.verify(header_data['jwt'], (err, result) => { // jwt check
         if(err){
-            console.log(err);
-            resbody.setIssue(2); // bad jwt
-            res.end(resbody.package());
-            return;
+            return next(2); // bad authorization 
         }
 
         if(result.vendor != 1){
-            resbody.setIssue(3); // not a vendor type 
-            res.end(resbody.package());
-            return;
+            return next(3); // bad perms
         }
 
         next();
@@ -66,18 +59,16 @@ ImageRouter.use('', (req,res, next) => {
 });
 
 ImageRouter.post('/imgtest', async (req,res) => {
-    let resbody = new sutils.res_obj();
     req.setEncoding('base64');
-    
-    let chunks = [];
 
+    let resbody = new sutils.res_obj();
+    let chunks = [];
     let in_data = req.get('Custom-Json');
-    in_data = JSON.parse(in_data);
-    console.log(Object.keys(in_data));
+
+    in_data = JSON.parse(in_data); // parse the input data
+
     if(!sutils.validate(['item','loc','tags','timestamp','vendor'],in_data)){
-        resbody.setIssue(1);
-        res.end(resbody.package());
-        return;
+        return next(1); // missing upload keys
     }
 
     // request is split into multiple iterations so collect all the passed data into the array chunks
@@ -86,7 +77,11 @@ ImageRouter.post('/imgtest', async (req,res) => {
         chunks.push(buff);
     });
 
-    // after recieving all the data concat all the chunks together
+    // Recieve a base64 url of the image
+    // the base64 will contain the mime type and img data
+    // convert the base64 to the actual image using the mimetype 
+    // upload the actual img to amazon
+    // get a link
     req.on('end', async ()=> {
         //console.log(chunks);
         let data = Buffer.concat(chunks); // this is our base64 image string
@@ -99,14 +94,13 @@ ImageRouter.post('/imgtest', async (req,res) => {
 
         // make da image locally to convert from base64 to binary
         fs.writeFile(path.resolve(__dirname, fileName), data_str.split(',')[1], {encoding:'base64'}, (err) => {
-            if(err) throw err;
-            console.log("wrote to file");
+            if(err) return next(err); // Image write error
 
             // we wrote the local file so now we can send it to amazon
             // get the binary file contents
             fs.readFile(path.resolve(__dirname, fileName), async (err,data) => {
-                if (err) throw err;
-                // put the actual image in the bucket
+                if (err) return next(err); // Image read error
+
                 let com = new s3.PutObjectCommand({
                     Bucket: bucketName,
                     Key: fileName,
@@ -117,7 +111,7 @@ ImageRouter.post('/imgtest', async (req,res) => {
                 // send the command
                 await S3.send(com)
                 .then( (data) => {console.log(data);})
-                .catch( (err) => {console.log(err);}) 
+                .catch( (err) => {return next(err); }) 
 
                 // get a link 
                 let link = await getLiveURL(fileName);
@@ -133,17 +127,13 @@ ImageRouter.post('/imgtest', async (req,res) => {
 
                 FoodStore.uploadMore(food_card, (err) => {
                     if(err){
-                        resbody.setIssue(7);
-                        res.end(resbody.package());
-                        return;
+                        return next(7); // SQL error 
                     }
                     
                     resbody.setData({msg:"uploaded image successfully", link:link});
-                    res.end(resbody.package());
-
                     removeFile(fileName); // remove the local file from storage
 
-                    return;
+                    return next();
 
                 });
             })
@@ -154,9 +144,7 @@ ImageRouter.post('/imgtest', async (req,res) => {
     });
 
     req.on('error', (err)=> {
-        resbody.setIssues(err);
-        res.end(resbody.package());
-        return;
+        return next(err); 
     })
 });
 

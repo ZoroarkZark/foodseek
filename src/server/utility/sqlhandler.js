@@ -96,6 +96,9 @@ class UserStore {
         // query the database
         this.conn.query(SQL, parameters, (err) => {
             if(err){
+                if(err.code === "ER_DUP_ENTRY"){
+                    return callback(6); // duplicate entry code 
+                }
                 return callback(err); // we have an error return it to the callback
             }
             
@@ -367,6 +370,7 @@ class UserStore {
      *  
      *  console.log(`Set new temp pass for user ${email} as ${new_pass}`);
      * })
+     * 
      */
     setTempPassword(email, callback){
 
@@ -400,7 +404,6 @@ class UserStore {
             });
         })
     }
-
 
 }
 
@@ -442,11 +445,11 @@ class FoodStore {
         console.log(`uploaded card: lat ${pos[0]}, lon ${pos[1]}`);
         
         // meta data
-        let data = JSON.stringify({
+        let data = {
             cuisine: "test",
             item: item,
             tags: "test"
-        });
+        };
         
         
         let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
@@ -458,7 +461,7 @@ class FoodStore {
             this.col.vendor,
             pos[0],
             pos[1],
-            data,
+            JSON.stringify(data),
             vendor
         ];
         
@@ -508,11 +511,11 @@ class FoodStore {
     // upload whole card
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
-        let data = JSON.stringify({
+        let data = {
             image : fooddata.image,
             cuisine : fooddata.cuisine,
             item : fooddata.item,
-        })
+        }
         var params = [
             this.table,
             //this.food_ID,
@@ -523,7 +526,7 @@ class FoodStore {
             //fooddata.id,
             fooddata.pos[0],
             fooddata.pos[1],
-            data, 
+            JSON.stringify(data), 
             fooddata.vendor,
         ]
         
