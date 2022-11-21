@@ -76,12 +76,16 @@ const loadOrders = async (id) => {
     }
   }
 
+
+
+
+
   const uploadCards = props => {
     const {uri, item, tags, timestamp, vendor} = props
     setLoading( true )
     const details = user.signature( props )
     try {
-      cardUpload( {jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
+      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
       .then( ( response ) => { 
         response.success = true
         return response

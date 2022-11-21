@@ -2,7 +2,7 @@
 import { getLatitude, getLongitude } from 'geolib'
 import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
-import { fetchRequest, fetchRequestIMG } from '../scripts/deviceinterface'
+import { fetchRequest, imgFetch } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
@@ -40,8 +40,8 @@ export const cardReserve = ( user, id, jwt ) => {
 // function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
 export const cardUpload = ( props ) => {
   const { jwt, item, loc, uri, tags, timestamp, details, vendor } = props
-  const path = 'images/imgtest'
-  return fetchRequestIMG( path, "post", {
+  console.log(uri)
+  return imgFetch({
     jwt: jwt,
     uri: uri,
     card: {
@@ -50,9 +50,9 @@ export const cardUpload = ( props ) => {
       loc: loc,
       tags: tags,
       timestamp: timestamp,
-      details: details
+      // details: details
     }
-  } )
+  })
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error

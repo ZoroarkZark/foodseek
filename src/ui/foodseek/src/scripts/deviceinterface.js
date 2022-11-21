@@ -40,53 +40,32 @@ function buildURL(end,path){
     return `${end}${path}`;
 }
 
-async function imgFetch(card,jwt,uri, ){
-    let response = await fetch('http://127.0.0.1:3000/images/imgtest', {
+export async function imgFetch ( args ) {
+    const { jwt, uri, card } = args
+    const res = await fetch(uri);
+    const blob = await res.blob();
+    // console.log( 'REQUEST WITH jwt: ', jwt )
+    // console.log( 'REQUEST WITH uri: ', uri )
+    // console.log('REQUEST WITH card: ', card)
+    const path = 'images/imgtest'
+    const url = buildURL( endpoint, path )
+    const Custom_Json = JSON.stringify( {
+        jwt: jwt,
+        item: card.item,
+        vendor: card.vendor,
+        loc: card.loc,
+        tags: card.tags,
+        timestamp: card.timestamp
+    } )
+    console.log('CUSTOM_JSON: ',Custom_Json)
+    let response = await fetch( url, {
         method: "POST",
         headers:{
-            'Custom-Json' : JSON.stringify( {
-                jwt: jwt,
-                item: card.item,
-                vendor: card.vendor,
-                loc: card.loc,
-                tags: card.tags,
-                timestamp: card.timestamp
-            })
+            'Custom-Json' : Custom_Json
         },
-        body: uri
+        body: blob
    }); 
    
    let result = await response.json();
    console.log(result);
-}
-
-export async function fetchRequestIMG(url, method, payload){
-    // get everything ready for the actual fetch call
-    const { jwt, uri, card } = payload
-    url = buildURL(endpoint,url);
-    method = method.toUpperCase();
-    payload = (method=="GET") ? null : JSON.stringify(payload); //If we have a GET send no body, if we have anything else stringify the body
-    console.log(`${method} @ ${url} : payload ${JSON.stringify(payload)}`);
-
-    // actual fetch call
-    const resp = await fetch(url, {
-        method: "POST",
-        headers:{
-            'Custom-Json' : JSON.stringify( {
-                jwt: jwt,
-                item: card.item,
-                vendor: card.vendor,
-                loc: card.loc,
-                tags: card.tags,
-                timestamp: card.timestamp,
-                details: card.details
-            })
-        },
-        body: uri
-   }); 
-    if ( !resp.ok ) { throw new Error(`HTTP error, status = ${resp.status}`) }  // throws an error if fetch call senses an error
-    // json representation of fetch response
-
-    if(!resp.ok){ throw new Error("bad network request");}
-    return resp.json();
 }

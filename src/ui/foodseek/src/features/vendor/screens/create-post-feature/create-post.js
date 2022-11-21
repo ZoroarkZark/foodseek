@@ -12,7 +12,7 @@ export const CreatePost = ( { route, navigation } ) => {
     const { onUpload } = useContext( FoodCardContext )
     const { user } = useContext( AuthenticationContext )
     const [foodName, setFoodName] = useState('');
-    const [tags, setTags] = useState();
+    const [tags, setTags] = useState([]);
     const [testTags, setTestTags] = useState('');
     const [currentTags, setCurrentTags] = useState('');
     const [numTags, setNumTags] = useState(0);
@@ -42,6 +42,7 @@ export const CreatePost = ( { route, navigation } ) => {
     }
 
     function upload () {
+        console.log(tags)
         if (uri) onUpload({uri, item: foodName, tags, timestamp: new Date(), vendor: user.id})
     }
 
