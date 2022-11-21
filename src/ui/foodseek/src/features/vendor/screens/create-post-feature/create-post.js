@@ -18,7 +18,7 @@ export const CreatePost = ( { route, navigation } ) => {
     const [numTags, setNumTags] = useState(0);
     const [timeAvailable, setTimeAvailable] = useState('');
     const uri = (route.params) ? route.params.uri : "";
-    console.log( `recieved uri ${ uri }` );
+    //console.log( `recieved uri ${ uri }` );
     
 
     //To do, make this not navigate after picture is taken
