@@ -32,13 +32,22 @@ export const CreatePost = ( { route, navigation } ) => {
         }
     }
 
+    function test(){
+        console.log(tags)
+        console.log(testTags)
+    }
+
     function checkTags(){
+        setTags([])
         const ar = currentTags.split('#')
         let t = ''
         for (let i = 1; i < ar.length; i=i+1){
             t = t + ' #' + ar[i]
+            setTags(tags => [...tags, ar[i]])
         }
         setTestTags(t)
+        console.log(tags)
+        console.log(testTags)
     }
 
     function upload () {
