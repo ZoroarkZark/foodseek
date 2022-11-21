@@ -284,7 +284,7 @@ class UserStore {
      * })
      */
     setForgotCode(email, code, callback){
-        let SQL = 'UPDATE ?? SET ?? = NOW() + INTERVAL 15 MINUTE, ?? = ? WHERE ?? = ?';
+        let SQL = 'UPDATE ?? SET ?? NOW() + INTERVAL 15 MINUTE, ?? = ? WHERE ?? = ?';
         var params = [
             this.table,
             this.col.exp,
@@ -430,6 +430,7 @@ class FoodStore {
             img_url: "img_url",
             timestamp: "timestamp"
         }
+        this.startClear();
         
     }
     
@@ -479,7 +480,12 @@ class FoodStore {
     }
     
     uploadMore(pack, callback){
-        let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)";
+        console.log(pack);
+        const date = new Date(pack.timestamp * 1000)
+        console.log(date);
+
+
+        let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
         let data = {
             cuisine: "default",
             item: pack.item,
@@ -493,11 +499,13 @@ class FoodStore {
             this.col.data,
             this.col.vendor,
             this.col.img_url,
+            this.col.timestamp,
             pack.loc[0],
             pack.loc[1],
             JSON.stringify(data),
             pack.vendor,
-            pack.img_url
+            pack.img_url,
+            date
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -748,8 +756,31 @@ class FoodStore {
         
     }
     
+    clearAllExpired(){
+        let SQL = "DELETE FROM ?? WHERE ?? <= UTC_TIMESTAMP() "
+        let params = [
+            this.table,
+            this.col.timestamp, //expire time but as an hour [0,23]
+      ]
+        
+        this.conn.query(SQL,params, (err,results) => {
+            if(err){ throw err; }
+      })
+    }
     
+    
+    startClear(){
+        this.clearExp = setInterval(()=> this.clearAllExpired(), 86,400,000);
+    }
+    
+    endClear(){
+        clearInterval(this.clearExp);
+    }
+    
+   
 }
+
+
 
 
 const US = new UserStore();
