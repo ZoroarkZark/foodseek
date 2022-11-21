@@ -6,7 +6,8 @@ import { fetchRequest } from '../scripts/deviceinterface'
 export const loginRequest = ( email, password ) => {
     let path = 'login'
     return fetchRequest( path, "post", { email: email, pass: password } )
-        .then( (response) => {
+        .then( ( response ) => {
+            console.log('this is the response from login: ',response)
             if ( response.success != 1 ) {
                 throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error
             }
@@ -58,4 +59,14 @@ export const patchPasswordRequest = (tok, password) => {
             return response.data
         } )
         .catch( ( error ) => { throw error } )
+}
+
+export const userTransform = ( data ) => {
+    const {user, vendor} = data
+    return {
+        ...card,
+        id: user,
+        isVendor: vendor ? vendor === 1 : false,  // TODO add linked image require kept as just the seekers avatar just during testin
+        favorites: [], // TODO: enable check if favorite false just during testing
+      }
 }

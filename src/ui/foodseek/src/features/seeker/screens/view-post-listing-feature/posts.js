@@ -31,7 +31,7 @@ export const Posts = ( { navigation } ) => {
 
     // context classes for location and food card providers
     const { location: loc, keyword: key } = useContext( LocationContext )
-    const { onRefresh, loading: refreshing, setLoading } = useContext( FoodCardContext )
+    const { onRefresh, loading: refreshing, setLoading, onReserve, orders } = useContext( FoodCardContext )
 
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
@@ -67,6 +67,10 @@ export const Posts = ( { navigation } ) => {
         });
         return newArray;
     } 
+
+    useEffect( () => {
+        console.log(orders)
+    }, [onReserve] )
 
     // initializes the list to populate based on the default app location
     useEffect( () => {

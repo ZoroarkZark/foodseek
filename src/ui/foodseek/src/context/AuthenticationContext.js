@@ -32,14 +32,14 @@ export const AuthenticationContextProvider = ({ children }) => {
     const onLogin = (email, password) => {
         setLoading(true) // set loading status = true while making request for login
         loginRequest(email, password)
-            .then( ( u ) => {
+            .then( ( response ) => {
                 // TODO: parse response.data
-                if ( u.success === 0 ) {
-                    throw new Error( u.issues.message, { cause: u.issues } )
+                if ( response.success === 0 ) {
+                    throw new Error( response.issues.message, { cause: response.issues } )
                 }
-                setGPlacesKey(u.gplacesKey)
-                setJWT(u.jwt)
-                setUser(u) // pretend its parsed for now 
+                setGPlacesKey(response.gplacesKey)
+                setJWT(response.jwt)
+                setUser( { id: response.user } ) // pretend its parsed for now 
                 setLoading(false)
             })
             .catch((err) => {

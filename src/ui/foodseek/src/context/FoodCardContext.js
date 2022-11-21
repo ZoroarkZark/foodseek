@@ -61,7 +61,6 @@ const loadOrders = async (id) => {
         return response
       } )
         .then( ( result ) => {
-        console.log('getting to result in onReserve')
         setError( null )
         setLoading( false )
         let card = cards.filter((c) => cardId === c.id)
@@ -119,7 +118,8 @@ const loadOrders = async (id) => {
     useEffect(() => {
         if (user) {
             loadOrders(user.id)
-        }
+      }
+      console.log(user)
     }, [user])
 
     // stores the orders list if the orders has been updated, or the user has been updated
