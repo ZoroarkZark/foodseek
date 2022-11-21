@@ -122,15 +122,15 @@ const loadOrders = async (id) => {
 
 
   // function calls the server with JWT token to request and retrieve cards
-  const retrieveCards = ( loc, jwt, setResult=setCards ) => {
+  const retrieveCards = async ( loc, jwt, setResult=setCards ) => {
     setLoading( true )
-    // setCards( [] )
+    setCards( [] )
     try {
       cardRequest( loc, jwt )
       .then( (results) => { 
         const { cards } = results
-        return cardTransform( loc, speed, cards, unit )     // transforms incoming data into what we can use
-      } )
+        return cardTransform( loc, speed, cards, unit )     // transforms incoming data into what we can use}
+      })
       .then( ( arr ) => {
         setError( null )
         setLoading( false )
@@ -151,12 +151,6 @@ const loadOrders = async (id) => {
   const refreshCards = (loc=location, saveCards = null) => {
     retrieveCards( loc, jwt, saveCards )
   }
-
-  
-
-  
-  
-  
 
     // loads the users orders into context if the value for user has been updated
     useEffect(() => {
@@ -179,11 +173,7 @@ const loadOrders = async (id) => {
       }
     }, [ location, setLocation ] )
   
-    useEffect(() => {
-      if (error) {
-          console.log(error)
-    }
-  }, [error])
+
 
   return (
     <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards}}>

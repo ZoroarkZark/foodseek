@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, imgFetch } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
@@ -63,52 +63,17 @@ export const cardUpload = ( props ) => {
 
 }
 
-// // function sends login request to the server with email and password
-// export const cardCreate = ( id, image, details: { item: { image, name, tags, expiration, timestamp, utc_offset }, vendor: { avatar, banner, loc: { longitude: , latitude: }, acc, bn, ba, bphone: { international: , formatted: }, bemail, cuisine, opening_hours: { open_now:, periods: [], weekday_text: [] } } } ) => {
-//   let path = 'vendor/upl'
-//   const latitude = getLatitude( loc )
-//   const longitude = getLongitude( loc )
-//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
-//     .then( ( response ) => {
-//           if ( response.success != 1 ) {
-//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-//         }
-
-//           return response.data
-//       } )
-//       .catch( ( error ) => { throw error } )
-// }
 
 // maps incoming data into an array of card data 
 export const cardTransform = async ( loc, speed, results = [], unit = 'mi' ) => {
-  const [ cards, setCards ] = useState( results )
-  
-
-  try {
-      //console.log(JSON.stringify(results))
-    const loadedImages = cards.map( ( card ) => {
-      if ( !card  || !card.img_url ) return
-      Image.prefetch( img_url ).then( ( data ) => {
-        if ( !data ) throw new Error( 'no image in prefetch' )
-        return {...card, data}
-      } ).catch( ( err ) => {
-        throw new Error('error when prefetching image')
-      } ).finally( () => {
-        return card
-      } )
-      })
-    const result = await Promise.all(loadedImages)
-    setCards(loadedImages)
-      const mappedResults = result.map( ( card ) => {
+      const mappedResults = results.map( ( card ) => {
         const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
         let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
         let hour = ( travel.time / 60 ).toFixed( 0 )                      // get hours
-        const { data } = card
-        const {cuisine, item, tags} = JSON.parse(data)
-        const { id, vendor, res, img_url } = card  // destructure object to get desired card properties
-        let image
-        if ( img_url ) image = Image.prefetch(img_url)
-      return {
+        const {cuisine, item, tags, id, vendor, res, img_url } = card  // destructure object to get desired card properties
+        // const image = Image.prefetch(img_url).then((res) => (res)).catch((err) => {return null})
+        const image = img_url
+        return {
         ...card,
         id: id,
         image: image ? image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
@@ -125,11 +90,4 @@ export const cardTransform = async ( loc, speed, results = [], unit = 'mi' ) => 
       }
     } )
     return mappedResults
-  } catch ( error ) {
-    console.log( error )
-    throw error
-
-  }
-
-  
 }
