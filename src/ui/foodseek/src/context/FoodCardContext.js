@@ -94,9 +94,8 @@ const loadOrders = async (id) => {
     setLoading( true )
     const details = user.signature( props )
     try {
-      readFile( uri )
-        .then( ( response ) => {
-          cardUpload( { ...props, jwt: jwt, vendor: user.id, loc: [ location.latitude, location.longitude ], uri: 'data:image/jpg;base64' + response, timestamp: timestamp, details: details } )
+
+          cardUpload( { ...props, jwt: jwt, vendor: user.id, loc: [ location.latitude, location.longitude ], uri: uri, timestamp: timestamp, details: details } )
             .then( ( response ) => { 
               response.success = true
               return response
@@ -113,7 +112,7 @@ const loadOrders = async (id) => {
           setLoading( false )
           setError( err )
         })
-      })
+
       
     } catch ( err ) {
       console.log( err )
@@ -129,8 +128,8 @@ const loadOrders = async (id) => {
     try {
       cardRequest( loc, jwt )
       .then( (results) => { 
-        const { items } = results
-        return cardTransform( loc, speed, JSON.parse(items), unit )     // transforms incoming data into what we can use
+        const { cards } = results
+        return cardTransform( loc, speed, cards, unit )     // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )

@@ -68,9 +68,9 @@ export const Posts = ( { navigation } ) => {
         return newArray;
     } 
 
-    useEffect( () => {
-        console.log(orders)
-    }, [onReserve] )
+    // useEffect( () => {
+    //     console.log(orders)
+    // }, [onReserve] )
 
     // initializes the list to populate based on the default app location
     useEffect( () => {

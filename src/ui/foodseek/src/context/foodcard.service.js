@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, imgFetch } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
-
+import { Image } from 'react-native'
 // function sends login request to the server with email and password
 export const cardRequest = ( loc, jwt ) => {
   let path = 'user/list'
@@ -80,22 +80,39 @@ export const cardUpload = ( props ) => {
 // }
 
 // maps incoming data into an array of card data 
-export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
+export const cardTransform = async ( loc, speed, results = [], unit = 'mi' ) => {
+  const [ cards, setCards ] = useState( results )
+  
 
   try {
       //console.log(JSON.stringify(results))
-      const mappedResults = results.map( ( card ) => {
+    const loadedImages = cards.map( ( card ) => {
+      if ( !card  || !card.img_url ) return
+      Image.prefetch( img_url ).then( ( data ) => {
+        if ( !data ) throw new Error( 'no image in prefetch' )
+        return {...card, data}
+      } ).catch( ( err ) => {
+        throw new Error('error when prefetching image')
+      } ).finally( () => {
+        return card
+      } )
+      })
+    const result = await Promise.all(loadedImages)
+    setCards(loadedImages)
+      const mappedResults = result.map( ( card ) => {
         const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
         let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
         let hour = ( travel.time / 60 ).toFixed( 0 )                      // get hours
         const { data } = card
-        const {cuisine, image, item, tags} = JSON.parse(data)
-        const { id, vendor, res } = card  // destructure object to get desired card properties
+        const {cuisine, item, tags} = JSON.parse(data)
+        const { id, vendor, res, img_url } = card  // destructure object to get desired card properties
+        let image
+        if ( img_url ) image = Image.prefetch(img_url)
       return {
         ...card,
         id: id,
-        image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
-        vendor: { name: "Fergus the Ferret's Funland" }, // name of the vendor
+        image: image ? image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
+        vendor: vendor ? { name: vendor} : { name: 'UH OH no vendor name'}, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item
