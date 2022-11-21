@@ -1,6 +1,7 @@
 /* exported navigation */
 import React, {useContext} from 'react'
 import { AuthenticationContext } from '../../../context/AuthenticationContext'
+import { ThemeContextProvider } from '../../../context/ThemeContext'
 import { FavoritesContextProvider } from '../../../context/FavoritesContext'
 import { VendorNavigator } from '../../vendor/navigation/drawer-navigation'
 import { SeekerNavigator } from '../../seeker/navigation/drawer-navigation'
@@ -13,6 +14,7 @@ export const AppNavigation = () => {
     return (
         // container wraps top-level navigator (BottomTabsNavigator), linking it to the app environment
         
+    <ThemeContextProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
             <LocationProvider>
             <FoodCardProvider>
@@ -25,5 +27,6 @@ export const AppNavigation = () => {
                 </FoodCardProvider>
                 </LocationProvider>
         </GestureHandlerRootView>
+    </ThemeContextProvider>
     )
 }
