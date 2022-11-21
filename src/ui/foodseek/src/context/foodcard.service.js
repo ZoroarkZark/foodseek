@@ -27,12 +27,11 @@ export const cardReserve = ( user, id, jwt ) => {
   let path = 'user/reserve'
   return fetchRequest( path, "post", { user: user, id: id, jwt: jwt } )
     .then( ( response ) => {
-      console.log(response)
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
         }
 
-          return response.data
+          return response
       } )
       .catch( ( error ) => { throw error } )
 }

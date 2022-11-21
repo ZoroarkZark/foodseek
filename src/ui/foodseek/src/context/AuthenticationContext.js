@@ -5,6 +5,7 @@ import {
     logoutRequest,
     resetPasswordRequest,
     patchPasswordRequest,
+    userTransform
 } from './authentication.service'
 
 export const AuthenticationContext = createContext()
@@ -39,7 +40,7 @@ export const AuthenticationContextProvider = ({ children }) => {
                 }
                 setGPlacesKey(response.gplacesKey)
                 setJWT(response.jwt)
-                setUser( { id: response.user } ) // pretend its parsed for now 
+                setUser( userTransform(response) ) // pretend its parsed for now 
                 setLoading(false)
             })
             .catch((err) => {
@@ -124,7 +125,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         <AuthenticationContext.Provider
             value={{
                 isAuthenticated: !!user,
-                isVendor: user ? user.vendor===1 : false,
+                isVendor: user ? user.isVendor: false,
                 jwt,
                 loading,
                 user,

@@ -12,7 +12,7 @@ import { FoodCardContext } from '../../../../context/FoodCardContext'
 export const ExpandPost = ( props ) => {
     const { onReserve } = useContext( FoodCardContext )
     const data = props.data;
-    const { id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
+    const { card, id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
     const identity = JSON.stringify(id);
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 
@@ -46,7 +46,7 @@ export const ExpandPost = ( props ) => {
     </Section>
 
             <TouchableOpacity style={styles.buttonStyle} onPress={() => {
-                onReserve(id)
+                onReserve(id, card)
                 props.navigation.goBack()
             }}>
         <Text style={styles.buttonTextStyle}> Accept </Text>

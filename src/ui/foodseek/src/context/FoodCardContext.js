@@ -51,20 +51,20 @@ const loadOrders = async (id) => {
   }
 
   // function used to reserve a card for a user
-  const onReserve = ( cardId ) => {
+  const onReserve = ( id, card ) => {
     setLoading( true )
     try {
-      cardReserve( user.id, cardId, jwt )
+      cardReserve( user.id, id, jwt )
         .then( ( response ) => { 
-          // insert what to do to check if the response is valid
-          console.log(response)
-        return response
+          response.success = true
+          return response
       } )
         .then( ( result ) => {
+        if ( result.success ) {
+          add( card )      // updates orders list to add this card
+        }
         setError( null )
         setLoading( false )
-        let card = cards.filter((c) => cardId === c.id)
-        add( card )      // updates orders list to add this card
         return result
       } )
       .catch( ( err ) => {
@@ -119,7 +119,6 @@ const loadOrders = async (id) => {
         if (user) {
             loadOrders(user.id)
       }
-      console.log(user)
     }, [user])
 
     // stores the orders list if the orders has been updated, or the user has been updated
