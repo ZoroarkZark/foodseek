@@ -22,6 +22,54 @@ export const cardRequest = ( loc, jwt ) => {
 }
 
 
+// function sends login request to the server with email and password
+export const cardReserve = ( email, cardId, jwt ) => {
+  let path = 'users/reserve'
+  return fetchRequest( path, "post", { user: email, id: cardId, jwt: jwt } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response.data
+      } )
+      .catch( ( error ) => { throw error } )
+}
+
+
+
+
+// export const cardUpload = ( jwt, id, image, location, timestamp, details ) => {
+//   const { latitude, longitude } = location
+//   const loc = []
+//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
+//     .then( ( response ) => {
+//           if ( response.success != 1 ) {
+//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+//         }
+
+//           return response.data
+//       } )
+//       .catch( ( error ) => { throw error } )
+
+// }
+
+// // function sends login request to the server with email and password
+// export const cardCreate = ( id, image, details: { item: { image, name, tags, expiration, timestamp, utc_offset }, vendor: { avatar, banner, loc: { longitude: , latitude: }, acc, bn, ba, bphone: { international: , formatted: }, bemail, cuisine, opening_hours: { open_now:, periods: [], weekday_text: [] } } } ) => {
+//   let path = 'vendor/upl'
+//   const latitude = getLatitude( loc )
+//   const longitude = getLongitude( loc )
+//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
+//     .then( ( response ) => {
+//           if ( response.success != 1 ) {
+//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+//         }
+
+//           return response.data
+//       } )
+//       .catch( ( error ) => { throw error } )
+// }
+
 // maps incoming data into an array of card data 
 export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
 

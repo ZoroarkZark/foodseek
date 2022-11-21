@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, ImageBackground} from 'react-native'
 import { Section, SectionContent, SectionImage } from 'react-native-rapi-ui'
 import {
@@ -6,9 +6,11 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
 import styles from '../../../../style/styleSheet'
+import { FoodCardContext } from '../../../../context/FoodCardContext'
 // Probably change to the styles inside of features
 
-export const ExpandPost = (props) => {
+export const ExpandPost = ( props ) => {
+    const { onReserve } = useContext( FoodCardContext )
     const data = props.data;
     const { id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
     const identity = JSON.stringify(id);
@@ -43,7 +45,10 @@ export const ExpandPost = (props) => {
         </SectionContent>
     </Section>
 
-    <TouchableOpacity style={styles.buttonStyle} onPress={() => {props.navigation.goBack()}}>
+            <TouchableOpacity style={styles.buttonStyle} onPress={() => {
+                onReserve(id)
+                props.navigation.goBack()
+            }}>
         <Text style={styles.buttonTextStyle}> Accept </Text>
     </TouchableOpacity>
     </View>
