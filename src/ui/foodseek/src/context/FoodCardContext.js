@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -77,6 +77,38 @@ const loadOrders = async (id) => {
   }
 
 
+
+
+
+  const uploadCards = props => {
+    const {uri, item, tags, timestamp, vendor} = props
+    setLoading( true )
+    const details = user.signature( props )
+    try {
+      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
+      .then( ( response ) => { 
+        response.success = true
+        return response
+    } )
+      .then( ( result ) => {
+      if ( result.success ) {
+        add( card )      // updates orders list to add this card
+      }
+      setError( null )
+      setLoading( false )
+      return result
+    } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+      return []
+    }
+  }
+
+
   // function calls the server with JWT token to request and retrieve cards
   const retrieveCards = ( loc, jwt, setResult=setCards ) => {
     setLoading( true )
@@ -108,7 +140,7 @@ const loadOrders = async (id) => {
     retrieveCards( loc, jwt, saveCards )
   }
 
-
+  
 
   
   
@@ -138,7 +170,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards}}>
       {children}
     </FoodCardContext.Provider>
   )
