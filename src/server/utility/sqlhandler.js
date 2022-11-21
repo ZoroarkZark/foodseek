@@ -770,7 +770,7 @@ class FoodStore {
     
     
     startClear(){
-        this.clearExp = setInterval(()=> this.clearAllExpired(), 86,400,000);
+        this.clearExp = setInterval(()=> this.clearAllExpired(), 1200000);
     }
     
     endClear(){

@@ -157,8 +157,18 @@ app.use((req,res,next)=>{
 	return;
 })
 
+function secondsUntilMidnight() {
+    var midnight = new Date();
+    midnight.setHours( 24 );
+    midnight.setMinutes( 0 );
+    midnight.setSeconds( 0 );
+    midnight.setMilliseconds( 0 );
+    return ( midnight.getTime() - new Date().getTime() ) / 1000;
+}
 // keeps this app open on the specifed port
 app.listen(port, () => {
+    let sec = secondsUntilMidnight();
+    console.log(sec)
 	console.log(`SQL running on ${process.env.DB_HOST} port: ${process.env.DB_PORT}`);
 	console.log(`listening to on port: ${port}`);
 	
