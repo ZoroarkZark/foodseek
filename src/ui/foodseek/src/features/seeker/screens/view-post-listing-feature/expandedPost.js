@@ -12,7 +12,7 @@ import { FoodCardContext } from '../../../../context/FoodCardContext'
 export const ExpandPost = ( props ) => {
     const { onReserve } = useContext( FoodCardContext )
     const data = props.data;
-    const { id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
+    const { card, id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
     const identity = JSON.stringify(id);
 
     const yesNoAlert = () => {

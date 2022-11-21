@@ -51,19 +51,20 @@ const loadOrders = async (id) => {
   }
 
   // function used to reserve a card for a user
-  const onReserve = (cardId) => {
+  const onReserve = ( id, card ) => {
     setLoading( true )
     try {
-      cardReserve( user.id, cardId, jwt )
+      cardReserve( user.id, id, jwt )
         .then( ( response ) => { 
-          // insert what to do to check if the response is valid
-          console.log(response)
-        return response
+          response.success = true
+          return response
       } )
-      .then( ( result ) => {
+        .then( ( result ) => {
+        if ( result.success ) {
+          add( card )      // updates orders list to add this card
+        }
         setError( null )
         setLoading( false )
-        add(result)      // updates orders list to add this card
         return result
       } )
       .catch( ( err ) => {
@@ -79,7 +80,7 @@ const loadOrders = async (id) => {
   // function calls the server with JWT token to request and retrieve cards
   const retrieveCards = ( loc, jwt, setResult=setCards ) => {
     setLoading( true )
-    setCards( [] )
+    // setCards( [] )
     try {
       cardRequest( loc, jwt )
       .then( (results) => { 
@@ -117,7 +118,7 @@ const loadOrders = async (id) => {
     useEffect(() => {
         if (user) {
             loadOrders(user.id)
-        }
+      }
     }, [user])
 
     // stores the orders list if the orders has been updated, or the user has been updated
@@ -137,7 +138,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders}}>
       {children}
     </FoodCardContext.Provider>
   )

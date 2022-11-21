@@ -5,6 +5,7 @@ import {
     logoutRequest,
     resetPasswordRequest,
     patchPasswordRequest,
+    userTransform
 } from './authentication.service'
 
 export const AuthenticationContext = createContext()
@@ -32,14 +33,14 @@ export const AuthenticationContextProvider = ({ children }) => {
     const onLogin = (email, password) => {
         setLoading(true) // set loading status = true while making request for login
         loginRequest(email, password)
-            .then( ( u ) => {
+            .then( ( response ) => {
                 // TODO: parse response.data
-                if ( u.success === 0 ) {
-                    throw new Error( u.issues.message, { cause: u.issues } )
+                if ( response.success === 0 ) {
+                    throw new Error( response.issues.message, { cause: response.issues } )
                 }
-                setGPlacesKey(u.gplacesKey)
-                setJWT(u.jwt)
-                setUser(u) // pretend its parsed for now 
+                setGPlacesKey(response.gplacesKey)
+                setJWT(response.jwt)
+                setUser( userTransform(response) ) // pretend its parsed for now 
                 setLoading(false)
             })
             .catch((err) => {
@@ -124,7 +125,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         <AuthenticationContext.Provider
             value={{
                 isAuthenticated: !!user,
-                isVendor: user ? user.vendor===1 : false,
+                isVendor: user ? user.isVendor: false,
                 jwt,
                 loading,
                 user,
