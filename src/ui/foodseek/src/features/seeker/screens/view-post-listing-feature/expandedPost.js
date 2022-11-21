@@ -63,7 +63,7 @@ export const ExpandPost = ( props ) => {
     </Section>
 
             <TouchableOpacity style={styles.buttonStyle} onPress={() => {
-                onReserve(id),
+                onReserve(id, card),
                 yesNoAlert()
             }}>
         <Text style={styles.buttonTextStyle}> Accept </Text>

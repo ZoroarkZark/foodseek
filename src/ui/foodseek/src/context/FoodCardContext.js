@@ -60,8 +60,8 @@ const loadOrders = async (id) => {
           return response
       } )
         .then( ( result ) => {
-        if ( result.success ) {
-          add( card )      // updates orders list to add this card
+          if ( result.success ) {
+          if (card) add( card )      // updates orders list to add this card
         }
         setError( null )
         setLoading( false )
