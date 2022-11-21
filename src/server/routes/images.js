@@ -169,12 +169,22 @@ function removeFile(fpath){
     });
 }
 
+function secondsUntilMidnight() {
+    var midnight = new Date();
+    midnight.setHours( 24 );
+    midnight.setMinutes( 0 );
+    midnight.setSeconds( 0 );
+    midnight.setMilliseconds( 0 );
+    return ( midnight.getTime() - new Date().getTime() ) / 1000;
+}
+
 async function getLiveURL(fileName){
     let options = {
         Bucket: bucketName,
         Key: fileName,
     }
+    let exp_time = secondsUntilMidnight();
     let com = new s3.GetObjectCommand(options);
-    let url = await getSignedUrl(S3, com, {expiresIn: 9600})
+    let url = await getSignedUrl(S3, com, {expiresIn: exp_time})
     return url;
 }
