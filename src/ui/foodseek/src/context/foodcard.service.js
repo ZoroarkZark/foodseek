@@ -2,7 +2,7 @@
 import { getLatitude, getLongitude } from 'geolib'
 import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
-import { fetchRequest } from '../scripts/deviceinterface'
+import { fetchRequest, fetchRequestIMG } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
@@ -38,21 +38,42 @@ export const cardReserve = ( user, id, jwt ) => {
 
 
 
+export function getBlob ( jwt, id, loc, uri, timestamp, details ) {
+  // prepares image
+  let uriArray = uri.split(".");
+  let fileType = uriArray[uriArray.length - 1];
+  let formData = new FormData();
+  formData.append("photo", {
+    uri,
+    name: `photo.${fileType}`,
+    type: `image/${fileType}`,
+  } )
+  formData.append( 'jwt', jwt )
+  formData.append( 'loc', [ loc.latitude, loc.longitude ] )
+  formData.append( 'timestamp', timestamp )
+  formData.append('details', details)
+  return formData
+}
 
-// export const cardUpload = ( jwt, id, image, location, timestamp, details ) => {
-//   const { latitude, longitude } = location
-//   const loc = []
-//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
-//     .then( ( response ) => {
-//           if ( response.success != 1 ) {
-//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-//         }
 
-//           return response.data
-//       } )
-//       .catch( ( error ) => { throw error } )
 
-// }
+// function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
+export const cardUpload = ( props ) => {
+  const { jwt, id, loc, uri, timestamp, details } = props
+  console.log('uri booooiiiii <<<<<<',props)
+  const payload = getBlob(jwt, id, loc, uri, timestamp, details)
+  const path = 'vendor/upl1'
+  return fetchRequestIMG( path, "post", { ...props, payload } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response.data
+      } )
+      .catch( ( error ) => { throw error } )
+
+}
 
 // // function sends login request to the server with email and password
 // export const cardCreate = ( id, image, details: { item: { image, name, tags, expiration, timestamp, utc_offset }, vendor: { avatar, banner, loc: { longitude: , latitude: }, acc, bn, ba, bphone: { international: , formatted: }, bemail, cuisine, opening_hours: { open_now:, periods: [], weekday_text: [] } } } ) => {
