@@ -42,11 +42,17 @@ function buildURL(end,path){
 
 export async function imgFetch ( args ) {
     const { jwt, uri, card } = args
-    const res = await fetch(uri);
-    const blob = await res.blob();
-    // console.log( 'REQUEST WITH jwt: ', jwt )
-    // console.log( 'REQUEST WITH uri: ', uri )
-    // console.log('REQUEST WITH card: ', card)
+    let uriParts = uri.split('.');
+    let fileType = uriParts[ uriParts.length - 1 ]
+    let formData = new FormData()
+    formData.append( 'photo', {
+        uri,
+        name: `photo.${ fileType }`,
+        type: `image/${ fileType }`,
+    } )
+
+    // const fetched = await fetch(uri)
+    // const blob = new Blob(uri)
     const path = 'images/imgtest'
     const url = buildURL( endpoint, path )
     const Custom_Json = JSON.stringify( {
@@ -57,15 +63,16 @@ export async function imgFetch ( args ) {
         tags: card.tags,
         timestamp: card.timestamp
     } )
-    console.log('CUSTOM_JSON: ',Custom_Json)
     let response = await fetch( url, {
         method: "POST",
-        headers:{
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
             'Custom-Json' : Custom_Json
         },
-        body: blob
+        body: formData
    }); 
    
    let result = await response.json();
-   console.log(result);
+//    console.log(result);
 }

@@ -3,6 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
 import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
 import { LocationContext } from './LocationContext'
+import * as FileSystem from 'expo-file-system';
+
+
 
 
 export const FoodCardContext = createContext()
@@ -17,6 +20,12 @@ export const FoodCardProvider = ( { children } ) => {
   const [unit, setUnit] = useState('mi') // TODO add preferred units context
   const { user, jwt } = useContext( AuthenticationContext )
   const [ orders, setOrders ] = useState( [] )
+  const [ fileData, setFileData ] = useState( null )
+  const readFile = async ( path ) => {
+  path = await fetch(path)
+  const response = await FileSystem.readAsStringAsync( path, { encoding: FileSystem.EncodingType.Base64} )
+    return response
+  }
   
   // called to save a card to the user's order list
   const add = (card) => {
@@ -77,7 +86,7 @@ const loadOrders = async (id) => {
   }
 
 
-
+  
 
 
   const uploadCards = props => {
@@ -85,26 +94,30 @@ const loadOrders = async (id) => {
     setLoading( true )
     const details = user.signature( props )
     try {
-      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
-      .then( ( response ) => { 
-        response.success = true
-        return response
-    } )
-      .then( ( result ) => {
-      if ( result.success ) {
-        add( card )      // updates orders list to add this card
-      }
-      setError( null )
-      setLoading( false )
-      return result
-    } )
-      .catch( ( err ) => {
-        setLoading( false )
-        setError( err )
+      readFile( uri )
+        .then( ( response ) => {
+          cardUpload( { ...props, jwt: jwt, vendor: user.id, loc: [ location.latitude, location.longitude ], uri: 'data:image/jpg;base64' + response, timestamp: timestamp, details: details } )
+            .then( ( response ) => { 
+              response.success = true
+              return response
+            } )
+          .then( ( result ) => {
+            if ( result.success ) {
+              add( card )      // updates orders list to add this card
+            }
+            setError( null )
+            setLoading( false )
+            return result
+          })
+        .catch( ( err ) => {
+          setLoading( false )
+          setError( err )
+        })
       })
+      
     } catch ( err ) {
       console.log( err )
-      return []
+      
     }
   }
 
@@ -167,7 +180,11 @@ const loadOrders = async (id) => {
       }
     }, [ location, setLocation ] )
   
-  
+    useEffect(() => {
+      if (error) {
+          console.log(error)
+    }
+  }, [error])
 
   return (
     <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards}}>

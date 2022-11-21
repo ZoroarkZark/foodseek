@@ -40,7 +40,6 @@ export const cardReserve = ( user, id, jwt ) => {
 // function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
 export const cardUpload = ( props ) => {
   const { jwt, item, loc, uri, tags, timestamp, details, vendor } = props
-  console.log(uri)
   return imgFetch({
     jwt: jwt,
     uri: uri,

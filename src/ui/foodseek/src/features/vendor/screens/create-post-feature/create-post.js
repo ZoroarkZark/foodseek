@@ -42,9 +42,10 @@ export const CreatePost = ( { route, navigation } ) => {
     }
 
     function upload () {
-        console.log(tags)
+        // console.log(tags)
         if (uri) onUpload({uri, item: foodName, tags, timestamp: new Date(), vendor: user.id})
     }
+
 
     if (uri == ""){
         return (
