@@ -37,33 +37,22 @@ export const cardReserve = ( user, id, jwt ) => {
 }
 
 
-
-export function getBlob ( jwt, id, loc, uri, timestamp, details ) {
-  // prepares image
-  let uriArray = uri.split(".");
-  let fileType = uriArray[uriArray.length - 1];
-  let formData = new FormData();
-  formData.append("photo", {
-    uri,
-    name: `photo.${fileType}`,
-    type: `image/${fileType}`,
-  } )
-  formData.append( 'jwt', jwt )
-  formData.append( 'loc', [ loc.latitude, loc.longitude ] )
-  formData.append( 'timestamp', timestamp )
-  formData.append('details', details)
-  return formData
-}
-
-
-
 // function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
 export const cardUpload = ( props ) => {
-  const { jwt, id, loc, uri, timestamp, details } = props
-  console.log('uri booooiiiii <<<<<<',props)
-  const payload = getBlob(jwt, id, loc, uri, timestamp, details)
-  const path = 'vendor/upl1'
-  return fetchRequestIMG( path, "post", { ...props, payload } )
+  const { jwt, item, loc, uri, tags, timestamp, details, vendor } = props
+  const path = 'images/imgtest'
+  return fetchRequestIMG( path, "post", {
+    jwt: jwt,
+    uri: uri,
+    card: {
+      item: item,
+      vendor: vendor,
+      loc: loc,
+      tags: tags,
+      timestamp: timestamp,
+      details: details
+    }
+  } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error

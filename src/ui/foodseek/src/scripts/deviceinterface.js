@@ -40,25 +40,29 @@ function buildURL(end,path){
     return `${end}${path}`;
 }
 
-export async function imgFetch(path, jwt, id, location, uri, timestamp, details){
-    const blob = getBlob( uri )
-    url = buildURL(endpoint,url)
-    let response = await fetch('http://127.0.0.1:3000/vendor/upl2', {
+async function imgFetch(card,jwt,uri, ){
+    let response = await fetch('http://127.0.0.1:3000/images/imgtest', {
         method: "POST",
-      headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
+        headers:{
+            'Custom-Json' : JSON.stringify( {
+                jwt: jwt,
+                item: card.item,
+                vendor: card.vendor,
+                loc: card.loc,
+                tags: card.tags,
+                timestamp: card.timestamp
+            })
         },
-        body: blob
-   });
-    let result = await response.json();
-    console.log(result)
-   return result
+        body: uri
+   }); 
+   
+   let result = await response.json();
+   console.log(result);
 }
-  
 
 export async function fetchRequestIMG(url, method, payload){
     // get everything ready for the actual fetch call
+    const { jwt, uri, card } = payload
     url = buildURL(endpoint,url);
     method = method.toUpperCase();
     payload = (method=="GET") ? null : JSON.stringify(payload); //If we have a GET send no body, if we have anything else stringify the body
@@ -66,13 +70,20 @@ export async function fetchRequestIMG(url, method, payload){
 
     // actual fetch call
     const resp = await fetch(url, {
-        method: method,
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data",
+        method: "POST",
+        headers:{
+            'Custom-Json' : JSON.stringify( {
+                jwt: jwt,
+                item: card.item,
+                vendor: card.vendor,
+                loc: card.loc,
+                tags: card.tags,
+                timestamp: card.timestamp,
+                details: card.details
+            })
         },
-        body: payload
-    })
+        body: uri
+   }); 
     if ( !resp.ok ) { throw new Error(`HTTP error, status = ${resp.status}`) }  // throws an error if fetch call senses an error
     // json representation of fetch response
 

@@ -81,7 +81,7 @@ const loadOrders = async (id) => {
     setLoading( true )
     const details = user.signature( props )
     try {
-      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
+      cardUpload( {jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
       .then( ( response ) => { 
         response.success = true
         return response
