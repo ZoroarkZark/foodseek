@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View, ImageBackground} from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, Alert } from 'react-native'
 import { Section, SectionContent, SectionImage } from 'react-native-rapi-ui'
 import {
     TouchableOpacity,
@@ -14,6 +14,23 @@ export const ExpandPost = ( props ) => {
     const data = props.data;
     const { id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
     const identity = JSON.stringify(id);
+
+    const yesNoAlert = () => {
+        Alert.alert(
+            "Confirmation",
+            "Would you like to accept this post?",
+            [
+                {
+                    text: "Yes",
+                    onPress: () => {Alert.alert("Confirmation","Got it! Sending back to list."), props.navigation.goBack()}
+                },
+                {
+                    text: "No",
+                    onPress: () => {Alert.alert("Confirmation","Got it! Returning to post.")}
+                },
+            ],
+        );
+    };
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 
     return (
@@ -46,8 +63,8 @@ export const ExpandPost = ( props ) => {
     </Section>
 
             <TouchableOpacity style={styles.buttonStyle} onPress={() => {
-                onReserve(id)
-                props.navigation.goBack()
+                onReserve(id),
+                yesNoAlert()
             }}>
         <Text style={styles.buttonTextStyle}> Accept </Text>
     </TouchableOpacity>
