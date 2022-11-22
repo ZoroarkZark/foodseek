@@ -37,7 +37,6 @@ module.exports = {
 
 
 ImageRouter.use('', (req,res, next) => {
-    let resbody = new sutils.res_obj();
 
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
 
@@ -61,7 +60,7 @@ ImageRouter.use('', (req,res, next) => {
 ImageRouter.post('/imgtest', async (req,res,next) => {
     req.setEncoding('base64');
 
-    let resbody = new sutils.res_obj();
+    let resbody = res.locals.resbody;
     let chunks = [];
     let in_data = req.get('Custom-Json');
 
