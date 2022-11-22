@@ -40,7 +40,7 @@ ImageRouter.use('', (req,res, next) => {
     console.log('Images request');
 
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
-
+    console.log(header_data);
     if(!sutils.validate(['jwt'], header_data)){ // Validate the body and jwt field, header for the image upload
 
         return next(1); // fields not passed
