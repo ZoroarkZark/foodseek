@@ -80,6 +80,10 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
         chunks.push(buff);
     });
 
+    req.on('end', async () => {
+        let data = Buffer.concat(chunks);
+        console.log(data);
+    })
     // Recieve a base64 url of the image
     // the base64 will contain the mime type and img data
     // convert the base64 to the actual image using the mimetype 
