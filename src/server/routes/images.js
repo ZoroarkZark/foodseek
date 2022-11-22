@@ -42,6 +42,7 @@ ImageRouter.use('', (req,res, next) => {
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
 
     if(!sutils.validate(['jwt'], header_data)){ // Validate the body and jwt field, header for the image upload
+
         return next(1); // fields not passed
     }
     sutils.verify(header_data['jwt'], (err, result) => { // jwt check
@@ -87,10 +88,9 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
         let data = Buffer.concat(chunks); // this is our base64 image string
 
         let data_str = ''+data; // actual string
+        let mime = 'image/jpeg'; // get the mime / extension type
 
-        let mime = ''; // get the mime / extension type
-
-        let fileName = `${sutils.genToken(20)}.png`; // create a file name
+        let fileName = `${sutils.genToken(20)}.jpeg`; // create a file name
 
         // make da image locally to convert from base64 to binary
         fs.writeFile(path.resolve(__dirname, fileName), data_str.split(',')[1], {encoding:'base64'}, (err) => {
@@ -149,18 +149,9 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 });
 
 
-function getMime(string){
-    let str = string.split(";");
-    str = str[0];
-    str = str.split(":")[1];
-    //console.log(str);
-    return str;
-}
 
-function getExt(mime){
-    let str = mime.split('/')[1];
-
-    return `.${str}`;
+function getFeatures(data_string){
+    
 }
 
 function removeFile(fpath){
