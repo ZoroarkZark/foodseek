@@ -89,7 +89,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
         console.log('end');
         //console.log(chunks);
         let data = (chunks) ? Buffer.concat(chunks) : req.body.img;
-        
+        console.log(data);
         let data_str = ''+data; // actual string
         let mime = 'image/jpeg'; // get the mime / extension type
 
