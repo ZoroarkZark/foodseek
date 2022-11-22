@@ -88,7 +88,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 
         let mime = 'image/jpeg'; // get the mime / extension type
 
-        let fileName = `${sutils.genToken(20)}${getExt(mime)}`; // create a file name
+        let fileName = `${sutils.genToken(20)}.jpeg`; // create a file name
 
         // make da image locally to convert from base64 to binary
         fs.writeFile(path.resolve(__dirname, fileName), data_str.split(',')[1], {encoding:'base64'}, (err) => {
