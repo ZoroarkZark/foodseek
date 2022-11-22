@@ -74,6 +74,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 
     // request is split into multiple iterations so collect all the passed data into the array chunks
     req.on('data', (data) => {
+        console.log('image data recieved');
         let buff =  Buffer.from(data,'base64');
         chunks.push(buff);
     });
@@ -105,7 +106,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                     Bucket: bucketName,
                     Key: fileName,
                     Body: data,
-                    ContentType: in_data.mime,
+                    ContentType: mime
                 })
         
                 // send the command
