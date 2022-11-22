@@ -134,7 +134,7 @@ function errorHandle(err,req,res,next){
     }
 
 	console.log(`Logging:`,resbody.issues);
-	let str = JSON.stringify(res.locals.resbody.issues);
+	let str = JSON.stringify(resbody.issues);
 	res.end(resbody.package());
 	Log.writeToLog(str); // log 
 	return;
