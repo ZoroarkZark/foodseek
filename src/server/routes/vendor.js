@@ -102,7 +102,7 @@ VendorRouter.post('/updateTime', (req,res,next) => {
 });
  
 // delete a card from the foodstore
-VendorRouter.post('/del', (req,res) => {
+VendorRouter.post('/del', (req,res, next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.deleteCard(Number(req.body.id), (err) => {
@@ -119,7 +119,7 @@ VendorRouter.post('/del', (req,res) => {
 });
 
 // confirm a pickup with a user and foodcard id
-VendorRouter.post('/conf', (req,res) => {
+VendorRouter.post('/conf', (req,res, next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCard(req.body.id, (err, result) => {
@@ -146,7 +146,7 @@ VendorRouter.post('/conf', (req,res) => {
     })
 });
 
-VendorRouter.post('/checkres', (req,res) => {
+VendorRouter.post('/checkres', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getVendorReserved(req.body.vendor, (err, results) => {
@@ -159,7 +159,7 @@ VendorRouter.post('/checkres', (req,res) => {
     })
 })
 
-VendorRouter.post('/list', (req,res) => {
+VendorRouter.post('/list', (req,res, next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCardsVendor(req.body.vendor, (err, results) => {
