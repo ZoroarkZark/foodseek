@@ -140,16 +140,12 @@ const loadOrders = async (id) => {
     retrieveCards( loc, jwt, saveCards )
   }
 
-  
-
-  
-  
-  
-
     // loads the users orders into context if the value for user has been updated
     useEffect(() => {
         if (user) {
-            loadOrders(user.id)
+            loadOrders(user.id);
+ 
+            
       }
     }, [user])
 
@@ -158,7 +154,7 @@ const loadOrders = async (id) => {
     useEffect(() => {
         if (user) {
             storeOrders(orders, user.id)
-        }
+        } 
     }, [orders, user]) // handles condition where user is not logged in, but still is adding orders
 
     useEffect( () => {
