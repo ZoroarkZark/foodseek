@@ -39,11 +39,17 @@ export const PostsNavigator = () => {
                 options={( { navigation } ) => ( {
                 } )}
             />
+             <Stack.Screen
+                name="Orders"
+                component={screen.Orders}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name="ExpandedPost" 
                 component={screen.ExpandPost}
                 options={{ headerShown: false }}
             />
+           
         </Stack.Navigator>
     )
 }
@@ -55,10 +61,17 @@ export const OrderNavigator = () => {
         screenOptions={{
             headerShown: false,
         }}>
-            <Stack.Screen
+        <Stack.Screen
                 name="OrderList" 
                 component={screen.Orders}
+        />
+        <Stack.Screen
+                name="Posts" 
+                component={screen.Posts}
+                options={( { navigation } ) => ( {
+                } )}
             />
+            
         </Stack.Navigator>
     )
 }
