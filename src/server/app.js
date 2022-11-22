@@ -51,7 +51,9 @@ const VALID_KEYS = {
 	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp","vendor"],
 	"/vendor/del"		: ["jwt", "id"],
 	"/vendor/conf"		: ["jwt","user","id"],
-	"/vendor/checkres"	: ["jwt","vendor"]
+	"/vendor/checkres"	: ["jwt","vendor"],
+    "/vendor/updateTime": ["jwt","id","timestamp"],
+    "/vendor/updateData": ["jwt","id" ,"data"]
 };
 
 
@@ -70,7 +72,8 @@ app.use(express.json()); // Get the body in JSON form
 
 app.use('', (req, res, next) => { // Using this as a general request logger 
 	//console.log(req.path);
-	
+	    let resbody = new sutil.res_obj();
+        res.locals.resbody = resbody;
 		console.log('\nIncoming Request');
 		req.setEncoding('utf8');
 		let str = `${req.method} to path: ${req.path}`;
@@ -82,8 +85,6 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 // Attach a single resbody to be used across multiple middleware
 // Removed need to create a new object each time, also lets us pass it out for handling
 app.use('',(req,res,next) => {
-    let resbody = new sutil.res_obj();
-    res.locals.resbody = resbody;
     
     validateKeys(req,res,next);
 });
@@ -124,7 +125,9 @@ function validateKeys(req, res, next){
  * @returns Responds with appropriate error code to request
  */
 function errorHandle(err,req,res,next){
+    console.log(req.path);
     let resbody = res.locals.resbody;
+    resbody = (resbody) ? resbody : new sutil.res_obj();
     if(typeof err === "number"){
         resbody.setIssue(err);
     }
@@ -132,8 +135,8 @@ function errorHandle(err,req,res,next){
         resbody.setIssues(err);
     }
 
-	console.log(`Logging:`,res.locals.resbody.issues);
-	let str = JSON.stringify(res.locals.resbody.issues);
+	console.log(`Logging:`,resbody.issues);
+	let str = JSON.stringify(resbody.issues);
 	res.end(resbody.package());
 	Log.writeToLog(str); // log 
 	return;
