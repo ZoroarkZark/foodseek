@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View, Image, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider,  Layout, Text, Button } from 'react-native-rapi-ui';
 import { ScrollViewDismissKeyboard, Title } from '../../../../components/common';
 import Container from '../../../../components/styling/Container'
 import TextWrapper from '../../../../components/styling/TextWrapper';
+import { FoodCardContext } from '../../../../context/FoodCardContext'
+import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 
 export const CreatePost = ( { route, navigation } ) => {
+    const { onUpload } = useContext( FoodCardContext )
+    const { user } = useContext( AuthenticationContext )
     const [foodName, setFoodName] = useState('');
-    const [tags, setTags] = useState();
+    const [tags, setTags] = useState([]);
     const [testTags, setTestTags] = useState('');
     const [currentTags, setCurrentTags] = useState('');
     const [numTags, setNumTags] = useState(0);
     const [timeAvailable, setTimeAvailable] = useState('');
     const uri = (route.params) ? route.params.uri : "";
-    console.log(`recieved uri ${uri}`);
+    //console.log( `recieved uri ${ uri }` );
+    
 
     //To do, make this not navigate after picture is taken
     function checkInputs(input){
@@ -27,13 +32,27 @@ export const CreatePost = ( { route, navigation } ) => {
         }
     }
 
+    function test(){
+        console.log(tags)
+        console.log(testTags)
+    }
+
     function checkTags(){
+        setTags([])
         const ar = currentTags.split('#')
         let t = ''
         for (let i = 1; i < ar.length; i=i+1){
             t = t + ' #' + ar[i]
+            setTags(tags => [...tags, ar[i]])
         }
         setTestTags(t)
+        console.log(tags)
+        console.log(testTags)
+    }
+
+    function upload () {
+        console.log(tags)
+        if (uri) onUpload({uri, item: foodName, tags, timestamp: new Date(), vendor: user.id})
     }
 
     if (uri == ""){
@@ -60,7 +79,7 @@ export const CreatePost = ( { route, navigation } ) => {
                         <TextInput style={styles.input} value={currentTags} placeholder="Enter Tags..." onChangeText={setCurrentTags}/>
                         <Button text='Testing button' style={{marginTop:20, marginBottom:20}} onPress={() => checkTags()}/>
                     </View>
-                    <Button text='Submit Post' style={{marginTop:20, marginBottom:20}} onPress={() => alert('not implemented yet')}/>
+                    <Button text='Submit Post' style={{marginTop:20, marginBottom:20}} onPress={() => upload()}/>
                 </View>
             </ScrollViewDismissKeyboard>
         );

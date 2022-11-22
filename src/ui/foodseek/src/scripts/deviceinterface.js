@@ -40,3 +40,32 @@ function buildURL(end,path){
     return `${end}${path}`;
 }
 
+export async function imgFetch ( args ) {
+    const { jwt, uri, card } = args
+    const res = await fetch(uri);
+    const blob = await res.blob();
+    // console.log( 'REQUEST WITH jwt: ', jwt )
+    // console.log( 'REQUEST WITH uri: ', uri )
+    // console.log('REQUEST WITH card: ', card)
+    const path = 'images/imgtest'
+    const url = buildURL( endpoint, path )
+    const Custom_Json = JSON.stringify( {
+        jwt: jwt,
+        item: card.item,
+        vendor: card.vendor,
+        loc: card.loc,
+        tags: card.tags,
+        timestamp: card.timestamp
+    } )
+    console.log('CUSTOM_JSON: ',Custom_Json)
+    let response = await fetch( url, {
+        method: "POST",
+        headers:{
+            'Custom-Json' : Custom_Json
+        },
+        body: blob
+   }); 
+   
+   let result = await response.json();
+   console.log(result);
+}

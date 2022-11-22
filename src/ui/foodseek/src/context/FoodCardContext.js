@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -15,7 +15,7 @@ export const FoodCardProvider = ( { children } ) => {
   const { location, setLocation } = useContext( LocationContext )
   const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters per second
   const [unit, setUnit] = useState('mi') // TODO add preferred units context
-  const { user, jwt } = useContext( AuthenticationContext )
+  const { user, jwt, isVendor } = useContext( AuthenticationContext )
   const [ orders, setOrders ] = useState( [] )
   
   // called to save a card to the user's order list
@@ -43,7 +43,6 @@ const remove = (card) => {
 // loads the user's order list
 const loadOrders = async (id) => {
     try {
-        AsyncStorage.clear();
         const value = await AsyncStorage.getItem(`@orders-${id}`) // retrieves a string value given the key for the users orders list
         return value !== null ? setOrders(JSON.parse(value)) : null // if retrieval was successful return the parsed json object else return empty
     } catch (err) {
@@ -61,8 +60,8 @@ const loadOrders = async (id) => {
           return response
       } )
         .then( ( result ) => {
-        if ( result.success ) {
-          add( card )      // updates orders list to add this card
+          if ( result.success ) {
+          if (card) add( card )      // updates orders list to add this card
         }
         setError( null )
         setLoading( false )
@@ -74,6 +73,38 @@ const loadOrders = async (id) => {
       })
     } catch ( err ) {
       console.log( err )
+    }
+  }
+
+
+
+
+
+  const uploadCards = props => {
+    const {uri, item, tags, timestamp, vendor} = props
+    setLoading( true )
+    const details = user.signature( props )
+    try {
+      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
+      .then( ( response ) => { 
+        response.success = true
+        return response
+    } )
+      .then( ( result ) => {
+      if ( result.success ) {
+        add( card )      // updates orders list to add this card
+      }
+      setError( null )
+      setLoading( false )
+      return result
+    } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+      return []
     }
   }
 
@@ -109,7 +140,6 @@ const loadOrders = async (id) => {
     retrieveCards( loc, jwt, saveCards )
   }
 
-
     // loads the users orders into context if the value for user has been updated
     useEffect(() => {
         if (user) {
@@ -129,14 +159,14 @@ const loadOrders = async (id) => {
 
     useEffect( () => {
       if ( location ) {
-        refreshCards( location )
+        if(!isVendor) refreshCards( location )
       }
     }, [ location, setLocation ] )
   
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards}}>
       {children}
     </FoodCardContext.Provider>
   )

@@ -54,7 +54,7 @@ VendorRouter.post('/upl', (req,res,next) => {
 
 VendorRouter.post('/upl2', (req,res,next) => {
     let resbody = res.locals.resbody;
-    
+    console.log(req.body.timestamp)
     let pkg = {
         item: req.body.item,
         loc: req.body.loc,
