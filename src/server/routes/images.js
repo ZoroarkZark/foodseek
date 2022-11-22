@@ -88,8 +88,8 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     req.on('end', async ()=> {
         console.log('end');
         //console.log(chunks);
-        let data = Buffer.concat(chunks); // this is our base64 image string
-
+        let data = (chunks) ? Buffer.concat(chunks) : req.body.img;
+        
         let data_str = ''+data; // actual string
         let mime = 'image/jpeg'; // get the mime / extension type
 
