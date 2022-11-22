@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload, cardiUpload } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -83,8 +83,9 @@ const loadOrders = async (id) => {
    * @param {base64String} image : the base64 encoded image from create-post
    * @param {object} card_data : dictionary for the card info, (i think we are only passing item name and tags from the create post screen)
    */
-  const uploadCard = (image, card_data) => {
-   const loc       = [location.latitude, location.longitude]; // get location
+  const uploadCard = ( image, card_data, setResult ) => {
+   setLoading( true )
+   const loc = [ location.latitude, location.longitude ] // get location
    const timestamp = new Date(); // declare as a date for now
    timestamp.setHours(24); // set expiration time to midnight
    console.log(timestamp.toUTCString());
@@ -102,50 +103,22 @@ const loadOrders = async (id) => {
    }
 
    try{ // upload the card
-    cardiUpload(jwt,upload_card,image)
+    cardUpload(jwt,upload_card,image)
     .then ((response) => {
       console.log(response);
-      if(response.success == 1){
-        alert("Uploaded Image");
-        console.log(response.data.link);
+      if ( response.success == 1 ) {
+        setResult({ error: null, success: response.success })
       }
       else{
-        alert("Couldn't upload");
-        console.log(JSON.stringify(response.issues));
+        // console.log( JSON.stringify( response.issues ) );
+        setError( { cause: 'uploadCard/cardUpload', message: "Couldn't upload card, please try again...", issues: response.issues } ) // Server Rejected Card
+        setResult( { error: error, success: response.success } ) 
       }
     } )
    }
-   catch (err) {
-    throw err;
-   }
-
-  }
-
-  const uploadCards = props => {
-    const {uri, item, tags, timestamp, vendor} = props
-    setLoading( true )
-    const details = user.signature( props )
-    try {
-      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
-      .then( ( response ) => { 
-        response.success = true
-        return response
-    } )
-      .then( ( result ) => {
-      if ( result.success ) {
-        add( card )      // updates orders list to add this card
-      }
-      setError( null )
-      setLoading( false )
-      return result
-    } )
-      .catch( ( err ) => {
-        setLoading( false )
-        setError( err )
-      })
-    } catch ( err ) {
-      console.log( err )
-      return []
+   catch ( err ) {
+     setError(err)
+     setLoading(false)
     }
   }
 
@@ -207,7 +180,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards, uploadCard: uploadCard}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard}}>
       {children}
     </FoodCardContext.Provider>
   )

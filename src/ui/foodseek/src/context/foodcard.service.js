@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
-import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
-import { fetchRequest, imgFetch, imgi } from '../scripts/deviceinterface'
+import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
@@ -37,56 +36,14 @@ export const cardReserve = ( user, id, jwt ) => {
 }
 
 
-export const cardiUpload = (jwt,card, image) => {
-  return imgi(jwt, card, image)
+export const cardUpload = (jwt,card, image) => {
+  return img(jwt, card, image)
   .then( (response) => {
     return response;
   })
   .catch( (err) => {throw err;})
 }
 
-// function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
-export const cardUpload = ( props ) => {
-  const { jwt, item, loc, uri, tags, timestamp, details, vendor } = props
-  console.log(uri)
-  return imgFetch({
-    jwt: jwt,
-    uri: uri,
-    card: {
-      item: item,
-      vendor: vendor,
-      loc: loc,
-      tags: tags,
-      timestamp: timestamp,
-      // details: details
-    }
-  })
-    .then( ( response ) => {
-          if ( response.success != 1 ) {
-              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-        }
-
-          return response.data
-      } )
-      .catch( ( error ) => { throw error } )
-
-}
-
-// // function sends login request to the server with email and password
-// export const cardCreate = ( id, image, details: { item: { image, name, tags, expiration, timestamp, utc_offset }, vendor: { avatar, banner, loc: { longitude: , latitude: }, acc, bn, ba, bphone: { international: , formatted: }, bemail, cuisine, opening_hours: { open_now:, periods: [], weekday_text: [] } } } ) => {
-//   let path = 'vendor/upl'
-//   const latitude = getLatitude( loc )
-//   const longitude = getLongitude( loc )
-//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
-//     .then( ( response ) => {
-//           if ( response.success != 1 ) {
-//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-//         }
-
-//           return response.data
-//       } )
-//       .catch( ( error ) => { throw error } )
-// }
 
 // maps incoming data into an array of card data 
 export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {

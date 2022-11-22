@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, Image, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeProvider,  Layout, Text, Button } from 'react-native-rapi-ui';
@@ -11,9 +11,8 @@ import { AuthenticationContext } from '../../../../context/AuthenticationContext
 import { manipulateAsync, SaveFormat} from 'expo-image-manipulator'
 
 export const CreatePost = ( { route, navigation } ) => {
-    const { onUpload } = useContext( FoodCardContext )
-    const { uploadCard } = useContext( FoodCardContext )
-    const { user } = useContext( AuthenticationContext )
+    const { uploadCard, loading, setLoading } = useContext( FoodCardContext )
+    const [ status, setStatus ] = useState( null )        // used to save the result of card upload
     const [foodName, setFoodName] = useState('');
     const [tags, setTags] = useState([]);
     const [testTags, setTestTags] = useState('');
@@ -72,18 +71,39 @@ export const CreatePost = ( { route, navigation } ) => {
                 }
             ).then( (data) => {
                 let base64String = `data:image/jpeg;base64,${data.base64}` // create the formated string for upload
-                console.log(` Shortened : ${base64String.substring(base64String.length-100,base64String.length)}`)
+                // console.log(` Shortened : ${base64String.substring(base64String.length-100,base64String.length)}`)
                 /* Send the image to the server here 
                 */
-                uploadCard(base64String,card)
-                
-
-
+                uploadCard( base64String, card, setStatus )
             })
             .catch( (err) => {throw err;})
             
         }
     }
+
+    // handles the state logic behind screen behavior after creating a post
+    useEffect( () => {
+        if ( !status ) return
+        if ( status.success == true ) {
+            setLoading( false )
+            return
+        } else if ( status.success == false ) {
+            // display error message
+        } else {
+            // handle the failure to submit
+        }
+    }, [status, setStatus])
+
+
+    // navigates away from the screen
+    useEffect( () => {
+        if ( !status ) return
+        console.log('upload result: ', status)
+        if ( status.success == true ) {
+            setStatus( null )
+            navigation.navigate( 'StorePosts', { refresh: true } )
+        }
+    }, [loading, setLoading])
 
    
 
