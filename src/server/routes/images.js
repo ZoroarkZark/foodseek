@@ -66,7 +66,6 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     let resbody = res.locals.resbody;
     let chunks = [];
     let in_data = req.get('Custom-Json');
-    console.log(req.body);
 
     in_data = JSON.parse(in_data); // parse the input data
 
@@ -146,6 +145,12 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 
 
     });
+
+    // Case of getting body all in one go
+    if(req.body){
+        let buff = Buffer.from(req.body,'base64');
+        console.log(buff);
+    }
 
     req.on('error', (err)=> {
         return next(err); 
