@@ -62,6 +62,7 @@ ImageRouter.use('', (req,res, next) => {
 ImageRouter.post('/imgtest', async (req,res,next) => {
     req.setEncoding('base64');
 
+    console.log('In Img test');
     let resbody = res.locals.resbody;
     let chunks = [];
     let in_data = req.get('Custom-Json');
@@ -85,6 +86,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     // upload the actual img to amazon
     // get a link
     req.on('end', async ()=> {
+        console.log('end');
         //console.log(chunks);
         let data = Buffer.concat(chunks); // this is our base64 image string
 
@@ -150,10 +152,6 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 });
 
 
-
-function getFeatures(data_string){
-    
-}
 
 function removeFile(fpath){
     fs.unlink(path.resolve(__dirname, fpath), (err) => {
