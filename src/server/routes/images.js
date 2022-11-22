@@ -37,6 +37,7 @@ module.exports = {
 
 
 ImageRouter.use('', (req,res, next) => {
+    console.log('Images request');
 
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
 
