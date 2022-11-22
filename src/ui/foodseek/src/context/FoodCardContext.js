@@ -15,7 +15,7 @@ export const FoodCardProvider = ( { children } ) => {
   const { location, setLocation } = useContext( LocationContext )
   const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters per second
   const [unit, setUnit] = useState('mi') // TODO add preferred units context
-  const { user, jwt } = useContext( AuthenticationContext )
+  const { user, jwt, isVendor } = useContext( AuthenticationContext )
   const [ orders, setOrders ] = useState( [] )
   
   // called to save a card to the user's order list
@@ -163,7 +163,7 @@ const loadOrders = async (id) => {
 
     useEffect( () => {
       if ( location ) {
-        refreshCards( location )
+        if(!isVendor) refreshCards( location )
       }
     }, [ location, setLocation ] )
   
