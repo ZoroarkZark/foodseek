@@ -123,7 +123,7 @@ function validateKeys(req, res, next){
  * @returns Responds with appropriate error code to request
  */
 function errorHandle(err,req,res,next){
-    console.log(req);
+    console.log(req.path);
     let resbody = res.locals.resbody;
     resbody = (resbody) ? resbody : new sutil.res_obj();
     if(typeof err === "number"){
