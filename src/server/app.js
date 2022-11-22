@@ -70,7 +70,7 @@ app.use(express.json()); // Get the body in JSON form
 
 app.use('', (req, res, next) => { // Using this as a general request logger 
 	//console.log(req.path);
-	
+	    let resbody = new sutil.res_obj();
 		console.log('\nIncoming Request');
 		req.setEncoding('utf8');
 		let str = `${req.method} to path: ${req.path}`;
@@ -82,7 +82,6 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 // Attach a single resbody to be used across multiple middleware
 // Removed need to create a new object each time, also lets us pass it out for handling
 app.use('',(req,res,next) => {
-    let resbody = new sutil.res_obj();
     res.locals.resbody = resbody;
     
     validateKeys(req,res,next);
