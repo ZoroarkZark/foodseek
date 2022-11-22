@@ -85,67 +85,6 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     // convert the base64 to the actual image using the mimetype 
     // upload the actual img to amazon
     // get a link
-    req.on('end', async ()=> {
-        console.log('end');
-        //console.log(chunks);
-        let data = (chunks) ? Buffer.concat(chunks) : req.body.img;
-        console.log(data);
-        let data_str = ''+data; // actual string
-        let mime = 'image/jpeg'; // get the mime / extension type
-
-        let fileName = `${sutils.genToken(20)}.jpeg`; // create a file name
-
-        // make da image locally to convert from base64 to binary
-        fs.writeFile(path.resolve(__dirname, fileName), data_str.split(',')[1], {encoding:'base64'}, (err) => {
-            if(err) return next(err); // Image write error
-
-            // we wrote the local file so now we can send it to amazon
-            // get the binary file contents
-            fs.readFile(path.resolve(__dirname, fileName), async (err,data) => {
-                if (err) return next(err); // Image read error
-
-                let com = new s3.PutObjectCommand({
-                    Bucket: bucketName,
-                    Key: fileName,
-                    Body: data,
-                    ContentType: mime
-                })
-        
-                // send the command
-                await S3.send(com)
-                .then( (data) => {console.log(data);})
-                .catch( (err) => {return next(err); }) 
-
-                // get a link 
-                let link = await getLiveURL(fileName);
-
-                let food_card = {
-                    item: in_data.item,
-                    loc: in_data.loc,
-                    tags: in_data.tags,
-                    timestamp: in_data.timestamp,
-                    img_url: link,
-                    vendor: in_data.vendor
-                }
-
-                FoodStore.uploadMore(food_card, (err) => {
-                    if(err){
-                        return next(7); // SQL error 
-                    }
-                    
-                    resbody.setData({msg:"uploaded image successfully", link:link});
-                    removeFile(fileName); // remove the local file from storage
-
-                    return next();
-
-                });
-            })
-
-        }) 
-
-
-    });
-
     // Case of getting body all in one go
     if(req.body){
         //let buff = Buffer.from(req.body,'base64');
