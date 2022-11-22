@@ -43,6 +43,7 @@ const remove = (card) => {
 // loads the user's order list
 const loadOrders = async (id) => {
     try {
+        AsyncStorage.clear();
         const value = await AsyncStorage.getItem(`@orders-${id}`) // retrieves a string value given the key for the users orders list
         return value !== null ? setOrders(JSON.parse(value)) : null // if retrieval was successful return the parsed json object else return empty
     } catch (err) {
@@ -112,7 +113,8 @@ const loadOrders = async (id) => {
     // loads the users orders into context if the value for user has been updated
     useEffect(() => {
         if (user) {
-            loadOrders(user.id)
+            loadOrders(user.id);
+ 
             
       }
     }, [user])
