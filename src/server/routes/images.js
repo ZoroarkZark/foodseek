@@ -178,7 +178,7 @@ async function getLiveURL(fileName){
         Bucket: bucketName,
         Key: fileName,
     }
-    let exp_time = 800000;
+    let exp_time = 86400;
     let com = new s3.GetObjectCommand(options);
     let url = await getSignedUrl(S3, com, {expiresIn: exp_time})
     return url;
