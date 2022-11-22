@@ -88,7 +88,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     // Case of getting body all in one go
     if(req.body){
         //let buff = Buffer.from(req.body,'base64');
-        console.log(req.body);
+        console.log(JSON.stringify(req.body));
     }
 
     req.on('error', (err)=> {
