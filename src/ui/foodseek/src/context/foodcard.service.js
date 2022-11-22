@@ -2,7 +2,7 @@
 import { getLatitude, getLongitude } from 'geolib'
 import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
-import { fetchRequest, imgFetch } from '../scripts/deviceinterface'
+import { fetchRequest, imgFetch, imgi } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
@@ -36,6 +36,14 @@ export const cardReserve = ( user, id, jwt ) => {
       .catch( ( error ) => { throw error } )
 }
 
+
+export const cardiUpload = (jwt,card, image) => {
+  return imgi(jwt, card, image)
+  .then( (response) => {
+    return response;
+  })
+  .catch( (err) => {throw err;})
+}
 
 // function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
 export const cardUpload = ( props ) => {

@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 
 const endpoint = "http://ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000/"
 
@@ -39,6 +40,38 @@ export async function fetchRequest(url, method, payload){
 function buildURL(end,path){
     return `${end}${path}`;
 }
+
+export async function imgi (jwt, card, image){
+    let url = buildURL(endpoint, 'images/imgtest');
+    //console.log(image);
+    //let blob = new Blob(image,{type:"image/jpeg"})
+
+    const formData = new FormData();
+    formData.append('file',image);
+
+    const response = await fetch(
+        url,
+        {
+            method: "POST",
+            headers : {
+                'Custom-Json' : JSON.stringify({
+                    jwt: jwt,
+                    item: card.item,
+                    vendor: card.vendor,
+                    loc: card.loc,
+                    tags: card.tags,
+                    timestamp: card.timestamp
+                })
+            },
+            body: formData
+        }
+    );
+
+    let result = await response.json();
+    console.log(result);
+    return result;
+}
+
 
 export async function imgFetch ( args ) {
     const { jwt, uri, card } = args

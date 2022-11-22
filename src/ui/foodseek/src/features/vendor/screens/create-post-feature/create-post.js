@@ -8,8 +8,11 @@ import TextWrapper from '../../../../components/styling/TextWrapper';
 import { FoodCardContext } from '../../../../context/FoodCardContext'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 
+import { manipulateAsync, SaveFormat} from 'expo-image-manipulator'
+
 export const CreatePost = ( { route, navigation } ) => {
     const { onUpload } = useContext( FoodCardContext )
+    const { uploadCard } = useContext( FoodCardContext )
     const { user } = useContext( AuthenticationContext )
     const [foodName, setFoodName] = useState('');
     const [tags, setTags] = useState([]);
@@ -51,9 +54,38 @@ export const CreatePost = ( { route, navigation } ) => {
     }
 
     function upload () {
+        let card = {
+            item: foodName,
+            tags: tags
+        }
         console.log(tags)
-        if (uri) onUpload({uri, item: foodName, tags, timestamp: new Date(), vendor: user.id})
+        if (uri){
+            // Resize the image to some smaller shit 
+            manipulateAsync(
+                uri,
+                [{
+                    resize: {height: 200, width: 200}
+                }],
+                {
+                    base64: true, //base 64 encoding output
+                    format: SaveFormat.JPEG // specify format
+                }
+            ).then( (data) => {
+                let base64String = `data:image/jpeg;base64,${data.base64}` // create the formated string for upload
+                console.log(` Shortened : ${base64String.substring(base64String.length-100,base64String.length)}`)
+                /* Send the image to the server here 
+                */
+                uploadCard(base64String,card)
+                
+
+
+            })
+            .catch( (err) => {throw err;})
+            
+        }
     }
+
+   
 
     if (uri == ""){
         return (

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload, cardiUpload } from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -78,7 +78,48 @@ const loadOrders = async (id) => {
 
 
 
+  /**
+   * Upload a card to the server
+   * @param {base64String} image : the base64 encoded image from create-post
+   * @param {object} card_data : dictionary for the card info, (i think we are only passing item name and tags from the create post screen)
+   */
+  const uploadCard = (image, card_data) => {
+   const loc       = [location.latitude, location.longitude]; // get location
+   const timestamp = new Date(); // declare as a date for now
+   timestamp.setHours(24); // set expiration time to midnight
+   console.log(timestamp.toUTCString());
 
+   const vendor    = user.id; // get the user id from auth context
+   const tags      = card_data.tags; // card data 
+   const item      = card_data.item; // card data
+
+   const upload_card = {
+    item: item,
+    loc: loc,
+    vendor: vendor,
+    tags: tags,
+    timestamp: timestamp.toUTCString()
+   }
+
+   try{ // upload the card
+    cardiUpload(jwt,upload_card,image)
+    .then ((response) => {
+      console.log(response);
+      if(response.success == 1){
+        alert("Uploaded Image");
+        console.log(response.data.link);
+      }
+      else{
+        alert("Couldn't upload");
+        console.log(JSON.stringify(response.issues));
+      }
+    } )
+   }
+   catch (err) {
+    throw err;
+   }
+
+  }
 
   const uploadCards = props => {
     const {uri, item, tags, timestamp, vendor} = props
@@ -170,7 +211,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards, uploadCard: uploadCard}}>
       {children}
     </FoodCardContext.Provider>
   )
