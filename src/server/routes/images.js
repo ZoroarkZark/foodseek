@@ -86,7 +86,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 
         let data_str = ''+data; // actual string
 
-        let mime = getMime(data_str.split(',')[0]); // get the mime / extension type
+        let mime = 'image/jpeg'; // get the mime / extension type
 
         let fileName = `${sutils.genToken(20)}${getExt(mime)}`; // create a file name
 
@@ -103,7 +103,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                     Bucket: bucketName,
                     Key: fileName,
                     Body: data,
-                    ContentType: in_data.mime,
+                    ContentType: mime,
                 })
         
                 // send the command
