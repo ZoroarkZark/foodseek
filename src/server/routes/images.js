@@ -66,6 +66,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     let resbody = res.locals.resbody;
     let chunks = [];
     let in_data = req.get('Custom-Json');
+    console.log(req.body);
 
     in_data = JSON.parse(in_data); // parse the input data
 
