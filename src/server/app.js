@@ -133,7 +133,7 @@ function errorHandle(err,req,res,next){
         resbody.setIssues(err);
     }
 
-	console.log(`Logging:`,res.locals.resbody.issues);
+	console.log(`Logging:`,resbody.issues);
 	let str = JSON.stringify(res.locals.resbody.issues);
 	res.end(resbody.package());
 	Log.writeToLog(str); // log 
