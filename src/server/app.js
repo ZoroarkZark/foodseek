@@ -51,7 +51,9 @@ const VALID_KEYS = {
 	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp","vendor"],
 	"/vendor/del"		: ["jwt", "id"],
 	"/vendor/conf"		: ["jwt","user","id"],
-	"/vendor/checkres"	: ["jwt","vendor"]
+	"/vendor/checkres"	: ["jwt","vendor"],
+    "/vendor/updateTime": ["jwt","id","timestamp"],
+    "/vendor/updateData": ["jwt","id" ,"data"]
 };
 
 

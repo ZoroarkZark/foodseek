@@ -75,8 +75,32 @@ VendorRouter.post('/upl2', (req,res,next) => {
     })
 });
 
+// edit the data of a foodcard object
+VendorRouter.post('/updateData', (req,res,next) => {
+    FoodStore.editCardData(req.body.id, req.body.data, (err, result) => {
+        if(err){
+            console.log(err);
+            return next(err);
+        }
 
+        res.locals.resbody.setData({msg: `Updated card(${req.body.id}) with new data`});
+        return next();
+    })
+});
 
+// edit the timestamp field of a foodcard object
+VendorRouter.post('/updateTime', (req,res,next) => {
+    FoodStore.editCardTimestamp(req.body.id, req.body.timestamp, (err, result) => {
+        if(err){
+            console.log(err);
+            return next(err);
+        }
+
+        res.locals.resbody.setData({msg: `Updated timestamp of card(${req.body.id}) to ${req.body.timestamp}`});
+        return next();
+    })
+});
+ 
 // delete a card from the foodstore
 VendorRouter.post('/del', (req,res) => {
     let resbody = res.locals.resbody;
