@@ -104,6 +104,7 @@ app.use('/images/', ImageRouter);
  */
 function validateKeys(req, res, next){
     console.log(`Keys for ${req.path} =`,VALID_KEYS[req.path]);
+    console.log(req.body);
     if(req.path in Object.keys(VALID_KEYS)){ // path is in dict
         if(VALID_KEYS[req.path] != true){ // key is not default true case 
             if(!sutil.validate(VALID_KEYS[req.path],req.body)){ // keys are not present within the request body
