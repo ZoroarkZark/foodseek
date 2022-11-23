@@ -83,11 +83,10 @@ app.use('', (req, res, next) => { // Using this as a general request logger
         if(req.body){
             next();
         }
-        else{
-            req.on('data', (data) => {
-                console.log(data);
-            })
-        }
+        
+        req.on('data', (data) => {
+            console.log(data);
+        })
 
 	next();
 });
