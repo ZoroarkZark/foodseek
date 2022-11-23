@@ -128,7 +128,7 @@ const loadOrders = async (id) => {
     setLoading( true )
     // setCards( [] )
     try {
-      cardRequest( loc, jwt )
+      cardRequest( loc, jwt, user.id, isVendor )
       .then( (results) => { 
         const { items } = results
         return cardTransform( loc, speed, JSON.parse(items), unit )     // transforms incoming data into what we can use
@@ -150,8 +150,8 @@ const loadOrders = async (id) => {
   }
 
   // function wraps the retrieval function may not be necessary?
-  const refreshCards = (loc=location, saveCards = null) => {
-    retrieveCards( loc, jwt, saveCards )
+  const refreshCards = (coords=location, setResult = null) => {
+    retrieveCards( coords, jwt, setResult )
   }
 
     // loads the users orders into context if the value for user has been updated

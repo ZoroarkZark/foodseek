@@ -1,20 +1,22 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
+import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
-export const cardRequest = ( loc, jwt ) => {
-  let path = 'user/list'
+export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
   const latitude = getLatitude( loc )
   const longitude = getLongitude( loc )
-  return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
+  const path = isVendor ? 'vendor/list' : 'user/list'
+  const payload = isVendor ? { vendor: vendor } : { loc: { lat: latitude, lon: longitude }}
+
+  return fetchRequest( path, "post", { ...payload, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
         }
-
           return response.data
       } )
       .catch( ( error ) => { throw error } )
