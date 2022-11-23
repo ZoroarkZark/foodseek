@@ -84,10 +84,12 @@ app.use('', (req, res, next) => { // Using this as a general request logger
             next();
         }
         
-        req.on('data', (data) => {
+        if(req.path != "/images/imgtest"){
+            req.on('data', (data) => {
             res.locals.data = data;
             console.log(res.locals.data);
-        })
+            })
+        }
 
 	next();
 });
