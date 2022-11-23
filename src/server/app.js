@@ -89,6 +89,7 @@ app.use('', (req, res, next) => { // Using this as a general request logger
             res.locals.data = data;
             console.log(res.locals.data);
             })
+            next();
         }
 
 	next();
