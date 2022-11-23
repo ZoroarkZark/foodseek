@@ -895,19 +895,3 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
-
-
-let updates = {
-    'vendor': 'pee pee',
-    'loc': [1,2],
-    'timestamp': 'doodoo'
-}
-
-let standing = {
-    'item': "item",
-    'pass': "pass",
-    'timestamp': "1123",
-    'data': {},
-    'vendor': "cal",
-    loc: [200,200]
-}
