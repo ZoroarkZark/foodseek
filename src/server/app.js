@@ -80,18 +80,6 @@ app.use('', (req, res, next) => { // Using this as a general request logger
 		console.log(str);
 		Log.writeToLog(str);
 
-        if(req.body){
-            next();
-        }
-        
-        if(req.path != "/images/imgtest"){
-            req.on('data', (data) => {
-            res.locals.data = data;
-            console.log(res.locals.data);
-            })
-            next();
-        }
-
 	next();
 });
 
