@@ -85,8 +85,8 @@ app.use('', (req, res, next) => { // Using this as a general request logger
         }
         
         req.on('data', (data) => {
-            req.body = data;
-            next();
+            res.locals.data = data;
+            console.log(res.locals.data);
         })
 
 	next();
