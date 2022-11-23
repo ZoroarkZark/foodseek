@@ -16,10 +16,10 @@ module.exports = {VendorRouter};
 // Check for valid jwt    : return error 2 if invalid jwt
 // check for user type    : return error 3 if user is not a vendor
 VendorRouter.use('', (req,res, next) => {
-    let resbody = res.locals.resbody;
+    //let resbody = res.locals.resbody;
     
     sutils.verify(req.body.jwt, (err, result) => { // jwt check
-        console.log("back in vendor.js");
+        //console.log("back in vendor.js");
         if(err){
             return next(2); //  bad jwt
         }
@@ -54,7 +54,7 @@ VendorRouter.post('/upl', (req,res,next) => {
 
 VendorRouter.post('/upl2', (req,res,next) => {
     let resbody = res.locals.resbody;
-    console.log(req.body.timestamp)
+    //console.log(req.body.timestamp)
     let pkg = {
         item: req.body.item,
         loc: req.body.loc,
@@ -102,7 +102,7 @@ VendorRouter.post('/updateTime', (req,res,next) => {
 });
  
 // delete a card from the foodstore
-VendorRouter.post('/del', (req,res, next) => {
+VendorRouter.post('/del', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.deleteCard(Number(req.body.id), (err) => {
@@ -119,7 +119,7 @@ VendorRouter.post('/del', (req,res, next) => {
 });
 
 // confirm a pickup with a user and foodcard id
-VendorRouter.post('/conf', (req,res, next) => {
+VendorRouter.post('/conf', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCard(req.body.id, (err, result) => {
@@ -159,7 +159,7 @@ VendorRouter.post('/checkres', (req,res,next) => {
     })
 })
 
-VendorRouter.post('/list', (req,res, next) => {
+VendorRouter.post('/list', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCardsVendor(req.body.vendor, (err, results) => {
@@ -175,4 +175,5 @@ VendorRouter.post('/list', (req,res, next) => {
         resbody.setData({msg: "no cards for this vendor",cards: null}); 
         return next();   
     });
+
 });

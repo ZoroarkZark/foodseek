@@ -94,7 +94,7 @@ CoreRouter.post('/signup', async (req, res, next) =>
 // handle logins
 CoreRouter.post('/login', (req, res, next) => {
     let resbody = res.locals.resbody;
-    console.log(req.body.email);
+    
     
     Store.getUser(req.body.email, (err, result) => { // get the user 
         if(err){
