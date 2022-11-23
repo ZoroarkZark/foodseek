@@ -97,7 +97,10 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
             // we wrote the local file so now we can send it to amazon
             // get the binary file contents
             fs.readFile(path.resolve(__dirname, fileName), async (err,data) => {
-                if (err) return next(err); // Image read error
+                if (err) {
+                    removeFile(fileName);
+                    return next(err);
+                 } // Image read error
 
                 let com = new s3.PutObjectCommand({
                     Bucket: bucketName,
@@ -109,7 +112,9 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                 // send the command
                 await S3.send(com)
                 .then( (data) => {console.log("Uploaded to amazon successfully");})
-                .catch( (err) => {return next(err); }) 
+                .catch( (err) => {
+                    removeFile(fileName);
+                    return next(err); }) 
 
                 // get a link 
                 let link = await getLiveURL(fileName);
@@ -126,11 +131,11 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                 FoodStore.uploadMore(food_card, (err) => {
                     if(err){
                         removeFile(fileName);
-                        return next(7); // SQL error 
+                        return next(err); // SQL error 
                     }
                     
                     resbody.setData({msg:"Foodcard completed uploaded", link:link});
-                    removeFile(fileName); // remove the local file from storage
+                    //removeFile(fileName); // remove the local file from storage
 
                     return next();
 
@@ -147,10 +152,6 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
     // upload the actual img to amazon
     // get a link
     // Case of getting body all in one go
-    if(req.body){
-        //let buff = Buffer.from(req.body,'base64');
-        return next({error: "Recieved the body in a way we do not support"});
-    }
 
     req.on('error', (err)=> {
         return next(err); 
