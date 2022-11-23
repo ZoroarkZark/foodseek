@@ -10,8 +10,8 @@ import styles from '../../../../style/styleSheet'
 import { FoodCardContext } from '../../../../context/FoodCardContext'
 import Container from '../../../../components/styling/Container'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
-import { StretchInY,StretchOutY } from 'react-native-reanimated'
-import { ScrollViewDismissKeyboard } from '../../../../components/common'
+import { PickerInput, ScrollViewDismissKeyboard } from '../../../../components/common'
+import { CheckBox } from 'react-native-rapi-ui'
 
 
 export const HelperText = ( props ) => {
@@ -51,7 +51,7 @@ export const Detail = ( { icon, label, description, rightContent, fontSize=16, .
                     </Text>
                 </View>
             </View>
-            <View style={{padding: 20}}>{rightContent}</View>
+            <View style={{paddingRight: 20}}>{rightContent}</View>
         </View>
     )
     
@@ -59,36 +59,62 @@ export const Detail = ( { icon, label, description, rightContent, fontSize=16, .
 
 
 
+const EditTextInput = ( props ) => {
+    const {width} = props
+    return ( <TextInput {...props} style={{width: width,
+        backgroundColor: '#fff',
+        borderBottomColor: 'green',
+        borderBottomWidth: 1,
+        height: 50,
+        paddingHorizontal: 5,
+        
+    }} /> )
+}
+
+
+
+const TimeInput = ( props ) => {
+    const {value, setValue,  setNextState, ...rest} = props
+    const [ hour, setHour ] = useState(value.hour)
+    const [ minute, setMinute ] = useState(value.minute)
+    const [ ampm, setAMPM ] = useState( value.hour >= 12 ? 'pm' : 'am' )
+    const [ confirm, setConfirm ] = useState( false )
+
+    useEffect( () => {
+        if ( !confirm ) return
+        setValue({hour: ampm == 'pm' ? hour + 12 : hour, minute: minute})
+        setNextState(confirm)
+    }, [confirm, setConfirm])
+    
+    return (
+        <View style={{flexDirection: 'row'}}>
+            <View>
+                <EditTextInput {...rest} value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+            </View>
+            <View>
+            <Text {...rest} style={{ fontSize: 50 }}>:</Text>
+            </View>
+            <View>
+            <EditTextInput {...rest} value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+            </View>
+            <View>
+            <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
+            </View>
+            <View>
+            <CheckBox {...rest} value={confirm} onValueChanges={setConfirm} />
+                </View>
+
+        </View>
+    )
+}
 
 
 const Edit = ( props ) => {
-    const { value, setValue, setNextState,
-        rules = {
-            
-            minLength: { value: 1, comparison: ( input ) => ( value >= input ), message: `Input must be at least ${ 1 } characters long` },
-            maxLength: { value: 26, comparison: ( input ) => ( value <= input ), message: `Input must be at most ${ 26 } characters long` },
-            rules: [minLength, maxLength]
-        }
-    } = props
+    const { Option, value, setValue, setNextState, minLength = 4, maxLength = 16} = props
     const [ text, setText ] = useState( value )
     const [ ready, setReady ] = useState( false )
     const [ error, setError ] = useState( [] )
     
-    const valid = ( input ) => {
-        return ( rules.map( ( rule ) => {
-            if (!rule.comparison(input)) return rule
-        }))
-    }
-
-    const ShowHelperText = () => {
-        if ( !error ) return <></>
-        return <HelperText error={error} />
-   }
-
-    useEffect( () => {
-        if ( !text ) return
-        setError(valid( text ))
-    }, [text, setText])
 
     useEffect( () => {
         if ( !ready ) return
@@ -96,27 +122,20 @@ const Edit = ( props ) => {
         setNextState()
     }, [ ready, setReady ] )
     
-
-    
-    
-
-    return (<>
-        <TextInput style={{backgroundColor: '#fff',
-            borderBottomColor: 'green',
-            borderBottomWidth: 1,
-            height: 50,
-            paddingHorizontal: 5,
-            width: "100%",
-        }} value={text} onChangeText={setText} onSubmitEditing={setReady} blurOnSubmit={true} maxLength={rules.maxLength.value} />
-            {() => <ShowHelperText />}
-        </>
-
-        
-   
+    if ( !Option ) {
+        return ( <EditTextInput  width="100%" value={text} onChangeText={setText} onSubmitEditing={setReady} blurOnSubmit={true} minLength={minLength} maxLength={maxLength} /> )
+    } else {
+        return (
+            <Option value={text} setValue={setText} setNextState={setReady} />
         )
+    }
+    
 
 }
     
+
+
+
 
 
 const EditDetail = ( props ) => {
@@ -144,10 +163,13 @@ const EditDetail = ( props ) => {
 
 export const ExpandedView = ( props ) => {
     
-    const { vendor, phone, address, time, distance, id, card, image, backgroundColor, item, tags } = props
+    const { timestamp, vendor, phone, address, time, distance, id, card, image, backgroundColor, item, tags } = props
     const [ name, setName ] = useState( item )
     const [ tagged, setTagged ] = useState( [ tags ].join( ' #' ) )
-    const [ size, setSize ] = useState( Dimensions.get('window') )
+    const [ size, setSize ] = useState( Dimensions.get( 'window' ) )
+    const [ end, setEnd ] = useState( {hours: new Date().getHours(), minutes: new Date().getMinutes()} )
+    
+    
 
     return (
         <Container paddingTop={100} >
@@ -165,7 +187,7 @@ export const ExpandedView = ( props ) => {
             <View style={{ padding: 20 }}>
                 <EditDetail value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<Text style={{color: 'grey', fontSize: 16, fontWeight: '300', right: 0}}>{distance}</Text>} />
                             <EditDetail value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` ${ tagged }`} description={toTitleCase( tagged ? 'Edit hashtags' : 'Enter hashtags' )} rightContent={<></>} />
-                <Detail icon={props => <FontAwesome5 name="walking" {...props} />} label={` ${ time } walk`} description={toTitleCase( address )} rightContent={<Text style={{color: 'grey', fontSize: 16}}>{distance}</Text>} />
+                            <EditDetail value={end} setValue={setEnd} Option={TimeInput}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
                         
             
                         </View>
