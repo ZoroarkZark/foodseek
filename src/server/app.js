@@ -125,7 +125,7 @@ function validateKeys(req, res, next){
  * @returns Responds with appropriate error code to request
  */
 function errorHandle(err,req,res,next){
-    console.log(req.path);
+    console.log(`Error on ${req.path}`);
     let resbody = res.locals.resbody;
     resbody = (resbody) ? resbody : new sutil.res_obj();
     if(typeof err === "number"){
@@ -147,13 +147,13 @@ function errorHandle(err,req,res,next){
 // custom error handler
 app.use((err,req,res,next)=>{
     res.status = 200;
-    console.log("Error Handler Call");
+    console.log("Error Handler Called");
     errorHandle(err,req,res,next);
 })
 
 // Final middleware to respond and log
 app.use((req,res,next)=>{
-	console.log(`Logging:`,res.locals.resbody.data);
+	//console.log(`Logging:`,res.locals.resbody.data);
 	res.end(res.locals.resbody.package());
 	let str = JSON.stringify(res.locals.resbody.data);
 	Log.writeToLog(str);

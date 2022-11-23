@@ -39,7 +39,7 @@ UserRouter.post('/list', (req, res, next)=>{
             return next(7); // SQL error
         }
         
-        console.log(results);
+        //console.log(results);
         resbody.setData({msg: "Got List!", cards: results});
         return next();
     });

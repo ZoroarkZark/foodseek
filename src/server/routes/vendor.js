@@ -16,10 +16,10 @@ module.exports = {VendorRouter};
 // Check for valid jwt    : return error 2 if invalid jwt
 // check for user type    : return error 3 if user is not a vendor
 VendorRouter.use('', (req,res, next) => {
-    let resbody = res.locals.resbody;
+    //let resbody = res.locals.resbody;
     
     sutils.verify(req.body.jwt, (err, result) => { // jwt check
-        console.log("back in vendor.js");
+        //console.log("back in vendor.js");
         if(err){
             return next(2); //  bad jwt
         }
@@ -54,7 +54,7 @@ VendorRouter.post('/upl', (req,res,next) => {
 
 VendorRouter.post('/upl2', (req,res,next) => {
     let resbody = res.locals.resbody;
-    console.log(req.body.timestamp)
+    //console.log(req.body.timestamp)
     let pkg = {
         item: req.body.item,
         loc: req.body.loc,
@@ -175,4 +175,5 @@ VendorRouter.post('/list', (req,res,next) => {
         resbody.setData({msg: "no cards for this vendor",cards: null}); 
         return next();   
     });
+
 });
