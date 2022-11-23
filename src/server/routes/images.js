@@ -114,7 +114,11 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                 .catch( (err) => {return next(err); }) 
 
                 // get a link 
-                let link = await getLiveURL(fileName);
+                let link = await getLiveURL(fileName)
+                .catch( (err) => {
+                    console.log(err);
+                    next(err);
+                })
 
                 let food_card = {
                     item: in_data.item,
@@ -127,6 +131,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
 
                 FoodStore.uploadMore(food_card, (err) => {
                     if(err){
+                        console.log(err);
                         return next(7); // SQL error 
                     }
                     
