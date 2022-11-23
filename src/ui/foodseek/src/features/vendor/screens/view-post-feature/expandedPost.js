@@ -61,7 +61,7 @@ export const Detail = ( { icon, label, description, rightContent, fontSize=16, .
 
 const EditTextInput = ( props ) => {
     const {width} = props
-    return ( <TextInput {...props} style={{width: width,
+    return ( <TextInput {...props} style={{ width: width,
         backgroundColor: '#fff',
         borderBottomColor: 'green',
         borderBottomWidth: 1,
@@ -87,20 +87,21 @@ const TimeInput = ( props ) => {
     }, [confirm, setConfirm])
     
     return (
-        <View style={{flexDirection: 'row'}}>
-            <View>
-                <EditTextInput {...rest} value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        <View style={{ flex: 11, flexDirection: 'row' }}>
+            <Text>hi</Text>
+            <View style={{flex: 3}}>
+                <TextInput {...rest} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
             </View>
-            <View>
-            <Text {...rest} style={{ fontSize: 50 }}>:</Text>
+            <View style={{flex: 1}}>
+            <Text {...rest} style={{fontSize: 50 }}>:</Text>
             </View>
-            <View>
-            <EditTextInput {...rest} value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+            <View style={{flex: 3}}>
+            <EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
             </View>
-            <View>
+            <View style={{flex: 3}}>
             <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
             </View>
-            <View>
+            <View style={{flex: 1}}>
             <CheckBox {...rest} value={confirm} onValueChanges={setConfirm} />
                 </View>
 
