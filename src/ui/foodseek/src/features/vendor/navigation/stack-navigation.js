@@ -2,6 +2,7 @@ import React from 'react'
 import 'react-native-gesture-handler'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import *  as screen from '../screens'
+import { Title } from '../../../components/common'
 // import individual screens for stack navigators
 
 const Stack = createNativeStackNavigator() // Create stack navigator component
@@ -13,7 +14,12 @@ export const ViewPost = () => {
             <Stack.Screen
                 name="PostHistory" 
                 component={screen.PostHistory}
-                options={{ title: 'Post History' }}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="ExpandedPost" 
+                component={screen.ExpandPost}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     )
@@ -26,12 +32,12 @@ export const CreatePost = () => {
             <Stack.Screen
                 name="PostFood"
                 component={screen.CreatePost}
-                options={{ title: 'Post Food' }}
+                options={{ headerShown: false }}
             />
             <Stack.Screen
                 name="Camera"
                 component={screen.Cam}
-                options={{ title: 'Camera' }}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     )
@@ -44,7 +50,7 @@ export const StoreProfile = () => {
             <Stack.Screen
                 name="StoreProfile" 
                 component={screen.StoreProfile}
-                options={{ title: 'StoreProfile' }}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     )
@@ -57,12 +63,12 @@ export const StoreSettings = () => {
             <Stack.Screen
                 name="StoreSettings" 
                 component={screen.StoreSettings}
-                options={{ title: 'StoreSettings' }}
+                options={{ headerShown: false }}
             />
             <Stack.Screen
                 name="Hours"
                 component={screen.HoursOfOperationScreen}
-                options={{title: 'Hours'}}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     )  

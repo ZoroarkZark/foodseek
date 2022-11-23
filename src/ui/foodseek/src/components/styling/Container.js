@@ -2,10 +2,10 @@ import React, { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ThemeContextProvider, ThemeContext } from '../../context/ThemeContext'
 
-const Container = ({ children, alignItems }) => {
+const Container = ({ children, alignItems, ...rest }) => {
     const {darkTheme, toggleTheme} = useContext(ThemeContext);
 
-        const style = {
+    const style = {
             flex: 1,
             paddingHorizontal: 20,
             paddingTop: 30,
@@ -14,7 +14,7 @@ const Container = ({ children, alignItems }) => {
         }
 
     return (
-        <View style={style}>
+        <View style={style} {...rest}>
             {children}
         </View>
     )

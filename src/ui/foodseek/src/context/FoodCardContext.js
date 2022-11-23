@@ -129,9 +129,8 @@ const loadOrders = async (id) => {
     // setCards( [] )
     try {
       cardRequest( loc, jwt, user.id, isVendor )
-      .then( (results) => { 
-        const { items } = results
-        return cardTransform( loc, speed, JSON.parse(items), unit )     // transforms incoming data into what we can use
+        .then( ( results ) => { 
+          if ( results ) return cardTransform( loc, speed, results.cards, unit)      // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
@@ -150,7 +149,7 @@ const loadOrders = async (id) => {
   }
 
   // function wraps the retrieval function may not be necessary?
-  const refreshCards = (coords=location, setResult = null) => {
+  const refreshCards = ({coords=location, setResult = null} = {}) => {
     retrieveCards( coords, jwt, setResult )
   }
 

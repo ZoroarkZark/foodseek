@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
-import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
@@ -46,24 +45,21 @@ export const cardUpload = (jwt,card, image) => {
   .catch( (err) => {throw err;})
 }
 
-
+// {"data": "{\"image\":\"test\",\"cuisine\":\"test\",\"item\":\"Falafel Wrap\",\"tags\":\"test\"}", "id": 1, "img_url": null, "lat": 44.814, "lon": 20.4368, "res": "carlington", "timestamp": null, "vendor": null}
 // maps incoming data into an array of card data 
 export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
-
   try {
-      //console.log(JSON.stringify(results))
-      const mappedResults = results.map( ( card ) => {
-        const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
-        let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
-        let hour = ( travel.time / 60 ).toFixed( 0 )                      // get hours
-        const { data } = card
-        const {cuisine, image, item, tags} = JSON.parse(data)
-        const { id, vendor, res } = card  // destructure object to get desired card properties
+    const mappedResults = results.map( ( card ) => {
+      const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
+      const { image, cuisine, item, tags } = JSON.parse(data)
+      const travel = computeTravel( loc, { latitude: latitude, longitude: longitude }, speed, unit )        // compute values for travel string (distance and minutes)
+      let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
+      let hour = (travel.time / 60).toFixed(0)                      // get hours
       return {
         ...card,
         id: id,
         image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
-        vendor: { name: "Fergus the Ferret's Funland" }, // name of the vendor
+        vendor: { name: vendor }, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item
