@@ -40,9 +40,14 @@ export const cardReserve = ( user, id, jwt ) => {
 }
 
 
+// Takes in a user, foodcard id, key for data we are editing, and value to place, along with the stored jwt
 export const cardUpdate = ( user, id, key, value, jwt ) => {
   let path = 'vendor/updateData'
-  return fetchRequest( path, "post", { key: value, id: id, jwt: jwt } )
+  let passed_data = {
+    key: value
+  } // create a data object
+
+  return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
