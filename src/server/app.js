@@ -39,6 +39,8 @@ const VALID_KEYS = {
     "/fgpass"       	: ["email"],
     "/validatecode" 	: ["email","code"],
     "/updatepass"   	: ["email","old_pass","new_pass"],
+    "/setPushToken"     : ["email, token"],
+    "/deletePushToken"  : ["email"],
     "/confirmEmail" 	: true,
     "/rem"          	: true,
     "/ru"           	: ["email"],
@@ -53,7 +55,8 @@ const VALID_KEYS = {
 	"/vendor/conf"		: ["jwt","user","id"],
 	"/vendor/checkres"	: ["jwt","vendor"],
     "/vendor/updateTime": ["jwt","id","timestamp"],
-    "/vendor/updateData": ["jwt","id" ,"data"]
+    "/vendor/updateData": ["jwt","id" ,"data"],
+    "/vendor/list"      : ["jwt", "vendor"],
 };
 
 

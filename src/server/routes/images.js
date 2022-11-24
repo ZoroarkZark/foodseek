@@ -136,7 +136,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                     
                     resbody.setData({msg:"Foodcard completed uploaded", link:link});
                     //removeFile(fileName); // remove the local file from storage
-
+                    removeFile(fileName);
                     return next();
 
                 });

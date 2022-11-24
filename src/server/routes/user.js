@@ -10,6 +10,7 @@ const sql       = require('../utility/sqlhandler.js');
 
 //const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
 const Store = sql.FoodStore;
+const US    = sql.UserStore;
 
 const UserRouter = express.Router();
 
@@ -76,6 +77,38 @@ UserRouter.post('/reserve', (req,res,next)=>{
         }
         
         resbody.setData({msg: "Marked Card Reserved"});
+
+        Store.getCard(req.body.id, (err, result) => {
+            if(err){
+                return next(7); 
+            }
+            let target = result.vendor;
+            let itemname = JSON.parse(result.data)['item'];
+
+            US.getPushToken(target, (err, token) => {
+                if(err){
+                    return next({err:"Push Could not get token"});
+                }
+
+                let push = {title:`${itemname} reserved!`, msg:`User ${req.body.user} has reserved your post ${itemname}`};
+
+                sutils.pushNotify(token, push, (err, sent) => {
+                    if(err){
+                        return next(err);
+                    }
+                    if(sent){
+                        resbody.addData("PushStatus", "Sent");
+                        return next();
+                    }
+                    else{
+                        resbody.addData("PushStatus", "Not Sent");
+                        return next();
+                    }
+                })
+            })
+        })
+
+        // Attempt to send Push notification
         return next();
     })
 });

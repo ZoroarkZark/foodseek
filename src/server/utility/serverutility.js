@@ -1,28 +1,18 @@
-// Response Object
-/* 
-{
-    success = 1 or 0 
-    data : { 
-        object 
-    } or null,
-    issue: {
-        object 
-    } or null
-}
-*/
-const file = require('fs');
-const path = require('path');
+const file       = require('fs');
+const path       = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")});
-var randtoken = require('rand-token');
-const bcrypt = require('bcrypt');
 
-const jwt = require('jsonwebtoken');
+var randtoken    = require('rand-token');
+const bcrypt     = require('bcrypt');
+const jwt        = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const https       = require('https');
+
+
+
+
 const devJWT = process.env.JWT_SECRET;
 console.log("JWT Secret",devJWT);
-
-const nodemailer = require('nodemailer');
-
-
 common_issues = {
     0: "fallthrough error (nothing happened)",
     1: "Bad Body (No body or required keys)",
@@ -33,6 +23,15 @@ common_issues = {
     6:  "Bad Email (signup:already in db, login:not in db)",
     7: "SQL Query Problem"
 }
+
+/* 
+██████╗ ███████╗███████╗
+██╔══██╗██╔════╝██╔════╝
+██████╔╝█████╗  ███████╗
+██╔══██╗██╔══╝  ╚════██║
+██║  ██║███████╗███████║
+╚═╝  ╚═╝╚══════╝╚══════╝
+*/
 
 class res_obj {
     // defualt constructor
@@ -53,6 +52,10 @@ class res_obj {
         this.success = 1;
         this.data = data;
         this.issues = null;
+    }
+
+    addData(key, value){
+        this.data[key] = value;
     }
 
     /**
@@ -113,6 +116,15 @@ class food_card{
     }
 }
 
+
+/* 
+██╗   ██╗████████╗██╗██╗     
+██║   ██║╚══██╔══╝██║██║     
+██║   ██║   ██║   ██║██║     
+██║   ██║   ██║   ██║██║     
+╚██████╔╝   ██║   ██║███████╗
+ ╚═════╝    ╚═╝   ╚═╝╚══════╝                             
+*/
 /*  Validate the incoming request for fields and now also for the body
     using this to cut down on the logic in all the requests and still have a way to check for what we need
 
@@ -143,6 +155,114 @@ function validate(fields, object){
     return true;
 }
 
+/**
+ * generates a random token based on size
+ * @param {int} size : the length of the token
+ * @returns the token generated
+ */
+ function genToken(size){
+    let token = randtoken.generate(size);
+    return token;
+}
+
+/**
+ * Convert Miles To KM
+ * @param {number} miles : miles to convert to km 
+ * @returns {number} milesInKM
+ */
+function getKM(miles){
+    return miles * 1.609344;
+}
+
+/**
+ * Convert KM to Miles
+ * @param {number} Km 
+ * @returns {number} kmToMiles
+ */
+function getM(Km){
+    return Km * 0.62137119;
+}
+
+function handleResponse(response){
+    var str = '';
+    response.on('data', (chunk) => {
+        str+=chunk;
+    })
+
+    response.on('end', () => {
+        let response = JSON.parse(str);
+        if(response.data.status === "error"){
+            console.log('Could not send push notification');
+            console.log(response.data.message);
+        }
+        else{
+            console.log('Sent notification');
+        }
+    })
+
+    response.on('error', (err) => {
+        console.log('Response Error');
+    })
+}
+
+/**
+ * Make a push request for the target using expos API
+ * @param {string} target : target push notification
+ * @param {function} callback : callback function to handle the response of the request 
+ */
+function pushRequest(target, msg, callback){
+    // the actual push notification we will be sending 
+    const push = {
+        to: `ExponentPushToken[${target}]`,
+        title: msg.title,
+        body: msg.body,
+    };
+
+    // request options required by Expo
+    const outOptions = {
+        method: "POST",
+        headers: {
+            'host': 'exp.host',
+            'accept': 'application/json',
+            'accept-encoding': 'gzip, deflate',
+            'content-type': 'application/json' 
+        }
+    }
+    // initiate request
+    const outgoing = https.request('https://exp.host/--/api/v2/push/send', outOptions, (response) => {
+        var str = '';
+        response.on('data', (chunk) => {
+            str+=chunk;
+        })
+
+        response.on('end', () => {
+            let response = JSON.parse(str);
+            if(response.data.status === "error"){
+                console.log('Could not send push notification');
+                console.log(response.data.message);
+                return callback(response.data, null);
+            }
+            else{
+                console.log('Sent notification');
+                return callback(null, true);
+            }
+        })
+
+        response.on('error', (err) => {
+            return(err,null);
+        })
+    });
+    outgoing.write(JSON.stringify(push));
+    outgoing.end();
+}
+
+/*
+     ██╗██╗    ██╗████████╗
+     ██║██║    ██║╚══██╔══╝
+     ██║██║ █╗ ██║   ██║   
+██   ██║██║███╗██║   ██║   
+╚█████╔╝╚███╔███╔╝   ██║   
+*/
 // JWT sign and verifcation
 /**
  * creates and signs the jason web token
@@ -175,7 +295,14 @@ function verifytoken(token, callback){
     });
 }
 
-
+/* 
+██╗      ██████╗  ██████╗ 
+██║     ██╔═══██╗██╔════╝ 
+██║     ██║   ██║██║  ███╗
+██║     ██║   ██║██║   ██║
+███████╗╚██████╔╝╚██████╔╝
+╚══════╝ ╚═════╝  ╚═════╝
+*/
 class Logger {
     constructor(file){
         //folder to place log file
@@ -219,6 +346,14 @@ class Logger {
 
 }
 
+/* 
+███████╗███╗   ███╗ █████╗ ██╗██╗     
+██╔════╝████╗ ████║██╔══██╗██║██║     
+█████╗  ██╔████╔██║███████║██║██║     
+██╔══╝  ██║╚██╔╝██║██╔══██║██║██║     
+███████╗██║ ╚═╝ ██║██║  ██║██║███████╗
+╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚══════╝                                    
+*/
 /**
  * creates the options for the sendEmail function 
  * @param {string} email : The email of the user we are emailing
@@ -303,17 +438,14 @@ function sendEmail(mailOptions, callback) {
     });
 }
 
-
-/**
- * generates a random token based on size
- * @param {int} size : the length of the token
- * @returns the token generated
- */
-function genToken(size){
-    let token = randtoken.generate(size);
-    return token;
-}
-
+/* 
+██████╗  ██████╗██████╗ ██╗   ██╗██████╗ ████████╗
+██╔══██╗██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗╚══██╔══╝
+██████╔╝██║     ██████╔╝ ╚████╔╝ ██████╔╝   ██║   
+██╔══██╗██║     ██╔══██╗  ╚██╔╝  ██╔═══╝    ██║   
+██████╔╝╚██████╗██║  ██║   ██║   ██║        ██║   
+╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝        ╚═╝   
+*/
 // hash an input with bcrypt and return callback(null, hashed)
 // on error callback(err,null)
 /**
@@ -351,14 +483,6 @@ function bCompare(input, comparison, callback){
     });
 }
 
-function getKM(miles){
-    return miles * 1.609344;
-}
-
-function getM(Km){
-    return Km * 0.62137119;
-}
-
 
 const startTime = new Date();
 const getLogFile = () => {`../logs/log_${startTime.getMonth()+1}_${startTime.getDate()}_${startTime.getHours()}_${startTime.getMinutes()}.txt`}
@@ -379,8 +503,18 @@ module.exports = {
     bHash: bHash,
     bCompare: bCompare,
     signUpEmail: signUpEmail,
-    fgpssEmail: fgpssEmail
+    fgpssEmail: fgpssEmail,
+    pushNotify: pushRequest
 
 
 }
 
+/*
+pushRequest("abcdefgiwillgetintroubeforthis", {title:"sorry expo", msg:"just testing a request dont have the token"}, (err, sent) => {
+    if(err) {
+        console.error(err);
+        return;
+    }
+    console.log(`Did send? ${sent}`);
+});
+*/

@@ -222,20 +222,6 @@ class UserStore {
     }
     
     /**
-     * wrapper for updatePushToken, sets field to the empty string 
-     * @param {string} email : email to remove push token for
-     * @param {function} callback : function to handle return
-     * 
-     * @returns {function} callback(err, updatedBool)
-     */
-    removePushToken(email, callback){
-        this.updatePushToken(email, '', (err, result) => {
-            if(err){ return callback(err,null)}
-            return callback(null, result);
-        })
-    }
-
-    /**
      * Get the stored push token for the user
      * @param {string} email : email to get push token for 
      * @param {function} callback : function to handle result
@@ -253,7 +239,13 @@ class UserStore {
 
         this.conn.query(SQL, params, (err, result) => {
             if(err) { return callback(err,null)}
-            return callback(null,result[0][this.col.push]);
+            console.log(result);
+            if(result.length > 0){
+                return callback(null,result[0][this.col.push]);
+            }
+            else{
+                return callback(null,null);
+            }
         })
     }
 
@@ -637,11 +629,11 @@ class FoodStore {
      */
     editCardData(id, in_data, callback){
         // get the card data we want to modify
-        this.getCardData(id, (err, old_data) => {
+        this.getCard(id, (err, result) => {
             if(err){
                 return callback(err, null); // error getting a current cards data
             }
-            console.log('Updating:',old_data);
+            let old_data = JSON.parse(result[this.col.data]);
             let new_data = updateObject(in_data,old_data);
             console.log('To:', new_data);
 
@@ -665,10 +657,9 @@ class FoodStore {
     }
 
 
-    getCardData(id, callback){
-        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?"
+    getCard(id, callback){
+        let SQL = "SELECT * FROM ?? WHERE ?? = ?"
         let params = [
-            this.col.data,
             this.table,
             this.col.id,
             id
@@ -678,7 +669,7 @@ class FoodStore {
             if(err) return callback(err,null);
 
             if(results){
-                let data = JSON.parse(results[0]['data']);
+                let data = results[0];
                 return callback(null, data);
             }
         })
@@ -795,27 +786,6 @@ class FoodStore {
             return callback(null, results);
         });
         
-    }
-    
-    // return reserved cards for a vendor (so vendors can see if their cards have been reserved by users)
-    getVendorReserved(vendor_id, callback){
-        let SQL = "SELECT * FROM  ?? WHERE ?? = ? AND ?? IS NOT NULL";
-        let params = [
-            this.table,
-            this.col.vendor = vendor_id,
-            this.col.res
-        ]
-        
-        this.conn.query(SQL, params, (err, results) => {
-            if(err){
-                return callback(err, null);
-            }
-            if(!results){
-                return callback(null,null);
-            }
-            
-            return callback(null,results);
-        })
     }
     
     //return the card the user has

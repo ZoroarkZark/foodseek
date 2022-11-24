@@ -229,6 +229,40 @@ CoreRouter.get('/confirmEmail', (req,res,next) => {
 });
 
 
+// Set a users push token
+CoreRouter.post('/setPushToken', (req, res,next) => {
+    let resbody = res.locals.resbody;
+    Store.updatePushToken(req.body.email, req.body.token, (err, result) => {
+        if(err){
+            return next(err);
+        }
+
+        if(result){
+            resbody.setData({msg: `Updated user: ${req.body.email}'s token to ${req.body.token}`});
+        }
+        else{
+            resbody.setData({msg: `Nothing updated, no errors encountered`});
+        }
+        return next();
+    })
+})
+
+CoreRouter.post('/deletePushToken', (req, res, next) => {
+    let resbody = res.locals.resbody;
+    Store.updatePushToken(req.body.email, '', (err, result) => {
+        if(err) return next(err);
+
+        if(result){
+            resbody.setData({msg: `Deleted push token for ${req.body.email}`});
+        }
+        else{
+            resbody.setData({msg: `Nothing updated, no errors encountered`});
+        }
+        return next();
+    })
+})
+
+
 CoreRouter.use('/rem', (req,res) => {
     Store.deleteAll();
     res.send(JSON.stringify({msg:"deleted all users"}));
