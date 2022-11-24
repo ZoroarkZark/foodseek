@@ -31,7 +31,7 @@ export const Posts = ( { navigation } ) => {
 
     // context classes for location and food card providers
     const { location: loc, keyword: key } = useContext( LocationContext )
-    const { onRefresh, loading: refreshing, setLoading, onReserve , orders} = useContext( FoodCardContext )
+    const { onRefresh, loading: refreshing, setLoading, onReserve, orders} = useContext( FoodCardContext )
 
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
@@ -47,15 +47,20 @@ export const Posts = ( { navigation } ) => {
 
     // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
     const updatePosts = ( update ) => {
+        console.log("Blah")
         if ( !update ) {
             setError( new Error( 'refreshPosts: yielded no new updates' ) )
+
             return
         }
+        
         setPosts( update )
+        
     }
 
     // function called when new list requests are made to update the display
     const refreshPosts = () => {
+       
         onRefresh(location, updatePosts)
     }
 

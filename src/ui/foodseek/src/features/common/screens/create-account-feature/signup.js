@@ -136,6 +136,7 @@ export const Signup = ({ navigation }) => {
             }
         }
         let result = await onSignup(email, pwd, data)
+        navigation.goBack();
     }
 
     // renders the title, a return to login button, and conditionally renders form fields and buttons based on user input
@@ -178,7 +179,7 @@ export const Signup = ({ navigation }) => {
             {state === 'Base' ? (
                 <Button title="Continue" onPress={() => {
                     if(!validEmail.test(email))
-                        alert("OI BLOKE! NOT A BLOODY VALID EMAIL")
+                        alert("Invalid email")
                     //password requires numbers and letters
                     else if(!validPassword.test(pwd))
                         alert("Invalid Password! Must contain both letters and numbers")
