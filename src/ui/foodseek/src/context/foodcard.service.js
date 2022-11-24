@@ -22,10 +22,27 @@ export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
 }
 
 
+
+
+
 // function sends login request to the server with email and password
 export const cardReserve = ( user, id, jwt ) => {
   let path = 'user/reserve'
   return fetchRequest( path, "post", { user: user, id: id, jwt: jwt } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response
+      } )
+      .catch( ( error ) => { throw error } )
+}
+
+
+export const cardUpdate = ( user, id, key, value, jwt ) => {
+  let path = 'vendor/updateData'
+  return fetchRequest( path, "post", { key: value, id: id, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error

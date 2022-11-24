@@ -15,7 +15,13 @@ const VendorCard = (props) => {
 
     return (
         //TODO: wrap section (card/item) in touchable opacity container here to include onPress behavior of navigating from post listing to another view screen that contains reservation button
-        <TouchableOpacity onPress={() => {navigation.navigate('ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate( 'ExpandedPost', {
+                card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber, onGoBack: () => {
+                    navigation.goBack()
+                    props.onRefresh()
+                }
+})}}>
             <Section>
                 <SectionImage source={data.image} height={200} />
                 <SectionContent padding={10}>

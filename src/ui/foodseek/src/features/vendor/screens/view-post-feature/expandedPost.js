@@ -1,32 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, Image, Dimensions, KeyboardAvoidingView, TextInput, Platform, VirtualizedList } from 'react-native'
+import { Text, View, Image, Dimensions, KeyboardAvoidingView, TextInput, Platform } from 'react-native'
 
 
 import {
-    FlatList,
     TouchableOpacity
 } from 'react-native-gesture-handler'
 import styles from '../../../../style/styleSheet'
 import { FoodCardContext } from '../../../../context/FoodCardContext'
 import Container from '../../../../components/styling/Container'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
-import { PickerInput, ScrollViewDismissKeyboard } from '../../../../components/common'
-import { CheckBox } from 'react-native-rapi-ui'
-
-
-export const HelperText = ( props ) => {
-    const { error, ...rest } = props
-    if ( !error ) return
-    return (
-        <View>
-            {error.map( ( e ) => {
-            return <Text {...rest} style={{fontSize: 20, color: 'red'}}>{e.message}</Text>
-        })}
-
-        </View>
-        
-)
-}
+import { PickerInput, ScrollViewDismissKeyboard, TextButton } from '../../../../components/common'
+import { Button, CheckBox } from 'react-native-rapi-ui'
 
 
 
@@ -72,7 +56,7 @@ const EditTextInput = ( props ) => {
 }
 
 
-
+// TODO: get this to display all in a row
 const TimeInput = ( props ) => {
     const {value, setValue,  setNextState, ...rest} = props
     const [ hour, setHour ] = useState(value.hour)
@@ -87,34 +71,22 @@ const TimeInput = ( props ) => {
     }, [confirm, setConfirm])
     
     return (
-        <View style={{ flex: 11, flexDirection: 'row' }}>
-            <Text>hi</Text>
-            <View style={{flex: 3}}>
-                <TextInput {...rest} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
-            </View>
-            <View style={{flex: 1}}>
-            <Text {...rest} style={{fontSize: 50 }}>:</Text>
-            </View>
-            <View style={{flex: 3}}>
-            <EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
-            </View>
-            <View style={{flex: 3}}>
-            <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
-            </View>
-            <View style={{flex: 1}}>
-            <CheckBox {...rest} value={confirm} onValueChanges={setConfirm} />
-                </View>
-
-        </View>
+        <>
+        <TextInput {...rest} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        <Text {...rest} style={{fontSize: 50 }}>:</Text>
+        <EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
+        <CheckBox value={confirm} onValueChanges={setConfirm} />
+        </>
     )
 }
 
 
 const Edit = ( props ) => {
-    const { Option, value, setValue, setNextState, minLength = 4, maxLength = 16} = props
+    const { Alternative, value, setValue, setNextState, minLength = 4, maxLength = 16} = props
     const [ text, setText ] = useState( value )
     const [ ready, setReady ] = useState( false )
-    const [ error, setError ] = useState( [] )
+    const [ error, setError ] = useState( [] ) // TODO: add helper text
     
 
     useEffect( () => {
@@ -123,12 +95,11 @@ const Edit = ( props ) => {
         setNextState()
     }, [ ready, setReady ] )
     
-    if ( !Option ) {
-        return ( <EditTextInput  width="100%" value={text} onChangeText={setText} onSubmitEditing={setReady} blurOnSubmit={true} minLength={minLength} maxLength={maxLength} /> )
+    if ( !Alternative ) {
+        return   (<EditTextInput width="100%" value={text} onChangeText={setText} onSubmitEditing={setReady} blurOnSubmit={true} minLength={minLength} maxLength={maxLength} /> )
     } else {
-        return (
-            <Option value={text} setValue={setText} setNextState={setReady} />
-        )
+        return ( <Alternative value={text} setValue={setText} setNextState={setReady} /> )
+        
     }
     
 
@@ -140,11 +111,12 @@ const Edit = ( props ) => {
 
 
 const EditDetail = ( props ) => {
-    const { value, setValue, ...rest } = props
+    const { callback, value, setValue, ...rest } = props
     const [ edit, setEdit ] = useState( false )
     
     const setNextState = () => {
-        setEdit(!edit)
+        setEdit( !edit )
+        callback()
     }
 
     const display = () => {
@@ -163,15 +135,84 @@ const EditDetail = ( props ) => {
 
 
 export const ExpandedView = ( props ) => {
-    
-    const { timestamp, vendor, phone, address, time, distance, id, card, image, backgroundColor, item, tags } = props
+    const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, image, backgroundColor, item, tags } = props
+    const {id} = card
     const [ name, setName ] = useState( item )
     const [ tagged, setTagged ] = useState( [ tags ].join( ' #' ) )
     const [ size, setSize ] = useState( Dimensions.get( 'window' ) )
     const [ end, setEnd ] = useState( {hours: new Date().getHours(), minutes: new Date().getMinutes()} )
-    
-    
+    const [ changed, setChanged ] = useState( false )
+    const [ editingName, setEditingName ] = useState( false )
+    const [ editingTags, setEditingTags ] = useState( false )
+    const [ editingTime, setEditingTime ] = useState( false )
 
+    
+    const toTags = ( str ) => {
+        let result = str.split( ' #' )
+        return result.every((e) => e.replace('#', ''))
+    }
+
+    // checks to see if two arrays contains the same elements
+    // https://bobbyhadz.com/blog/javascript-check-if-two-arrays-have-same-elements#:~:text=Use%20the%20every()%20to,met%20for%20all%20array%20elements.
+    function areEqual(array1, array2) {
+        if (array1.length === array2.length) {
+          return array1.every(element => {
+            if (array2.includes(element)) {
+              return true;
+            }
+            return false;
+          })
+        }
+        return false;
+      }
+    
+    const nameChanged = () => {
+        if ( name != item ) return true
+    }
+
+    const tagsChanged = () => {
+        // if ( !areEqual( tags, toTags( tagged ) ) ) return true  TODO: throwing error undefined is not an object
+        return true
+    }
+
+    const timeChanged = () => {
+        // if ( end != time ) return true
+    }
+    
+    // only alows update if all fields are submitted (no longer in editing mode) also only if the values have changed
+    const readyUpdate = () => {
+        if ( !changed ) return false
+        if ( editingName || editingTags || editingTime ) return false
+        return true
+    }
+
+    const onSaveChanges = () => {
+        if ( nameChanged() ) onUpdate( id, 'item', name ) 
+        if ( tagsChanged() ) onUpdate( id, 'tags', toTags( tagged ) ) 
+        // if (timeChanged()) onUpdate( id, 'time', end )
+        setComplete(true) // signal jump back to posts once done loading
+    }
+
+    useEffect( () => {
+        if (!name) return
+        setChanged( nameChanged() )
+        
+    }, [name, setName] )
+    
+    useEffect( () => {
+        if (!tagged ) return
+        setChanged( tagsChanged() )
+        
+    }, [tagged, setTagged] )
+    
+    // once we set up time change function properly uncomment the line
+    useEffect( () => {
+        if ( !end ) return
+        // setChanged( timeChanged() )
+        
+    }, [ end, setEnd ] )
+    
+    
     return (
         <Container paddingTop={100} >
             <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -186,20 +227,17 @@ export const ExpandedView = ( props ) => {
                     </View>
                     
             <View style={{ padding: 20 }}>
-                <EditDetail value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<Text style={{color: 'grey', fontSize: 16, fontWeight: '300', right: 0}}>{distance}</Text>} />
-                            <EditDetail value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` ${ tagged }`} description={toTitleCase( tagged ? 'Edit hashtags' : 'Enter hashtags' )} rightContent={<></>} />
-                            <EditDetail value={end} setValue={setEnd} Option={TimeInput}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
-                        
+                            <EditDetail callback={() => setEditingName(!editingName)} value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<Text style={{color: 'grey', fontSize: 16, fontWeight: '300', right: 0}}>{distance}</Text>} />
+                <EditDetail callback={() => setEditingTags(!editingTags)} value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` ${ tagged }`} description={toTitleCase( tagged ? 'Edit hashtags' : 'Enter hashtags' )} rightContent={<></>} />
+                <EditDetail callback={() => setEditingTime(!editingTime)} value={end} setValue={setEnd} Alternative={props => <TimeInput {...props} />}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
+            </View>
+                        {readyUpdate
+                            ? <TextButton onPress={onSaveChanges}>{readyUpdate ? 'Save Changes' : !changed ? toTitleCase('Tap on details to edit') : toTitleCase('Type return to finish editing')}</TextButton>
+                            : <Text>Make changes by tapping on post details, and hit return when you are done editing.</Text>
+                        }
             
-                        </View>
-                       
-            <TouchableOpacity style={styles.buttonStyle} onPress={() => {
-                onReserve(id, card),
-                yesNoAlert()
-            }}>
-        <Text style={styles.buttonTextStyle}> Accept </Text>
-                </TouchableOpacity>
-                </View>
+
+            </View>
             </ScrollViewDismissKeyboard>
             </KeyboardAvoidingView>
     </Container>
@@ -208,13 +246,19 @@ export const ExpandedView = ( props ) => {
 }
 
 export const ExpandPost = ( props ) => {
-    const { onReserve } = useContext( FoodCardContext )
-    const { phoneNumber, vendor } = props.route.params
+    const { loading, setLoading, onUpdate } = useContext( FoodCardContext )
+    const { phoneNumber, vendor, onGoBack } = props.route.params
     const backgroundColor = '#fff'
+    const [ complete, setComplete ] = useState( false )
+    
+    useEffect( () => {
+        if ( !complete ) return
+        onGoBack()
+    }, [complete, setComplete])
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 
     return (
-        <ExpandedView {...{...props, ...props.route.params, vendor: vendor.name, phone: phoneNumber, onReserve, backgroundColor}} />
+        <ExpandedView {...{...props, ...props.route.params, vendor: vendor.name, phone: phoneNumber, setComplete, loading, setLoading, onUpdate, backgroundColor}} />
 
     )
 }

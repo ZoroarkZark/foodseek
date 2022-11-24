@@ -40,7 +40,7 @@ export const PostHistory = ( { navigation } ) => {
   
   return (
     <View style={{}}>
-      <PostList DATA={posts} Alternative={props => <VendorCard {...props} />} refreshing={loading} onRefresh={() => refresh()} />
+      <PostList DATA={posts} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <VendorCard {...{...props, onRefresh: () => refresh()}} />}  />
     </View>
       
       

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate} from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -76,7 +76,28 @@ const loadOrders = async (id) => {
     }
   }
 
-
+  const onUpdate = ( id, key, value ) => {
+    setLoading( true )
+    try {
+      cardUpdate = ( id, key, value, jwt )
+        .then( ( response ) => { 
+          response.success = true
+          return response
+      } )
+        .then( ( result ) => {
+          if ( result.success ) {        }
+        setError( null )
+        setLoading( false )
+        return result
+      } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+    }
+  }
 
   /**
    * Upload a card to the server
@@ -179,7 +200,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate}}>
       {children}
     </FoodCardContext.Provider>
   )
