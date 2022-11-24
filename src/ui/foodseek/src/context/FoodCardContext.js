@@ -98,7 +98,7 @@ const loadOrders = async (id) => {
     loc: loc,
     vendor: vendor,
     tags: tags,
-    timestamp: timestamp.toUTCString()
+    timestamp: 16,
    }
 
    try{ // upload the card
