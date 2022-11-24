@@ -60,6 +60,7 @@ class UserStore {
             valid: "valid",
             code: "code",
             exp: "codeExpire",
+            push: "PushToken",
         };
     }
     
@@ -177,6 +178,85 @@ class UserStore {
             return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
         });
     }
+
+    /**
+     * Add or update a ExpoPushToken for a user associated with `email` with the arg `token`
+     * @param {string} email : email for user we want to store notifcations for
+     * @param {string} token : Expo token we generated on the front end
+     * @param {function} callback : handle error from update
+     * 
+     * @returns {function} callback(err,updatedBool)
+     * 
+     * @example
+     * let token = "CoolEXPOTOKEN99";
+     * let user  = "cal";
+     * UserStore.updatePushToken(user,token, (err) => {
+     *  if(err){ throw err;}
+     *  console.log(`Registered ${user} for push notifications`);
+     * })
+     */
+    updatePushToken(email, token, callback){
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.push,
+            token,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL, params, (err, result) =>{
+            if(err){
+                console.log(`Trouble updating push token for ${email}`);
+                return callback(err,null);
+            }
+            if(!result){
+                console.log(`Nothing updated for ${email}`);
+                return callback(err, false);
+            }
+
+            console.log(`Updated ${email}'s push token to ${token}`);
+            return callback(err, true);
+
+        })
+    }
+    
+    /**
+     * wrapper for updatePushToken, sets field to the empty string 
+     * @param {string} email : email to remove push token for
+     * @param {function} callback : function to handle return
+     * 
+     * @returns {function} callback(err, updatedBool)
+     */
+    removePushToken(email, callback){
+        this.updatePushToken(email, '', (err, result) => {
+            if(err){ return callback(err,null)}
+            return callback(null, result);
+        })
+    }
+
+    /**
+     * Get the stored push token for the user
+     * @param {string} email : email to get push token for 
+     * @param {function} callback : function to handle result
+     * 
+     * @returns {function} callback(err,token)
+     */
+    getPushToken(email, callback){
+        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
+        let params = [
+            this.col.push,
+            this.table,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL, params, (err, result) => {
+            if(err) { return callback(err,null)}
+            return callback(null,result[0][this.col.push]);
+        })
+    }
+
     
     /**
      * Update a password for a given user given an email, old password, and desired new password
@@ -895,3 +975,4 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+
