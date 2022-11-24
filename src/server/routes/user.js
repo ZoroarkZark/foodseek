@@ -80,7 +80,7 @@ UserRouter.post('/reserve', (req,res,next)=>{
     })
 });
 
-UserRouter.post('/cancel', (req,res) => {
+UserRouter.post('/cancel', (req,res,next) => {
     let resbody = res.locals.resbody;
     Store.cancelReservation(req.body.user, (err, results) => {
         if(err){
