@@ -40,7 +40,7 @@ UserRouter.post('/list', (req, res, next)=>{
         }
         
         //console.log(results);
-        resbody.setData({msg: "Got List!", cards: results});
+        resbody.setData({msg: "Got List!", items: results});
         return next();
     });
     
