@@ -50,6 +50,7 @@ const VALID_KEYS = {
 	"/vendor/upl"		: ["jwt","item"],
 	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp","vendor"],
 	"/vendor/del"		: ["jwt", "id"],
+    "/vendor/list"      : ["jwt", "vendor"],
 	"/vendor/conf"		: ["jwt","user","id"],
 	"/vendor/checkres"	: ["jwt","vendor"],
     "/vendor/updateTime": ["jwt","id","timestamp"],
@@ -104,6 +105,7 @@ app.use('/images/', ImageRouter);
  */
 function validateKeys(req, res, next){
     console.log(`Keys for ${req.path} =`,VALID_KEYS[req.path]);
+    console.log(`Passed keys for ${req.path}`,Object.keys(req.body));
     if(req.path in Object.keys(VALID_KEYS)){ // path is in dict
         if(VALID_KEYS[req.path] != true){ // key is not default true case 
             if(!sutil.validate(VALID_KEYS[req.path],req.body)){ // keys are not present within the request body
