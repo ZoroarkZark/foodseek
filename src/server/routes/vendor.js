@@ -168,7 +168,6 @@ VendorRouter.post('/list', (req,res,next) => {
         }
         
         if(results){
-            console.log(results);
             resbody.setData({msg: "got vendor cards", cards: results});
             return next();
         }

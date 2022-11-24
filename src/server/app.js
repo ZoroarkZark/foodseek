@@ -39,6 +39,8 @@ const VALID_KEYS = {
     "/fgpass"       	: ["email"],
     "/validatecode" 	: ["email","code"],
     "/updatepass"   	: ["email","old_pass","new_pass"],
+    "/setPushToken"     : ["email, token"],
+    "/deletePushToken"  : ["email"],
     "/confirmEmail" 	: true,
     "/rem"          	: true,
     "/ru"           	: ["email"],
@@ -50,11 +52,11 @@ const VALID_KEYS = {
 	"/vendor/upl"		: ["jwt","item"],
 	"/vendor/upl2"		: ["jwt","item","loc","tags","timestamp","vendor"],
 	"/vendor/del"		: ["jwt", "id"],
-    "/vendor/list"      : ["jwt", "vendor"],
 	"/vendor/conf"		: ["jwt","user","id"],
 	"/vendor/checkres"	: ["jwt","vendor"],
     "/vendor/updateTime": ["jwt","id","timestamp"],
-    "/vendor/updateData": ["jwt","id" ,"data"]
+    "/vendor/updateData": ["jwt","id" ,"data"],
+    "/vendor/list"      : ["jwt", "vendor"],
 };
 
 
@@ -105,7 +107,6 @@ app.use('/images/', ImageRouter);
  */
 function validateKeys(req, res, next){
     console.log(`Keys for ${req.path} =`,VALID_KEYS[req.path]);
-    console.log(`Passed keys for ${req.path}`,Object.keys(req.body));
     if(req.path in Object.keys(VALID_KEYS)){ // path is in dict
         if(VALID_KEYS[req.path] != true){ // key is not default true case 
             if(!sutil.validate(VALID_KEYS[req.path],req.body)){ // keys are not present within the request body
