@@ -139,6 +139,7 @@ const loadOrders = async (id) => {
       setLoading( false )
       return result
     } )
+    //as
       .catch( ( err ) => {
         setLoading( false )
         setError( err )
