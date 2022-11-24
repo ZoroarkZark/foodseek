@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Text } from 'react-native'
 import { EmailInput, ScrollViewDismissKeyboard, TextButton, Title } from '../../../../components/common'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'

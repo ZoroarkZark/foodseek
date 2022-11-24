@@ -74,7 +74,7 @@ export const Login = ({ navigation }) => {
                     onPress={() => {
                         // I deleted what ever was here during testing stuff
                         if(!validEmail.test(email))
-                            alert("OI BLOKE! NOT A BLOODY VALID EMAIL")
+                            alert("Invalid email")
                         //password requires numbers and letters
                         else if(!validPassword.test(password))
                             alert("Invalid Password! Must contain both letters and numbers")
@@ -82,7 +82,6 @@ export const Login = ({ navigation }) => {
                             login()
                     }}
                     style={{ marginTop: 20, marginBottom: 20 }}
-                    //disabled={loading}
                 />)}
                 <TextButton
                     style={styles.textButton}
@@ -119,7 +118,6 @@ export const Login = ({ navigation }) => {
                         }
                     }}
                     style={{ marginTop: 20, marginBottom: 20 }}
-                    //disabled={loading}
                 />
                 <Button
                     text={
