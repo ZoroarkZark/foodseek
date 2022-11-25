@@ -45,7 +45,7 @@ const VendorCard = (props) => {
                 </SectionContent>
             </Section>
         </TouchableOpacity>
-    )
+    )g
 }
 
 const style = StyleSheet.create({
