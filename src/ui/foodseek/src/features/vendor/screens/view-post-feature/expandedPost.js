@@ -72,13 +72,22 @@ const TimeInput = ( props ) => {
     }, [confirm, setConfirm])
     
     return (
-        <>
-        <EditTextInput {...rest} numberOfLines={1} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
-        <Text {...rest} numberOfLines={1} style={{fontSize: 50 }}>:</Text>
+        <View style={{flexDirection: 'row', alignContent: 'stretch'}}>
+        <View style={{flex: 2, paddingHorizontal: 2}}><EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        </View>
+        <View style={{flex: 0, paddingHorizontal: 2}}>
+        <Text {...rest} style={{fontSize: 50 }}>:</Text>
+        </View>
+        <View style={{flex: 2, paddingHorizontal: 2}}>
         <EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        </View>
+        <View style={{flex: 2, paddingHorizontal: 2, left: 10}}>
         <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
-        <CheckBox value={confirm} onValueChanges={setConfirm} />
-        </>
+        </View>
+        <View style={{flex: 2, paddingHorizontal: 4, left: 25}}>
+        <CheckBox size={50} value={confirm} onValueChanges={setConfirm} />
+        </View>
+        </View>
     )
 }
 
@@ -95,11 +104,11 @@ const Edit = ( props ) => {
         setValue( text )
         setNextState()
     }, [ ready, setReady ] )
-    
+
     if ( !Alternative ) {
         return   (<EditTextInput width="100%" value={text} onChangeText={setText} onSubmitEditing={setReady} blurOnSubmit={true} minLength={minLength} maxLength={maxLength} /> )
     } else {
-        return ( <Alternative value={text} setValue={setText} setNextState={setReady} /> )
+        return ( <TimeInput value={text} setValue={setText} setNextState={setReady} /> )
         
     }
     
@@ -122,7 +131,7 @@ const EditDetail = ( props ) => {
 
     const display = () => {
         if ( !edit ) return <Detail {...rest} />
-        return <Edit {...{ value, setValue, setNextState }} />
+        return <Edit {...{...rest, value, setValue, setNextState} } />
     }
 
     return (
@@ -199,7 +208,6 @@ export const ExpandedView = ( props ) => {
 
     const onSaveChanges = () => {
         if ( nameChanged() ) onUpdate( id, 'item', name ) 
-        console.log('tags: ', toTags(tagged))
         if ( tagsChanged() ) onUpdate( id, 'tags', toTags( tagged ) ) 
         // if (timeChanged()) onUpdate( id, 'time', end )
         setComplete(true) // signal jump back to posts once done loading
@@ -241,7 +249,7 @@ export const ExpandedView = ( props ) => {
             <View style={{ padding: 20 }}>
                             <EditDetail callback={() => setEditingName(!editingName)} value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<></>} />
                 <EditDetail callback={() => setEditingTags(!editingTags)} value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` tags ${ tagged.length > 1 ? tagged : '(none)' }`} description={toTitleCase( tagged.length > 1 ? 'Edit hashtags' : 'Add hashtags' )} rightContent={<></>} />
-                <EditDetail callback={() => setEditingTime(!editingTime)} value={end} setValue={setEnd} Alternative={props => <TimeInput {...props} />}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
+                <EditDetail callback={() => setEditingTime(!editingTime)} value={end} setValue={setEnd} Alternative={true}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
             </View>
                         {readyUpdate
                             ? <TextButton onPress={onSaveChanges}>{readyUpdate ? 'Save Changes' : !changed ? toTitleCase('Tap on details to edit') : toTitleCase('Type return to finish editing')}</TextButton>
