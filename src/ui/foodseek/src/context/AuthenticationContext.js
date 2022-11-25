@@ -149,6 +149,7 @@ export const AuthenticationContextProvider = ({ children }) => {
 
     // function called when logging out of the application
     const onLogout = () => {
+        setJWT(null)
         setUser(null)
     }
 

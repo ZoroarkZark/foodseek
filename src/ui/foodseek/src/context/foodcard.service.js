@@ -46,6 +46,7 @@ export const cardUpdate = ( id, key, value, jwt ) => {
   let passed_data = {
     [key]: value
   } // create a data object
+  console.log('calling card update: ', passed_data)
 
   return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
     .then( ( response ) => {
@@ -70,11 +71,15 @@ export const cardUpload = (jwt,card, image) => {
 // {"data": "{\"image\":\"test\",\"cuisine\":\"test\",\"item\":\"Falafel Wrap\",\"tags\":\"test\"}", "id": 1, "img_url": null, "lat": 44.814, "lon": 20.4368, "res": "carlington", "timestamp": null, "vendor": null}
 // maps incoming data into an array of card data 
 export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
+  console.log(loc)
   try {
     const mappedResults = results.map( ( card ) => {
+      console.log('cards: ','<<<<<',card,'>>>>>')
       const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
+      const card_coordinates = { latitude: latitude, longitude: longitude }
       const { image, cuisine, item, tags } = JSON.parse(data)
-      const travel = computeTravel( loc, { latitude: latitude, longitude: longitude }, speed, unit )        // compute values for travel string (distance and minutes)
+      console.log(tags)
+      const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
       let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
       let hour = (travel.time / 60).toFixed(0)                      // get hours
       return {
