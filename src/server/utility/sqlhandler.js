@@ -147,6 +147,7 @@ class UserStore {
             return callback(null, result);
         });
     }
+
     
     /**
      * Delete a user from the database given an email.
@@ -668,9 +669,12 @@ class FoodStore {
         this.conn.query(SQL,params, (err, results) => {
             if(err) return callback(err,null);
 
-            if(results){
+            if(results.length > 0){
                 let data = results[0];
                 return callback(null, data);
+            }
+            else{
+                return callback(null,null);
             }
         })
     }
@@ -945,4 +949,3 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
-
