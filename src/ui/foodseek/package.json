@@ -21,6 +21,7 @@
     "expo": "~46.0.13",
     "expo-asset": "~8.6.1",
     "expo-camera": "~12.3.0",
+    "expo-device": "~4.3.0",
     "expo-font": "~10.2.0",
     "expo-image-manipulator": "~10.4.0",
     "expo-linking": "^3.2.3",

@@ -76,6 +76,21 @@ export const CustomDrawer = props => {
       onPress={() => toggleTheme()}
       {...props}
       />
+
+      <DrawerItem
+        flex={1}
+        label=''
+        labelStyle={{ display: 'none', padding: 0 }}
+          icon={() => (
+              <Ionicons
+              name={darkTheme ? 'notifications' : 'notifications-off'}
+              size={20}
+              color={color}
+              />
+          )}
+      onPress={() => toggleTheme()}
+      {...props}
+      />
       
         
       </SafeAreaView>
