@@ -82,6 +82,9 @@ UserRouter.post('/reserve', (req,res,next)=>{
             if(err){
                 return next(7); 
             }
+            if(!result){
+                return next({msg:`No Card in database matching ${req.body.id}`});
+            }
             let target = result.vendor;
             let itemname = JSON.parse(result.data)['item'];
 
@@ -90,7 +93,7 @@ UserRouter.post('/reserve', (req,res,next)=>{
                     return next({err:"Push Could not get token"});
                 }
 
-                let push = {title:`${itemname} reserved!`, msg:`User ${req.body.user} has reserved your post ${itemname}`};
+                let push = {title:`${itemname} reserved!`, body:`User ${req.body.user} has reserved your post ${itemname}`};
 
                 sutils.pushNotify(token, push, (err, sent) => {
                     if(err){
@@ -107,9 +110,6 @@ UserRouter.post('/reserve', (req,res,next)=>{
                 })
             })
         })
-
-        // Attempt to send Push notification
-        return next();
     })
 });
 
