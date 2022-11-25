@@ -1,25 +1,28 @@
 /* eslint-disable no-unused-vars */
 import { getLatitude, getLongitude } from 'geolib'
-import { useContext } from 'react'
 import { seekerAvatar } from '../../assets'
-import { fetchRequest, imgFetch, imgi } from '../scripts/deviceinterface'
+import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
 
 // function sends login request to the server with email and password
-export const cardRequest = ( loc, jwt ) => {
-  let path = 'user/list'
+export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
   const latitude = getLatitude( loc )
   const longitude = getLongitude( loc )
-  return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
+  const path = isVendor ? 'vendor/list' : 'user/list'
+  const payload = isVendor ? { vendor: vendor } : { loc: { lat: latitude, lon: longitude }}
+
+  return fetchRequest( path, "post", { ...payload, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
         }
-
           return response.data
       } )
       .catch( ( error ) => { throw error } )
 }
+
+
+
 
 
 // function sends login request to the server with email and password
@@ -37,74 +40,48 @@ export const cardReserve = ( user, id, jwt ) => {
 }
 
 
-export const cardiUpload = (jwt,card, image) => {
-  return imgi(jwt, card, image)
+// Takes in a user, foodcard id, key for data we are editing, and value to place, along with the stored jwt
+export const cardUpdate = ( id, key, value, jwt ) => {
+  let path = 'vendor/updateData'
+  let passed_data = {
+    [key]: value
+  } // create a data object
+
+  return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response
+      } )
+      .catch( ( error ) => { throw error } )
+}
+
+
+export const cardUpload = (jwt,card, image) => {
+  return img(jwt, card, image)
   .then( (response) => {
     return response;
   })
   .catch( (err) => {throw err;})
 }
 
-// function sets the payload as an object with the properties: id, loc [lat, lon], timestamp, uri, 
-export const cardUpload = ( props ) => {
-  const { jwt, item, loc, uri, tags, timestamp, details, vendor } = props
-  console.log(uri)
-  return imgFetch({
-    jwt: jwt,
-    uri: uri,
-    card: {
-      item: item,
-      vendor: vendor,
-      loc: loc,
-      tags: tags,
-      timestamp: timestamp,
-      // details: details
-    }
-  })
-    .then( ( response ) => {
-          if ( response.success != 1 ) {
-              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-        }
-
-          return response.data
-      } )
-      .catch( ( error ) => { throw error } )
-
-}
-
-// // function sends login request to the server with email and password
-// export const cardCreate = ( id, image, details: { item: { image, name, tags, expiration, timestamp, utc_offset }, vendor: { avatar, banner, loc: { longitude: , latitude: }, acc, bn, ba, bphone: { international: , formatted: }, bemail, cuisine, opening_hours: { open_now:, periods: [], weekday_text: [] } } } ) => {
-//   let path = 'vendor/upl'
-//   const latitude = getLatitude( loc )
-//   const longitude = getLongitude( loc )
-//   return fetchRequest( path, "post", { loc: { lat: latitude, lon: longitude}, jwt: jwt } )
-//     .then( ( response ) => {
-//           if ( response.success != 1 ) {
-//               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-//         }
-
-//           return response.data
-//       } )
-//       .catch( ( error ) => { throw error } )
-// }
-
+// {"data": "{\"image\":\"test\",\"cuisine\":\"test\",\"item\":\"Falafel Wrap\",\"tags\":\"test\"}", "id": 1, "img_url": null, "lat": 44.814, "lon": 20.4368, "res": "carlington", "timestamp": null, "vendor": null}
 // maps incoming data into an array of card data 
 export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
-
   try {
-      //console.log(JSON.stringify(results))
-      const mappedResults = results.map( ( card ) => {
-        const travel = computeTravel( loc, card, speed, unit )        // compute values for travel string (distance and minutes)
-        let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
-        let hour = ( travel.time / 60 ).toFixed( 0 )                      // get hours
-        const { data } = card
-        const {cuisine, image, item, tags} = JSON.parse(data)
-        const { id, vendor, res } = card  // destructure object to get desired card properties
+    const mappedResults = results.map( ( card ) => {
+      const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
+      const { image, cuisine, item, tags } = JSON.parse(data)
+      const travel = computeTravel( loc, { latitude: latitude, longitude: longitude }, speed, unit )        // compute values for travel string (distance and minutes)
+      let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
+      let hour = (travel.time / 60).toFixed(0)                      // get hours
       return {
         ...card,
         id: id,
         image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
-        vendor: { name: "Fergus the Ferret's Funland" }, // name of the vendor
+        vendor: { name: vendor }, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item

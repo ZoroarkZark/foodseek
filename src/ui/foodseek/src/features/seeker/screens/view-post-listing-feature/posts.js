@@ -60,8 +60,8 @@ export const Posts = ( { navigation } ) => {
 
     // function called when new list requests are made to update the display
     const refreshPosts = () => {
-       
-        onRefresh(location, updatePosts)
+        onRefresh({coords : location, setResult : updatePosts})
+
     }
 
     // filters out the cards that are shown based on the current text field

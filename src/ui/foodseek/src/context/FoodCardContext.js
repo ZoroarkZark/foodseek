@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload, cardiUpload } from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate} from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 
@@ -76,15 +76,38 @@ const loadOrders = async (id) => {
     }
   }
 
-
+  const onUpdate = ( id, key, value ) => {
+    setLoading( true )
+    try {
+      cardUpdate( id, key, value, jwt )
+        .then( ( response ) => { 
+          console.log(response)
+          response.success = true
+          return response
+      } )
+        .then( ( result ) => {
+          if ( result.success ) {        }
+        setError( null )
+        setLoading( false )
+        return result
+      } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+    }
+  }
 
   /**
    * Upload a card to the server
    * @param {base64String} image : the base64 encoded image from create-post
    * @param {object} card_data : dictionary for the card info, (i think we are only passing item name and tags from the create post screen)
    */
-  const uploadCard = (image, card_data) => {
-   const loc       = [location.latitude, location.longitude]; // get location
+  const uploadCard = ( image, card_data, setResult ) => {
+   setLoading( true )
+   const loc = [ location.latitude, location.longitude ] // get location
    const timestamp = new Date(); // declare as a date for now
    timestamp.setHours(24); // set expiration time to midnight
    console.log(timestamp.toUTCString());
@@ -102,50 +125,22 @@ const loadOrders = async (id) => {
    }
 
    try{ // upload the card
-    cardiUpload(jwt,upload_card,image)
+    cardUpload(jwt,upload_card,image)
     .then ((response) => {
       console.log(response);
-      if(response.success == 1){
-        alert("Uploaded Image");
-        console.log(response.data.link);
+      if ( response.success == 1 ) {
+        setResult({ error: null, success: response.success })
       }
       else{
-        alert("Couldn't upload");
-        console.log(JSON.stringify(response.issues));
+        // console.log( JSON.stringify( response.issues ) );
+        setError( { cause: 'uploadCard/cardUpload', message: "Couldn't upload card, please try again...", issues: response.issues } ) // Server Rejected Card
+        setResult( { error: error, success: response.success } ) 
       }
     } )
    }
-   catch (err) {
-    throw err;
-   }
-
-  }
-
-  const uploadCards = props => {
-    const {uri, item, tags, timestamp, vendor} = props
-    setLoading( true )
-    const details = user.signature( props )
-    try {
-      cardUpload( {...props, jwt: jwt, vendor: user.id, loc: [location.latitude, location.longitude], uri: uri, timestamp: timestamp, details: details} )
-      .then( ( response ) => { 
-        response.success = true
-        return response
-    } )
-      .then( ( result ) => {
-      if ( result.success ) {
-        add( card )      // updates orders list to add this card
-      }
-      setError( null )
-      setLoading( false )
-      return result
-    } )
-      .catch( ( err ) => {
-        setLoading( false )
-        setError( err )
-      })
-    } catch ( err ) {
-      console.log( err )
-      return []
+   catch ( err ) {
+     setError(err)
+     setLoading(false)
     }
   }
 
@@ -155,10 +150,10 @@ const loadOrders = async (id) => {
     setLoading( true )
     // setCards( [] )
     try {
-      cardRequest( loc, jwt )
-      .then( (results) => { 
-        const cards = results.cards
-        return cardTransform( loc, speed, cards, unit )     // transforms incoming data into what we can use
+
+      cardRequest( loc, jwt, user.id, isVendor )
+        .then( ( results ) => { 
+          if ( results ) return cardTransform( loc, speed, results.cards, unit)      // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
@@ -177,8 +172,8 @@ const loadOrders = async (id) => {
   }
 
   // function wraps the retrieval function may not be necessary?
-  const refreshCards = (loc=location, saveCards = null) => {
-    retrieveCards( loc, jwt, saveCards )
+  const refreshCards = ({coords=location, setResult = null} = {}) => {
+    retrieveCards( coords, jwt, setResult )
   }
 
     // loads the users orders into context if the value for user has been updated
@@ -207,7 +202,7 @@ const loadOrders = async (id) => {
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, onUpload: uploadCards, uploadCard: uploadCard}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate}}>
       {children}
     </FoodCardContext.Provider>
   )

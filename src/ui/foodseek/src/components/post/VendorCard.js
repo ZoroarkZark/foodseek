@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Section, SectionContent, SectionImage } from 'react-native-rapi-ui'
-import { FavoriteButton } from '../common'
 import {
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -10,14 +9,14 @@ import { useNavigation } from '@react-navigation/native';
 
 
 // PostCard makes up a single list item
-const PostCard = (props) => {
+const VendorCard = (props) => {
     const data = props.data
     const navigation = useNavigation();
 
-
-
     return (
-        <TouchableOpacity onPress={() => {navigation.navigate('ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
+        //TODO: wrap section (card/item) in touchable opacity container here to include onPress behavior of navigating from post listing to another view screen that contains reservation button
+        <TouchableOpacity onPress={() => {
+            navigation.navigate( 'ExpandedPost', { card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber })}}>
             <Section>
                 <SectionImage source={data.image} height={200} />
                 <SectionContent padding={10}>
@@ -26,7 +25,7 @@ const PostCard = (props) => {
                             <Text style={style.title}>{data.vendor.name}</Text>
                             <TouchableWithoutFeedback>
                                 <TouchableOpacity>
-                                    <FavoriteButton vendor={data.vendor} />
+                                    {/* <FavoriteButton vendor={data.vendor} /> */}
                                 </TouchableOpacity>
                             </TouchableWithoutFeedback>
                         </View>
@@ -91,4 +90,4 @@ const style = StyleSheet.create({
     },
 })
 
-export default memo(PostCard)
+export default memo(VendorCard)
