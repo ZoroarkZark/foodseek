@@ -61,7 +61,17 @@ export const patchPasswordRequest = (tok, password) => {
         .catch( ( error ) => { throw error } )
 }
 
-
+export const setPushToken = (token, email) => {
+    let path = 'setPushToken'
+    return fetchRequest (path, 'post', {token: token, email: email} )
+        .then( (response) => {
+            if (response.success != 1) {
+                throw new Error(response.issues.msg, {cause: response.issues }) // throws an error if the server sends a response describing an error
+            }
+            return true
+        })
+        .catch( ( error ) => { throw error } )
+}
 
 
 export const userTransform = ( data ) => {

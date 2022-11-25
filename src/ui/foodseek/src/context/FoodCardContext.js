@@ -157,8 +157,8 @@ const loadOrders = async (id) => {
     try {
       cardRequest( loc, jwt )
       .then( (results) => { 
-        const { items } = results
-        return cardTransform( loc, speed, JSON.parse(items), unit )     // transforms incoming data into what we can use
+        const cards = results.cards
+        return cardTransform( loc, speed, cards, unit )     // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
