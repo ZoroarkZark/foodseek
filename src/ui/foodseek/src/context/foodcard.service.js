@@ -46,7 +46,7 @@ export const cardUpdate = ( id, key, value, jwt ) => {
   let passed_data = {
     [key]: value
   } // create a data object
-  console.log('calling card update: ', passed_data)
+  console.log('!!!!!!!!!!!!!!this is what is being sent to the server!!!!!!!!!!!!: ', passed_data, 'END OF WHAT IS BEING SENT TO THE SERVER')
 
   return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
     .then( ( response ) => {

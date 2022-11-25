@@ -25,12 +25,11 @@ export const CreatePost = ( { route, navigation } ) => {
 
     //To do, make this not navigate after picture is taken
     function checkInputs(input){
-        const nameRegex = /([A-Z])\w+/gi;
-        console.log(nameRegex.test(foodName));
-        if (nameRegex.test(foodName)) {
+
+        if (foodName.length < 50) {
             navigation.navigate('Camera');
         } else {
-            alert('Improper input')
+            console.log('Improper input')
         }
     }
 

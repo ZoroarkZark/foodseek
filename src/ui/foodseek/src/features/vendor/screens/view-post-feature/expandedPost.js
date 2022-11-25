@@ -26,12 +26,12 @@ export const Detail = ( { icon, label, description, rightContent, fontSize=16, .
         <View style={{ flexDirection: 'row'}} {...rest}>
             <View style={{ minWidth: '85%', flexDirection: 'column' }}>
                 <View>
-                    <Text {...rest} style={{fontSize: fontSize+2, fontWeight: '700'}} >
+                    <Text {...rest} numberOfLines={1} style={{fontSize: fontSize+2, fontWeight: '700'}} >
                         <>{icon({size: fontSize,...rest})}{label} </>
                     </Text>
                 </View>
                 <View>
-                    <Text {...rest} style={{color: 'grey', fontSize: fontSize}} >
+                    <Text {...rest} numberOfLines={1} style={{color: 'grey', fontSize: fontSize}} >
                         {description}
                     </Text>
                 </View>
@@ -73,8 +73,8 @@ const TimeInput = ( props ) => {
     
     return (
         <>
-        <TextInput {...rest} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
-        <Text {...rest} style={{fontSize: 50 }}>:</Text>
+        <EditTextInput {...rest} numberOfLines={1} width='27%' value={hour} onChangeText={( text ) => setHour( text.match( /\b1[0-2]\b|\b[0-1]?[0-2]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
+        <Text {...rest} numberOfLines={1} style={{fontSize: 50 }}>:</Text>
         <EditTextInput {...rest}  value={hour} onChangeText={( text ) => setHour( text.match( /\b5[0-9]\b|\b[0-4]?[0-9]\b/ ) )} onSubmitEditing={setNextState} blurOnSubmit={true} maxLength={2} />
         <PickerInput {...rest} value={ampm} onValueChange={setAMPM} options={[ { label: 'am', value: 'am' }, { label: 'pm', value: 'pm' }, ]} />
         <CheckBox value={confirm} onValueChanges={setConfirm} />
@@ -84,7 +84,7 @@ const TimeInput = ( props ) => {
 
 
 const Edit = ( props ) => {
-    const { Alternative, value, setValue, setNextState, minLength = 4, maxLength = 16} = props
+    const { Alternative, value, setValue, setNextState, minLength = 4, maxLength = 50} = props
     const [ text, setText ] = useState( value )
     const [ ready, setReady ] = useState( false )
     const [ error, setError ] = useState( [] ) // TODO: add helper text
@@ -148,8 +148,8 @@ export const toTags = ( str ) => {
 }
 
 export const ExpandedView = ( props ) => {
-    const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, image, backgroundColor, item, tags } = props
-    const {id} = card
+    const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, image, backgroundColor, item } = props
+    const {id, tags} = card
     const [ name, setName ] = useState( item )
     const [ tagged, setTagged ] = useState(tagsToStr(tags))
     const [ size, setSize ] = useState( Dimensions.get( 'window' ) )
@@ -264,7 +264,7 @@ export const ExpandPost = ( props ) => {
     const [ complete, setComplete ] = useState( false )
     useEffect( () => {
         if ( !complete ) return
-        props.navigation.navigate('PostHistory')
+        props.navigation.navigate('PostHistory', {refresh: true})
     }, [complete, setComplete])
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 

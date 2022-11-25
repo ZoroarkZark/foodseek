@@ -7,10 +7,11 @@ import Container from '../../../../components/styling/Container'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 
-export const PostHistory = ( { navigation } ) => {
+export const PostHistory = ( { navigation, route } ) => {
   const { onRefresh, loading } = useContext( FoodCardContext )
   const [ posts, setPosts ] = useState( [] )
   const [ error, setError ] = useState( null )
+  const {refresh: trigger} = route.params ? route.params.refresh : false
 
   
   // idk why this won't let me commit
@@ -30,8 +31,14 @@ export const PostHistory = ( { navigation } ) => {
 
 
   useEffect( () => {
+    if (!trigger)
     refresh()
-  }, [navigation])
+  }, [])
+
+  useEffect( () => {
+    if (!trigger) return 
+    refresh()
+  }, [trigger])
 
   const refreshPostHistory = useCallback(() => {
     refresh()
