@@ -79,8 +79,9 @@ const loadOrders = async (id) => {
   const onUpdate = ( id, key, value ) => {
     setLoading( true )
     try {
-      cardUpdate = ( id, key, value, jwt )
+      cardUpdate( id, key, value, jwt )
         .then( ( response ) => { 
+          console.log(response)
           response.success = true
           return response
       } )

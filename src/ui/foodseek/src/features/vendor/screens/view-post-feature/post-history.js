@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PostList from '../../../../components/post/PostList'
 import { FoodCardContext } from '../../../../context/FoodCardContext'
 import VendorCard from '../../../../components/post/VendorCard'
@@ -11,7 +11,10 @@ export const PostHistory = ( { navigation } ) => {
   const { onRefresh, loading } = useContext( FoodCardContext )
   const [ posts, setPosts ] = useState( [] )
   const [ error, setError ] = useState( null )
+
   
+  
+
   const updatePosts = ( update ) => {
     if ( !update ) {
         setError( new Error( 'refreshPosts: yielded no new updates' ) )
@@ -27,7 +30,11 @@ export const PostHistory = ( { navigation } ) => {
 
   useEffect( () => {
     refresh()
-  }, [])
+  }, [navigation])
+
+  const refreshPostHistory = useCallback(() => {
+    refresh()
+  },[refresh])
   
   useEffect( () => {
     console.log(posts)
@@ -40,7 +47,7 @@ export const PostHistory = ( { navigation } ) => {
   
   return (
     <View style={{}}>
-      <PostList DATA={posts} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <VendorCard {...{...props, onRefresh: () => refresh()}} />}  />
+      <PostList DATA={posts} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <VendorCard {...{...props, refreshPostHistory}} />}  />
     </View>
       
       

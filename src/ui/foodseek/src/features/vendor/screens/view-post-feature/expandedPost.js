@@ -11,6 +11,7 @@ import Container from '../../../../components/styling/Container'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
 import { PickerInput, ScrollViewDismissKeyboard, TextButton } from '../../../../components/common'
 import { Button, CheckBox } from 'react-native-rapi-ui'
+import { useNavigation } from "@react-navigation/native";
 
 
 
@@ -133,12 +134,24 @@ const EditDetail = ( props ) => {
     
 }
 
+export const tagsToStr = (arr) => {
+    if (arr && arr.length >= 1){
+        let str = arr.join( ' #' )
+        return '#'+str
+    }
+    return '#'
+}
+
+export const toTags = ( str ) => {
+    let result = str.split( '#' )
+    return result.map((e) => {if (e) {return e.trim()}}).filter(function(item){return item !== undefined})
+}
 
 export const ExpandedView = ( props ) => {
     const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, image, backgroundColor, item, tags } = props
     const {id} = card
     const [ name, setName ] = useState( item )
-    const [ tagged, setTagged ] = useState( [ tags ].join( ' #' ) )
+    const [ tagged, setTagged ] = useState(tagsToStr(tags))
     const [ size, setSize ] = useState( Dimensions.get( 'window' ) )
     const [ end, setEnd ] = useState( {hours: new Date().getHours(), minutes: new Date().getMinutes()} )
     const [ changed, setChanged ] = useState( false )
@@ -147,10 +160,8 @@ export const ExpandedView = ( props ) => {
     const [ editingTime, setEditingTime ] = useState( false )
 
     
-    const toTags = ( str ) => {
-        let result = str.split( ' #' )
-        return result.every((e) => e.replace('#', ''))
-    }
+
+    
 
     // checks to see if two arrays contains the same elements
     // https://bobbyhadz.com/blog/javascript-check-if-two-arrays-have-same-elements#:~:text=Use%20the%20every()%20to,met%20for%20all%20array%20elements.
@@ -188,6 +199,7 @@ export const ExpandedView = ( props ) => {
 
     const onSaveChanges = () => {
         if ( nameChanged() ) onUpdate( id, 'item', name ) 
+        console.log('tags: ', toTags(tagged))
         if ( tagsChanged() ) onUpdate( id, 'tags', toTags( tagged ) ) 
         // if (timeChanged()) onUpdate( id, 'time', end )
         setComplete(true) // signal jump back to posts once done loading
@@ -227,8 +239,8 @@ export const ExpandedView = ( props ) => {
                     </View>
                     
             <View style={{ padding: 20 }}>
-                            <EditDetail callback={() => setEditingName(!editingName)} value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<Text style={{color: 'grey', fontSize: 16, fontWeight: '300', right: 0}}>{distance}</Text>} />
-                <EditDetail callback={() => setEditingTags(!editingTags)} value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` ${ tagged }`} description={toTitleCase( tagged ? 'Edit hashtags' : 'Enter hashtags' )} rightContent={<></>} />
+                            <EditDetail callback={() => setEditingName(!editingName)} value={name} setValue={setName} icon={props => <Ionicons name="fast-food-outline" {...props} />} label={` ${ name }`} description={toTitleCase( 'Edit item name' )} rightContent={<></>} />
+                <EditDetail callback={() => setEditingTags(!editingTags)} value={tagged} setValue={setTagged} icon={props => <FontAwesome5 name="hashtag" {...props} />} label={` tags ${ tagged.length > 1 ? tagged : '(none)' }`} description={toTitleCase( tagged.length > 1 ? 'Edit hashtags' : 'Add hashtags' )} rightContent={<></>} />
                 <EditDetail callback={() => setEditingTime(!editingTime)} value={end} setValue={setEnd} Alternative={props => <TimeInput {...props} />}  icon={props => <FontAwesome5 name="clock" {...props} />} label={` ${ time } remaining`} description={toTitleCase( 'Edit timer' )} rightContent={<></>} />
             </View>
                         {readyUpdate
@@ -247,13 +259,12 @@ export const ExpandedView = ( props ) => {
 
 export const ExpandPost = ( props ) => {
     const { loading, setLoading, onUpdate } = useContext( FoodCardContext )
-    const { phoneNumber, vendor, onGoBack } = props.route.params
+    const { phoneNumber, vendor } = props.route.params
     const backgroundColor = '#fff'
     const [ complete, setComplete ] = useState( false )
-    
     useEffect( () => {
         if ( !complete ) return
-        onGoBack()
+        props.navigation.navigate('PostHistory')
     }, [complete, setComplete])
 
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 

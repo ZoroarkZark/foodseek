@@ -41,10 +41,10 @@ export const cardReserve = ( user, id, jwt ) => {
 
 
 // Takes in a user, foodcard id, key for data we are editing, and value to place, along with the stored jwt
-export const cardUpdate = ( user, id, key, value, jwt ) => {
+export const cardUpdate = ( id, key, value, jwt ) => {
   let path = 'vendor/updateData'
   let passed_data = {
-    key: value
+    [key]: value
   } // create a data object
 
   return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
