@@ -25,7 +25,7 @@ export const CreatePost = ( { route, navigation } ) => {
 
     //To do, make this not navigate after picture is taken
     function checkInputs(input){
-        const nameRegex = /^[A-Z]+$/i;
+        const nameRegex = /([A-Z])\w+/gi;
         console.log(nameRegex.test(foodName));
         if (nameRegex.test(foodName)) {
             navigation.navigate('Camera');
@@ -129,7 +129,7 @@ export const CreatePost = ( { route, navigation } ) => {
                     <Text>{testTags}</Text>
                     <View style={styles.row}>
                         <TextInput style={styles.input} value={currentTags} placeholder="Enter Tags..." onChangeText={setCurrentTags}/>
-                        <Button text='Testing button' style={{marginTop:20, marginBottom:20}} onPress={() => checkTags()}/>
+                        <Button text='Submit Tags' style={{marginTop:20, marginBottom:20}} onPress={() => checkTags()}/>
                     </View>
                     <Button text='Submit Post' style={{marginTop:20, marginBottom:20}} onPress={() => upload()}/>
                 </View>
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
+        color: '#F1EDF2'
     },
     image: {
         resizeMode: 'contain',
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'left',
-        padding: 10,
+        padding: 5,
     },
     text2: {
         fontSize: 25,

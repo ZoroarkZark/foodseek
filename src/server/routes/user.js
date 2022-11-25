@@ -10,6 +10,7 @@ const sql       = require('../utility/sqlhandler.js');
 
 //const Store = sutils.FoodStore; // call the food store instance from sutils for test, and sqlhandler for dev/live
 const Store = sql.FoodStore;
+const US    = sql.UserStore;
 
 const UserRouter = express.Router();
 
@@ -39,8 +40,8 @@ UserRouter.post('/list', (req, res, next)=>{
             return next(7); // SQL error
         }
         
-        console.log(results);
-        resbody.setData({msg: "Got List!", cards: results});
+        //console.log(results);
+        resbody.setData({msg: "Got List!", items: results});
         return next();
     });
     
@@ -76,11 +77,43 @@ UserRouter.post('/reserve', (req,res,next)=>{
         }
         
         resbody.setData({msg: "Marked Card Reserved"});
-        return next();
+
+        Store.getCard(req.body.id, (err, result) => {
+            if(err){
+                return next(7); 
+            }
+            if(!result){
+                return next({msg:`No Card in database matching ${req.body.id}`});
+            }
+            let target = result.vendor;
+            let itemname = JSON.parse(result.data)['item'];
+
+            US.getPushToken(target, (err, token) => {
+                if(err){
+                    return next({err:"Push Could not get token"});
+                }
+
+                let push = {title:`${itemname} reserved!`, body:`User ${req.body.user} has reserved your post ${itemname}`};
+
+                sutils.pushNotify(token, push, (err, sent) => {
+                    if(err){
+                        return next(err);
+                    }
+                    if(sent){
+                        resbody.addData("PushStatus", "Sent");
+                        return next();
+                    }
+                    else{
+                        resbody.addData("PushStatus", "Not Sent");
+                        return next();
+                    }
+                })
+            })
+        })
     })
 });
 
-UserRouter.post('/cancel', (req,res) => {
+UserRouter.post('/cancel', (req,res,next) => {
     let resbody = res.locals.resbody;
     Store.cancelReservation(req.body.user, (err, results) => {
         if(err){

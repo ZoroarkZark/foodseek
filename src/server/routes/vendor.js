@@ -16,10 +16,10 @@ module.exports = {VendorRouter};
 // Check for valid jwt    : return error 2 if invalid jwt
 // check for user type    : return error 3 if user is not a vendor
 VendorRouter.use('', (req,res, next) => {
-    let resbody = res.locals.resbody;
+    //let resbody = res.locals.resbody;
     
     sutils.verify(req.body.jwt, (err, result) => { // jwt check
-        console.log("back in vendor.js");
+        //console.log("back in vendor.js");
         if(err){
             return next(2); //  bad jwt
         }
@@ -54,7 +54,7 @@ VendorRouter.post('/upl', (req,res,next) => {
 
 VendorRouter.post('/upl2', (req,res,next) => {
     let resbody = res.locals.resbody;
-    console.log(req.body.timestamp)
+    //console.log(req.body.timestamp)
     let pkg = {
         item: req.body.item,
         loc: req.body.loc,
@@ -75,10 +75,34 @@ VendorRouter.post('/upl2', (req,res,next) => {
     })
 });
 
+// edit the data of a foodcard object
+VendorRouter.post('/updateData', (req,res,next) => {
+    FoodStore.editCardData(req.body.id, req.body.data, (err, result) => {
+        if(err){
+            console.log(err);
+            return next(err);
+        }
 
+        res.locals.resbody.setData({msg: `Updated card(${req.body.id}) with new data`});
+        return next();
+    })
+});
 
+// edit the timestamp field of a foodcard object
+VendorRouter.post('/updateTime', (req,res,next) => {
+    FoodStore.editCardTimestamp(req.body.id, req.body.timestamp, (err, result) => {
+        if(err){
+            console.log(err);
+            return next(err);
+        }
+
+        res.locals.resbody.setData({msg: `Updated timestamp of card(${req.body.id}) to ${req.body.timestamp}`});
+        return next();
+    })
+});
+ 
 // delete a card from the foodstore
-VendorRouter.post('/del', (req,res) => {
+VendorRouter.post('/del', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.deleteCard(Number(req.body.id), (err) => {
@@ -95,7 +119,7 @@ VendorRouter.post('/del', (req,res) => {
 });
 
 // confirm a pickup with a user and foodcard id
-VendorRouter.post('/conf', (req,res) => {
+VendorRouter.post('/conf', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCard(req.body.id, (err, result) => {
@@ -122,7 +146,7 @@ VendorRouter.post('/conf', (req,res) => {
     })
 });
 
-VendorRouter.post('/checkres', (req,res) => {
+VendorRouter.post('/checkres', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getVendorReserved(req.body.vendor, (err, results) => {
@@ -135,7 +159,7 @@ VendorRouter.post('/checkres', (req,res) => {
     })
 })
 
-VendorRouter.post('/list', (req,res) => {
+VendorRouter.post('/list', (req,res,next) => {
     let resbody = res.locals.resbody;
     
     FoodStore.getCardsVendor(req.body.vendor, (err, results) => {
@@ -151,4 +175,5 @@ VendorRouter.post('/list', (req,res) => {
         resbody.setData({msg: "no cards for this vendor",cards: null}); 
         return next();   
     });
+
 });

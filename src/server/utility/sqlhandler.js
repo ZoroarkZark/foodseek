@@ -1,4 +1,5 @@
 // Handle the databse stuff on the server side to pull out of the routing logic
+const { time } = require('console');
 const database = require('mysql');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")}); // fix dot env path
@@ -59,6 +60,7 @@ class UserStore {
             valid: "valid",
             code: "code",
             exp: "codeExpire",
+            push: "PushToken",
         };
     }
     
@@ -145,6 +147,7 @@ class UserStore {
             return callback(null, result);
         });
     }
+
     
     /**
      * Delete a user from the database given an email.
@@ -176,6 +179,77 @@ class UserStore {
             return callback(null,results.affectedRows); // return no error and the # of deleted rows should == 1
         });
     }
+
+    /**
+     * Add or update a ExpoPushToken for a user associated with `email` with the arg `token`
+     * @param {string} email : email for user we want to store notifcations for
+     * @param {string} token : Expo token we generated on the front end
+     * @param {function} callback : handle error from update
+     * 
+     * @returns {function} callback(err,updatedBool)
+     * 
+     * @example
+     * let token = "CoolEXPOTOKEN99";
+     * let user  = "cal";
+     * UserStore.updatePushToken(user,token, (err) => {
+     *  if(err){ throw err;}
+     *  console.log(`Registered ${user} for push notifications`);
+     * })
+     */
+    updatePushToken(email, token, callback){
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.push,
+            token,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL, params, (err, result) =>{
+            if(err){
+                console.log(`Trouble updating push token for ${email}`);
+                return callback(err,null);
+            }
+            if(!result){
+                console.log(`Nothing updated for ${email}`);
+                return callback(err, false);
+            }
+
+            console.log(`Updated ${email}'s push token to ${token}`);
+            return callback(err, true);
+
+        })
+    }
+    
+    /**
+     * Get the stored push token for the user
+     * @param {string} email : email to get push token for 
+     * @param {function} callback : function to handle result
+     * 
+     * @returns {function} callback(err,token)
+     */
+    getPushToken(email, callback){
+        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
+        let params = [
+            this.col.push,
+            this.table,
+            this.col.email,
+            email
+        ];
+
+        this.conn.query(SQL, params, (err, result) => {
+            if(err) { return callback(err,null)}
+            console.log(result);
+            if(result.length > 0){
+                return callback(null,result[0][this.col.push]);
+            }
+            else{
+                return callback(null,null);
+            }
+        })
+    }
+
     
     /**
      * Update a password for a given user given an email, old password, and desired new password
@@ -480,9 +554,9 @@ class FoodStore {
     }
     
     uploadMore(pack, callback){
-        console.log(pack);
-        const date = new Date(pack.timestamp * 1000)
-        console.log(date);
+        //console.log(pack);
+        
+        //console.log(date);
 
 
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
@@ -505,7 +579,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            date
+            pack.timestamp
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -515,6 +589,95 @@ class FoodStore {
         });
     }
 
+
+    /**
+     * Edit a given cards timestamp
+     * @param {int} id : id for the card
+     * @param {int} timestamp : hour that the item should be expired
+     * @param {Function} callback 
+     */
+    editCardTimestamp(id, timestamp, callback){
+        // Currently supported updates
+        // data
+        // timestamp
+
+        timestamp = timestamp % 24; // get timestamp between 0 and 24
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col.timestamp,
+            timestamp,
+            this.col.id,
+            id
+        ]
+
+        this.conn.query(SQL,params, (err, result) => {
+            if(err) return callback(err, null);
+            if(result){
+                return callback(null, result.affectedRows);
+            }
+
+            return callback(null)
+        })
+        
+    }
+
+    /**
+     * Edit a given cards data fields
+     * @param {*} id : id for the card
+     * @param {*} in_data : an object containing some or all of the fields in the data object
+     * @param {*} callback 
+     */
+    editCardData(id, in_data, callback){
+        // get the card data we want to modify
+        this.getCard(id, (err, result) => {
+            if(err){
+                return callback(err, null); // error getting a current cards data
+            }
+            let old_data = JSON.parse(result[this.col.data]);
+            let new_data = updateObject(in_data,old_data);
+            console.log('To:', new_data);
+
+            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+            let params = [
+                this.table,
+                this.col.data,
+                JSON.stringify(new_data),
+                this.col.id,
+                id
+            ]
+
+            this.conn.query(SQL,params, (err,result) => {
+                if(err) return callback(err, null);
+
+                if(result){
+                    return callback(null,result.affectedRows);
+                }
+            })
+        })
+    }
+
+
+    getCard(id, callback){
+        let SQL = "SELECT * FROM ?? WHERE ?? = ?"
+        let params = [
+            this.table,
+            this.col.id,
+            id
+        ]
+
+        this.conn.query(SQL,params, (err, results) => {
+            if(err) return callback(err,null);
+
+            if(results.length > 0){
+                let data = results[0];
+                return callback(null, data);
+            }
+            else{
+                return callback(null,null);
+            }
+        })
+    }
     // 
     // upload whole card
     uploadCard(fooddata, callback){
@@ -569,9 +732,9 @@ class FoodStore {
     // get all cards maxdist_m from pos
     getCardsByRange(pos , maxdist_m, callback){
         let Km = sutil.getKm(maxdist_m);
-        console.log(Km);
+        //console.log(Km);
         let rounded_km = Math.round(Km);
-        console.log(rounded_km)
+        //console.log(rounded_km)
         
         let lat_min = pos.lat - (rounded_km * 0.045);
         let lat_max = pos.lat + (rounded_km * 0.045);
@@ -627,27 +790,6 @@ class FoodStore {
             return callback(null, results);
         });
         
-    }
-    
-    // return reserved cards for a vendor (so vendors can see if their cards have been reserved by users)
-    getVendorReserved(vendor_id, callback){
-        let SQL = "SELECT * FROM  ?? WHERE ?? = ? AND ?? IS NOT NULL";
-        let params = [
-            this.table,
-            this.col.vendor = vendor_id,
-            this.col.res
-        ]
-        
-        this.conn.query(SQL, params, (err, results) => {
-            if(err){
-                return callback(err, null);
-            }
-            if(!results){
-                return callback(null,null);
-            }
-            
-            return callback(null,results);
-        })
     }
     
     //return the card the user has
@@ -757,10 +899,15 @@ class FoodStore {
     }
     
     clearAllExpired(){
-        let SQL = "DELETE FROM ?? WHERE ?? <= UTC_TIMESTAMP() "
+        console.log('clearing expired cards');
+        let date = new Date();
+        let hour = date.getHours();
+
+        let SQL = "DELETE FROM ?? WHERE ?? <= ? "
         let params = [
             this.table,
             this.col.timestamp, //expire time but as an hour [0,23]
+            hour
       ]
         
         this.conn.query(SQL,params, (err,results) => {
@@ -770,7 +917,7 @@ class FoodStore {
     
     
     startClear(){
-        this.clearExp = setInterval(()=> this.clearAllExpired(), 1200000);
+        this.clearExp = setInterval(()=> this.clearAllExpired(), 1000 * 60 * 10);
     }
     
     endClear(){
@@ -781,6 +928,18 @@ class FoodStore {
 }
 
 
+function updateObject(item, current){
+    for(let key in Object.keys(item)){
+        let curKey = Object.keys(item)[key];
+        if(current[curKey]){
+            current[curKey] = item[curKey];
+        }
+        continue
+    }
+
+    return current;
+}
+
 
 
 const US = new UserStore();
@@ -790,4 +949,3 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
-

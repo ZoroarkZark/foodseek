@@ -1,10 +1,9 @@
 import { getDistance, convertDistance, isValidCoordinate, convertSpeed, getCoordinateKeys } from 'geolib'
 
 
-
-
 // returns the distance from here to there in the given units defaulted to miles
 export const computeDistance = ( start, end, unit ) => {
+  let endPos = {latitude: end.lat, longitude: end.lon}
 
   // function returns an object { latitude: x, longitude: y } with validated latitude and longitude coordinates for distance computations
   const formatCoordinate = ( input ) => {
@@ -21,8 +20,8 @@ export const computeDistance = ( start, end, unit ) => {
   } // end formatCoordinate definition
 
   try {
-    let result = getDistance( formatCoordinate( start ), formatCoordinate( end ) )  // compute the distance
-    return convertDistance( result, unit )                                          // return the result in the right units
+    let result = getDistance( formatCoordinate( start ),  endPos )  // compute the distance
+    return convertDistance( result, unit ) // return the result in the right units
   }
   catch ( error ) { 
     throw error

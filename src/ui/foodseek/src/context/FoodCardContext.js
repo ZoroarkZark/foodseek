@@ -121,7 +121,7 @@ const loadOrders = async (id) => {
     loc: loc,
     vendor: vendor,
     tags: tags,
-    timestamp: timestamp.toUTCString()
+    timestamp: 16,
    }
 
    try{ // upload the card
@@ -150,6 +150,7 @@ const loadOrders = async (id) => {
     setLoading( true )
     // setCards( [] )
     try {
+
       cardRequest( loc, jwt, user.id, isVendor )
         .then( ( results ) => { 
           if ( results ) return cardTransform( loc, speed, results.cards, unit)      // transforms incoming data into what we can use
