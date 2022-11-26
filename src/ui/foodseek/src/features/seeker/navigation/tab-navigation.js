@@ -40,14 +40,6 @@ export const SeekerTabNav = () => {
                 }}
             />
             <SeekerTab.Screen
-                name="SearchTab"
-                component={stack.SearchNavigator}
-                options={{
-                    tabBarLabel: 'Search',
-                    tabBarIcon: () => <Ionicons name="search" />,
-                }}
-            />
-            <SeekerTab.Screen
                 name="SettingsTab"
                 component={stack.SettingsNavigator}
                 options={{

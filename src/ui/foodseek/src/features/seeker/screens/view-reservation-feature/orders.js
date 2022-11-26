@@ -34,7 +34,7 @@ export const Orders = () => {
     const renderListEmptyComponent = () => (
         <View>
             <Text>
-                No work yet!
+                No orders yet!
             </Text>
         </View>
     );
