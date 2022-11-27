@@ -201,8 +201,8 @@ export const userTransform = ( data ) => {
     return {
         ...user,
         id: user,
-        isVendor: vendor ? vendor === 1 : false,  // TODO add linked image require kept as just the seekers avatar just during testin
-        favorites: [], // TODO: enable check if favorite false just during testing
+        isVendor: vendor ? vendor === 1 : false, 
+        favorites: [], 
         signature:  signature
     }
 }

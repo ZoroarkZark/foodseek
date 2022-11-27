@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-// Placeholder: Create a home screen possibly containing a search bar and not much else
 const styles2 = StyleSheet.create({
     SectionStyle: {     
       flexDirection: 'row',

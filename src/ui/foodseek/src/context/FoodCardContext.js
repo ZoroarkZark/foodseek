@@ -21,7 +21,6 @@ export const FoodCardProvider = ( { children } ) => {
   // called to save a card to the user's order list
   const add = (card) => {
     setOrders([...orders, card])
-    // console.log(vendor.id); commented out when not testing
 }
 
 // removes a card from the user's order list
@@ -132,7 +131,6 @@ const loadOrders = async (id) => {
         setResult({ error: null, success: response.success })
       }
       else{
-        // console.log( JSON.stringify( response.issues ) );
         setError( { cause: 'uploadCard/cardUpload', message: "Couldn't upload card, please try again...", issues: response.issues } ) // Server Rejected Card
         setResult( { error: error, success: response.success } ) 
       }
@@ -194,7 +192,7 @@ const loadOrders = async (id) => {
     }, [orders, user]) // handles condition where user is not logged in, but still is adding orders
 
     useEffect( () => {
-      if ( location ) {
+      if ( location ) { 
         if(!isVendor) refreshCards( location )
       }
     }, [ location, setLocation ] )

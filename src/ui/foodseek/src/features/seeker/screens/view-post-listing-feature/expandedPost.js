@@ -32,7 +32,7 @@ export const ExpandPost = ( props ) => {
         );
     };
 
-    //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up for the 
+    //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up
     return (
     <View>
     <ImageBackground source={image} resizeMode= "stretch" style={{borderColor: "black", borderWidth: 6, width: 360, height: 300}}>
@@ -71,5 +71,3 @@ export const ExpandPost = ( props ) => {
     </View>
     );
 }
-
-// <SectionImage source= {require('../../../../../assets/icons/fast-food-outline.png')} height ={200}/>
