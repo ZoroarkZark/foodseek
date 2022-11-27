@@ -7,6 +7,7 @@ const bcrypt     = require('bcrypt');
 const jwt        = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const https       = require('https');
+const { nextTick } = require('process');
 
 
 
@@ -246,6 +247,9 @@ function pushRequest(target, msg, callback){
 
         response.on('end', () => {
             let response = JSON.parse(str);
+            if(!response){
+                return(new Error("Fucked up pushing notificaitons"),null);
+            }
             if(response.data.status === "error"){
                 console.log('Could not send push notification');
                 console.log(response.data.message);
