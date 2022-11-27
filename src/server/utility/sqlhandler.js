@@ -635,8 +635,10 @@ class FoodStore {
                 return callback(err, null); // error getting a current cards data
             }
             let old_data = JSON.parse(result[this.col.data]);
+            console.log('Updating: ', old_data);
             let new_data = updateObject(in_data,old_data);
             console.log('To:', new_data);
+
 
             let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
             let params = [
