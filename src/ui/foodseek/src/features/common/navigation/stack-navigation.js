@@ -13,22 +13,22 @@ export const AuthenticationNavigation = ({linking}) => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen
                 name="Login" //LOGIN PAGE SCREEN
-                component={screen.Login}
+                component={screen.Login} //Screen Component: Login
                 options={{ title: 'Login' }}
             />
             <Stack.Screen
                 name="Signup" //SIGNUP PAGE SCREEN
-                component={screen.Signup}
+                component={screen.Signup} //Screen Component: Signup
                 options={{ title: 'Signup' }}
             />
             <Stack.Screen
                 name="ForgotPassword" //FORGOT PASSWORD PAGE SCREEN
-                component={screen.ForgotPassword}
+                component={screen.ForgotPassword} //Screen Component: ForgotPassword
                 options={{ title: 'Forgot Password' }}
             />
             <Stack.Screen
-                name="ChangePassword" 
-                component={screen.ChangePassword}
+                name="ChangePassword" //CHANGE PASSWORD PAGE SCREEN
+                component={screen.ChangePassword} //Screen Component: ChangePassword
             />
         </Stack.Navigator>
     )
