@@ -192,28 +192,6 @@ function getM(Km){
 ██║     ╚██████╔╝███████║██║  ██║
 ╚═╝      ╚═════╝ ╚══════╝╚═╝  ╚═╝
 */
-function handleResponse(response){
-    var str = '';
-    response.on('data', (chunk) => {
-        str+=chunk;
-    })
-
-    response.on('end', () => {
-        let response = JSON.parse(str);
-        if(response.data.status === "error"){
-            console.log('Could not send push notification');
-            console.log(response.data.message);
-        }
-        else{
-            console.log('Sent notification');
-        }
-    })
-
-    response.on('error', (err) => {
-        console.log('Response Error');
-    })
-}
-
 /**
  * Make a push request for the target using expos API
  * @param {string} target : target push notification
@@ -222,7 +200,7 @@ function handleResponse(response){
 function pushRequest(target, msg, callback){
     // the actual push notification we will be sending 
     const push = {
-        to: `ExponentPushToken[${target}]`,
+        to: target,
         title: msg.title,
         body: msg.body,
     };
