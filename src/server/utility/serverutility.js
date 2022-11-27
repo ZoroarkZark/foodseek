@@ -223,7 +223,7 @@ function handleResponse(response){
 function pushRequest(target, msg, callback){
     // the actual push notification we will be sending 
     const push = {
-        to: target,
+        to: `${target}`,
         title: msg.title,
         body: msg.body,
     };
