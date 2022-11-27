@@ -247,6 +247,7 @@ function pushRequest(target, msg, callback){
 
         response.on('end', () => {
             let response = JSON.parse(str);
+            console.log(response);
             if(!response){
                 return(new Error("Fucked up pushing notificaitons"),null);
             }
