@@ -640,6 +640,7 @@ class FoodStore {
             if(err){
                 return callback(err, null); // error getting a current cards data
             }
+            console.log('In-Data: ',in_data);
             let old_data = JSON.parse(result[this.col.data]);
             console.log('Updating: ', old_data);
             let new_data = updateObject(in_data,old_data);
