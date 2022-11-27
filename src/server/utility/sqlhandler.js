@@ -601,7 +601,13 @@ class FoodStore {
         // data
         // timestamp
 
-        timestamp = timestamp % 24; // get timestamp between 0 and 24
+        if(typeof timestamp === "number"){
+            timestamp = timestamp % 24; // get timestamp between 0 and 24
+        }
+        if(typeof timestamp === "string"){
+            let date = new Date(timestamp);
+            timestamp = date.getHours();
+        }
         let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
         let params = [
             this.table,
