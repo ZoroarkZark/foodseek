@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Text } from 'react-native'
-import { CustomTextInput, ScrollViewDismissKeyboard, TextButton, Title } from '../../../../components/common'
+import { CustomTextInput, ScrollViewDismissKeyboard, TextButton, Title, Odin } from '../../../../components/common'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 import { Feather } from '@expo/vector-icons'
 import { Container } from '../../../../components/styling'
@@ -22,6 +22,7 @@ export const ChangePassword = ( { navigation } ) => {
         <ScrollViewDismissKeyboard>
             <Container>
                 <Title>Verified: Change Password</Title>
+                {loading ? (<Odin></Odin>) : (<></>)}
                 <Text style={{ padding: 10 }}>Please enter your new password.</Text>   
                 <Text style={{paddingTop:10, padding:10}}>New Password</Text>
                 <CustomTextInput value={newPassword} onChangeText={setNewPassword} placeholder='********' />

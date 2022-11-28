@@ -83,6 +83,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         }
     }
 
+
     /*
      onLogin: account login handler
      input: email (str) password (str)
@@ -104,18 +105,18 @@ export const AuthenticationContextProvider = ({ children }) => {
                 setUser( userTransform( response ) ) // pretend its parsed for now
                 setLoading(false)
             })
-            .catch((err) => {
-                setLoading(false)
-                setError(err.toString())
+            .catch((err) => { //Catch an error if it pops up.
+                setLoading(false) //No longer loading by the end of this.
+                setError(err.toString()) //The error will be set to the error given.
             })
     }
 
     // function called when signing up for an account
     const onSignup = (email, password, data) => {
-        setLoading(true)
+        setLoading(true) //Now loading.
         // return error for data checks client side
-        if (!data) {
-            setError('Error: no data provided when creating account')
+        if (!data) { //If data doesn't exist...
+            setError('Error: no data provided when creating account') //Error: No data, leave
             return
         }
         // call signup request and set user
@@ -135,13 +136,12 @@ export const AuthenticationContextProvider = ({ children }) => {
 
     // sends a request to the server to reset an account with the given email
     const onResetPassword = (email) => {
-        setLoading(true)
+        setLoading(true) //Now loading.
         // return error for data checks client side
         if (!email) {
             setError('Error: no email provided when resetting password')
             return
         }
-        // call signup request and set user
         resetPasswordRequest(email)
             .then((response) => {
                 if (response.message === 'Reset request recieved') {
@@ -179,7 +179,7 @@ export const AuthenticationContextProvider = ({ children }) => {
 
     // function called when logging out of the application
     const onLogout = () => {
-        setJWT(null)
+        setJWT(null) //On logout, remove both the JWT and the current user. No longer used.
         setUser(null)
     }
 

@@ -34,7 +34,7 @@ export const Orders = () => {
     const renderListEmptyComponent = () => (
         <View>
             <Text>
-                No work yet!
+                No orders yet!
             </Text>
         </View>
     );
@@ -48,7 +48,7 @@ export const Orders = () => {
                 renderItem={({ item }) => (
                     <>
                         <Text>Vendor ID: {fieldCheck(item.id)}</Text>
-                        <Text>Name: {fieldCheck(item.name)}</Text>
+                        <Text>Name: {fieldCheck(item.cuisine)}</Text>
                     </>
                 )}
                 keyExtractor={(data) => {data.id}}

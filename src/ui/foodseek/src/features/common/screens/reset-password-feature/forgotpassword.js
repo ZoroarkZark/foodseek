@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Text } from 'react-native'
-import { EmailInput, ScrollViewDismissKeyboard, TextButton, Title } from '../../../../components/common'
+import { EmailInput, ScrollViewDismissKeyboard, TextButton, Title, Odin } from '../../../../components/common'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 import { Feather } from '@expo/vector-icons'
 import { Container} from '../../../../components/styling'
@@ -20,6 +20,7 @@ export const ForgotPassword = ( { navigation } ) => {
         <ScrollViewDismissKeyboard>
             <Container>
                 <Title>Reset Password</Title>
+                {loading ? (<Odin></Odin>) : (<></>)}
                 <Text style={{ padding: 10 }}>A link to reset your password will be sent to the email address associated with your sign-in ID.</Text>   
                 <Text style={{paddingTop:10, padding:10}}>Sign-in ID</Text>
                 <EmailInput value={email} onChangeText={setEmail} placeholder='enter email account'/>

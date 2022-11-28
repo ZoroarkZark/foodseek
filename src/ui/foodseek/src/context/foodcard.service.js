@@ -21,10 +21,6 @@ export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
       .catch( ( error ) => { throw error } )
 }
 
-
-
-
-
 // function sends login request to the server with email and password
 export const cardReserve = ( user, id, jwt ) => {
   let path = 'user/reserve'
@@ -74,26 +70,26 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
   console.log(loc)
   try {
     const mappedResults = results.map( ( card ) => {
-      console.log('cards: ','<<<<<',card,'>>>>>')
+      //console.log('cards: ','<<<<<',card,'>>>>>')
       const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
       const card_coordinates = { latitude: latitude, longitude: longitude }
-      const { image, cuisine, item, tags } = JSON.parse(data)
-      console.log(tags)
+      const { image, cuisine, item, phoneNumber, address, tags } = JSON.parse(data)
+      //console.log(tags) 
       const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
       let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
       let hour = (travel.time / 60).toFixed(0)                      // get hours
       return {
         ...card,
         id: id,
-        image: seekerAvatar,  // TODO add linked image require kept as just the seekers avatar just during testing
+        image: seekerAvatar,  //Placeholder image.
         vendor: { name: vendor }, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item
         travel: `${travel.distance.toFixed(1)} mi`, // computed travel distance string format: 1.7 mi 
         time: `${hour > 0 ? `${hour} hr` : ''} ${min} min`, //time format: 16 min
-        address: `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
-        phoneNumber: "0001222112",  // Fill in with phone number
+        address: address ? address : `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
+        phoneNumber: phoneNumber ? phoneNumber : "000-010-0212",  // Fill in with phone number
         reserved: res,
         tags: tags
       }

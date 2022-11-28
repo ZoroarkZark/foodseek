@@ -47,15 +47,11 @@ export const Posts = ( { navigation } ) => {
 
     // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
     const updatePosts = ( update ) => {
-        console.log("Blah")
         if ( !update ) {
             setError( new Error( 'refreshPosts: yielded no new updates' ) )
-
             return
         }
-        
-        setPosts( update )
-        
+        setPosts( update )  
     }
 
     // function called when new list requests are made to update the display

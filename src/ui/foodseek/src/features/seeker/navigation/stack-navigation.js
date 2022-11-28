@@ -78,21 +78,6 @@ export const OrderNavigator = () => {
 
 
 // Returns a stack navigator for the post listing screens
-export const SearchNavigator = () => {
-    return (
-        <Stack.Navigator
-        screenOptions={{
-            headerShown: false,
-        }}>
-            <Stack.Screen
-                name="Search" 
-                component={screen.Search}
-            />
-        </Stack.Navigator>
-    )
-}
-
-// Returns a stack navigator for the post listing screens
 export const SettingsNavigator = () => {
     return (
         <Stack.Navigator

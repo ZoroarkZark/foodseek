@@ -105,5 +105,6 @@ export const userTransform = (data) => {
         email: user,
         isVendor: vendor ? vendor == 1 : false, // TODO add linked image require kept as just the seekers avatar just during testin
         favorites: [], // TODO: enable check if favorite false just during testing
+
     }
 }
