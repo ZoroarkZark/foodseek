@@ -556,7 +556,14 @@ class FoodStore {
     uploadMore(pack, callback){
         //console.log(pack);
         
-        //console.log(date);
+        //Handle getting a timestamp as a date, or just the hour 
+        if(typeof pack.timestamp === "number"){
+            timestamp = timestamp % 24; // get timestamp between 0 and 24
+        }
+        if(typeof timestamp === "string"){
+            let date = new Date(pack.timestamp);
+            pack.timestamp = date.getHours();
+        }
 
 
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
@@ -601,7 +608,13 @@ class FoodStore {
         // data
         // timestamp
 
-        timestamp = timestamp % 24; // get timestamp between 0 and 24
+        if(typeof timestamp === "number"){
+            timestamp = timestamp % 24; // get timestamp between 0 and 24
+        }
+        if(typeof timestamp === "string"){
+            let date = new Date(timestamp);
+            timestamp = date.getHours();
+        }
         let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
         let params = [
             this.table,
@@ -862,14 +875,14 @@ class FoodStore {
             this.col.id,
             id,
             this.col.res,
-            ""
         ];
         
         this.conn.query(SQL, params, (err, results) => {
             if(err){
                 return callback(err, null);
             }
-            
+            console.log('err',err);
+            console.log('results',results);
             if(!results){
                 return callback(null,null);
             }

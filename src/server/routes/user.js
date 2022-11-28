@@ -71,12 +71,14 @@ UserRouter.post('/lr', (req,res,next) => {
 UserRouter.post('/reserve', (req,res,next)=>{
     let resbody = res.locals.resbody;
     
-    Store.reserveCard(req.body.id, req.body.user, (err) => {
+    Store.reserveCard(req.body.id, req.body.user, (err,reserved) => {
         if(err){
             return next(7); // SQL error 
         }
         
-        resbody.setData({msg: "Marked Card Reserved"});
+        if(!reserved){
+            return next({"error":"Card Already Reserved", "msg":`Card(${req.body.id}) is already reserved by another user`});
+        }
 
         Store.getCard(req.body.id, (err, result) => {
             if(err){
