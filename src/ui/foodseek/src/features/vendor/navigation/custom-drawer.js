@@ -42,7 +42,7 @@ export const CustomDrawer = props => {
       <DrawerContentScrollView {...props} contentContainerStyle={{backgroundColor: {backgroundColor}}}>
             <DrawerItemList {...props} />
       </DrawerContentScrollView>
-    <View style={{ flexDirection: 'column' }}>     
+    <View style={{ flexDirection: 'column', paddingBottom: 30}}>     
     <View style={{ flexDirection: 'row' }}>
       <DrawerItem
       flex={5}
@@ -54,9 +54,9 @@ export const CustomDrawer = props => {
               color={color}
               />
           )}
-        onPress={() => {
-          navigation.closeDrawer()
+          onPress={() => {
           setPushAllowed(!pushAllowed)
+          navigation.closeDrawer()
         }}
       {...props}
       />
@@ -95,24 +95,7 @@ export const CustomDrawer = props => {
           )}
       onPress={() => toggleTheme()}
       {...props}
-      />
-
-      <DrawerItem
-        flex={1}
-        label=''
-        labelStyle={{ display: 'none', padding: 0 }}
-          icon={() => (
-              <Ionicons
-              name={darkTheme ? 'notifications' : 'notifications-off'}
-              size={20}
-              color={color}
-              />
-          )}
-      onPress={() => toggleTheme()}
-      {...props}
-      />
-      
-        
+      />      
       </View>
       </View>
 

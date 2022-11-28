@@ -217,7 +217,6 @@ export const AuthenticationContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (!user) return
-        if (!expoPushToken) return
         setPushToken(user.email, expoPushToken, jwt)
     }, [user, setUser, expoPushToken, setExpoPushToken])
 
