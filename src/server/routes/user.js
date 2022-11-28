@@ -71,7 +71,7 @@ UserRouter.post('/lr', (req,res,next) => {
 UserRouter.post('/reserve', (req,res,next)=>{
     let resbody = res.locals.resbody;
     
-    Store.reserveCard(req.body.id, req.body.user, (err, reserved) => {
+    Store.reserveCard(req.body.id, req.body.user, (err,reserved) => {
         if(err){
             if(errno = 1062){
                 return next ({"error ": "user already reserved a card", "msg": `User(${req.body.user}) has a reservation`})
