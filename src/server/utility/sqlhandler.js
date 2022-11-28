@@ -2,6 +2,7 @@
 const { time } = require('console');
 const database = require('mysql');
 const path = require('path');
+const { TLSSocket } = require('tls');
 require('dotenv').config({path: path.resolve(__dirname, "../../../.env")}); // fix dot env path
 
 const sutil = require('../utility/serverutility.js');
@@ -479,6 +480,33 @@ class UserStore {
         })
     }
 
+    updateUserData(email, data,callback){
+        this.getUser(email, (err, results) => {
+            if(err) return callback(err,null);
+            if(!results) return callback(new Error("No user found or something"), null);
+
+            let current = JSON.parse(results[this.col.data]); // parse what ever we have stored
+            let updated = updateObject(data,current);
+
+            let updatedString = JSON.stringify(updated);
+
+            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+            let params = [
+                this.table,
+                this.col.data,
+                updatedString,
+                this.col.email,
+                email,
+            ]
+
+            this.conn.query(SQL,params, (err, results) => {
+                if(err) return callback(err, null);
+
+                return callback(null,updated)
+            })
+        })
+    }
+
 }
 
 
@@ -943,9 +971,21 @@ class FoodStore {
 }
 
 
+// Update an object current with item
+// Any fields that are shared between item and current, current will have its values replaced by items values for those fields
+// if one or the other are null, the one that is not is returned as the final object 
+//   so no update means current stays as the object
+//   and no current means the output becomes item
+// if both are null, null is returned
 function updateObject(item, current){
+    if(!item || !current){
+        let t = (!item) ? (!current ? null : current) : item; // nested lmao
+        return t;
+    }
+
     for(let key in Object.keys(item)){
         let curKey = Object.keys(item)[key];
+        console.log(`Evaluating keys[${key}] as item[${curKey}]=${item[curKey]} and current[${curKey}]=${current[curKey]}`);
         if(current[curKey]){
             current[curKey] = item[curKey];
         }
@@ -964,3 +1004,4 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+
