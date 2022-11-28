@@ -871,7 +871,7 @@ class FoodStore {
             }
             
             if(!results){
-                return callback(null,null);
+                return callback(err,null);
             }
             return callback(null, results.affectedRows);
         });
