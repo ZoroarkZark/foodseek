@@ -73,7 +73,13 @@ UserRouter.post('/reserve', (req,res,next)=>{
     
     Store.reserveCard(req.body.id, req.body.user, (err,reserved) => {
         if(err){
+            if(errno = 1062){
+                return next ({"error ": "user already reserved a card", "msg": `User(${req.body.user}) has a reservation`})
+            }
             return next(7); // SQL error 
+        }
+        if(!reserved){
+            return next ({"error ": "card already reserved", "msg": `Card(${req.body.id}) is already reserved`})
         }
         
         if(!reserved){
