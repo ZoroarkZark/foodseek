@@ -43,19 +43,6 @@ export const CreatePost = () => {
     )
 }
 
-// Returns a stack navigator for the storefront view of the vendor
-export const StoreProfile = () => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="StoreProfile" 
-                component={screen.StoreProfile}
-                options={{ headerShown: false }}
-            />
-        </Stack.Navigator>
-    )
-}
-
 // Returns a stack navigator for the store settings
 export const StoreSettings = () => {
     return (

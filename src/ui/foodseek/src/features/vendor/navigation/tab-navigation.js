@@ -29,14 +29,6 @@ export const VendorTabNav = () => {
                     tabBarIcon: () => <Ionicons name="camera-outline" />,
                 }}
             />
-            <VendorTab.Screen
-                name="Store"
-                component={stack.StoreProfile}
-                options={{
-                    tabBarLabel: 'Store',
-                    tabBarIcon: () => <MaterialIcons name="storefront" />,
-                }}
-            />
         </VendorTab.Navigator>
     )
 }

@@ -12,7 +12,7 @@ import { ThemeContext } from '../../../context/ThemeContext'
 
 
 export const CustomDrawer = props => {
-  const { user, avatar, onLogout} = useContext( AuthenticationContext )
+  const { user, avatar, onLogout, pushAllowed, setPushAllowed } = useContext( AuthenticationContext )
   const { darkTheme, toggleTheme } = useContext( ThemeContext )
 
   const { navigation, color, backgroundColor } = props
@@ -42,9 +42,27 @@ export const CustomDrawer = props => {
       <DrawerContentScrollView {...props} contentContainerStyle={{backgroundColor: {backgroundColor}}}>
             <DrawerItemList {...props} />
       </DrawerContentScrollView>
-          
-
-      <SafeAreaView style={{flexDirection: 'row'}}>
+    <View style={{ flexDirection: 'column', paddingBottom: 30}}>     
+    <View style={{ flexDirection: 'row' }}>
+      <DrawerItem
+      flex={5}
+      label={`Turn ${pushAllowed ? 'Off' : 'On'} Notifications`}
+      icon={() => (
+              <Ionicons
+              name={pushAllowed ? 'notifications' : 'notifications-off-outline'}
+              size={20}
+              color={color}
+              />
+          )}
+          onPress={() => {
+          setPushAllowed(!pushAllowed)
+          navigation.closeDrawer()
+        }}
+      {...props}
+      />
+      </View>
+    <View style={{ flexDirection: 'row' }}>
+    
       <DrawerItem
       flex={5}
       label="Logout"
@@ -60,7 +78,9 @@ export const CustomDrawer = props => {
           onLogout()
         }}
       {...props}
-    />
+      />
+      
+      
 
       <DrawerItem
         flex={1}
@@ -75,10 +95,9 @@ export const CustomDrawer = props => {
           )}
       onPress={() => toggleTheme()}
       {...props}
-      />
-      
-        
-      </SafeAreaView>
+      />      
+      </View>
+      </View>
 
     
       </>
