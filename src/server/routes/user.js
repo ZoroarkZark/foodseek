@@ -40,7 +40,7 @@ UserRouter.post('/list', (req, res, next)=>{
             return next(7); // SQL error
         }
         
-        console.log(results);
+        //console.log(results);
         resbody.setData({msg: "Got List!", cards: results});
         return next();
     });
@@ -71,12 +71,20 @@ UserRouter.post('/lr', (req,res,next) => {
 UserRouter.post('/reserve', (req,res,next)=>{
     let resbody = res.locals.resbody;
     
-    Store.reserveCard(req.body.id, req.body.user, (err) => {
+    Store.reserveCard(req.body.id, req.body.user, (err,reserved) => {
         if(err){
+            if(errno = 1062){
+                return next ({"error ": "user already reserved a card", "msg": `User(${req.body.user}) has a reservation`})
+            }
             return next(7); // SQL error 
         }
+        if(!reserved){
+            return next ({"error ": "card already reserved", "msg": `Card(${req.body.id}) is already reserved`})
+        }
         
-        resbody.setData({msg: "Marked Card Reserved"});
+        if(!reserved){
+            return next({"error":"Card Already Reserved", "msg":`Card(${req.body.id}) is already reserved by another user`});
+        }
 
         Store.getCard(req.body.id, (err, result) => {
             if(err){

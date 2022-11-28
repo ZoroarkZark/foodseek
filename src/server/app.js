@@ -15,6 +15,7 @@ const coreRouter = require('./routes/core.js').CoreRouter;
 const userRouter = require('./routes/user.js').UserRouter;
 const vendorRouter = require('./routes/vendor.js').VendorRouter;
 const ImageRouter = require('./routes/images.js').ImageRouter;
+const AuthRouter  = require('./routes/authcore.js').AuthRouter;
 
 const sutil = require('./utility/serverutility.js');
 const { res_obj } = require('./utility/serverutility.js');
@@ -57,6 +58,7 @@ const VALID_KEYS = {
     "/vendor/updateTime": ["jwt","id","timestamp"],
     "/vendor/updateData": ["jwt","id" ,"data"],
     "/vendor/list"      : ["jwt", "vendor"],
+    "/editData"         : ["jwt", "data"],
 };
 
 
@@ -94,6 +96,7 @@ app.use('',(req,res,next) => {
 
 
 app.use('/' ,coreRouter); // mount core routes
+app.use('/auth',AuthRouter);
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
 app.use('/images/', ImageRouter);

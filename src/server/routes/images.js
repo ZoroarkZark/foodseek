@@ -73,10 +73,6 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
         return next(1); // missing upload keys
     }
 
-    let timeFix = req.body.timestamp;
-    timeFix = new Date(timeFix);
-    console.log(timeFix.getHours());
-
     // request is split into multiple iterations so collect all the passed data into the array chunks
     req.on('data', (data) => {
         console.log('image chunk recieved recieved');
@@ -127,7 +123,7 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
                     item: in_data.item,
                     loc: in_data.loc,
                     tags: in_data.tags,
-                    timestamp: timeFix,
+                    timestamp: in_data.timestamp,
                     img_url: link,
                     vendor: in_data.vendor
                 }
