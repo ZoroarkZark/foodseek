@@ -133,7 +133,7 @@ UserRouter.post('/getUserReserved', (req, res, next) => {
             return next({code: 69 , msg: "User has no reservations"});
         }
 
-        resbody.setData({data: result[0]});
+        resbody.setData({card: result[0]});
 
         return next;
     })
