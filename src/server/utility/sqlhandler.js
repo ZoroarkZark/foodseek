@@ -585,13 +585,6 @@ class FoodStore {
         //console.log(pack);
         
         //Handle getting a timestamp as a date, or just the hour 
-        if(typeof pack.timestamp === "number"){
-            pack.timestamp = pack.timestamp % 24; // get timestamp between 0 and 24
-        }
-        if(typeof timestamp === "string"){
-            let date = new Date(pack.timestamp);
-            pack.timestamp = date.getHours();
-        }
 
 
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
@@ -614,7 +607,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            pack.timestamp
+            16
         ];
 
         this.conn.query(SQL, params, (err) => {
