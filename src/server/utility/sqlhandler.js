@@ -588,7 +588,7 @@ class FoodStore {
         if(typeof pack.timestamp === "number"){
             timestamp = timestamp % 24; // get timestamp between 0 and 24
         }
-        if(typeof timestamp === "string"){
+        if(typeof pack.timestamp === "string"){
             let date = new Date(pack.timestamp);
             pack.timestamp = date.getHours();
         }

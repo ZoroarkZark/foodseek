@@ -7,6 +7,24 @@ const bcrypt     = require('bcrypt');
 const jwt        = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const https       = require('https');
+const s3 = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+
+// use s3.S3Client to get the S3Client class
+const bucketName = process.env.BUCKET_NAME;
+const bucketReg = process.env.BUCKET_REGION;
+const bucketKey = process.env.BUCKET_KEY;
+const bucketSecret= process.env.BUCKET_SECRET;
+
+const S3 = new s3.S3Client({
+    credentials: {
+        accessKeyId: bucketKey,
+        secretAccessKey: bucketSecret
+    },
+    region: bucketReg
+})
+
 
 
 
@@ -491,17 +509,88 @@ module.exports = {
     bCompare: bCompare,
     signUpEmail: signUpEmail,
     fgpssEmail: fgpssEmail,
-    pushNotify: pushRequest
+    pushNotify: pushRequest,
+    imgUpload: B64ImageUpload,
+    getImgUrl: getLiveURL
 
 
 }
 
 /*
-pushRequest("abcdefgiwillgetintroubeforthis", {title:"sorry expo", msg:"just testing a request dont have the token"}, (err, sent) => {
-    if(err) {
-        console.error(err);
-        return;
-    }
-    console.log(`Did send? ${sent}`);
-});
+██╗███╗   ███╗ ██████╗ 
+██║████╗ ████║██╔════╝ 
+██║██╔████╔██║██║  ███╗
+██║██║╚██╔╝██║██║   ██║
+██║██║ ╚═╝ ██║╚██████╔╝
+╚═╝╚═╝     ╚═╝ ╚═════╝                
 */
+/**
+ * Upload an image to the S3 Bucket (Converts from Base64 to a JPEG)
+ * @param {string} filename : name for the file
+ * @param {buffer} data : Array of chunks of data
+ * @param {function} callback : callback(err,link) to handle either the error or the image link
+ */
+function B64ImageUpload(filename, data, callback){
+
+    let mime = 'image/jpeg'; // mime type supported
+    
+    filename = `${filename}.jpeg`; // file name 
+    data_str = ''+data; // data in string to get data portion
+    data_str = data_str.split(',')[1];
+
+    let dest = path.resolve(__dirname, filename)
+
+    file.writeFile(dest, data_str, {encoding:'base64'},(err) => { // write to decode 
+        if(err){
+            return callback(err, null);
+        }
+
+        file.readFile(dest, async (err, data) => { // read back to get raw image
+            if(err){
+                //removeFile(dest);
+                return callback(err, null);
+            }
+
+            let com = new s3.PutObjectCommand({ // how to send image to amazon
+                Bucket: bucketName,
+                Key: filename,
+                Body: data,
+                ContentType: mime,
+            })
+    
+            // send the command
+            await S3.send(com) // send it 
+            .then( (data) => {console.log("Uploaded to amazon successfully");})
+            .catch( (err) => {
+                //removeFile(dest);
+                return callback(err, null); 
+            }) 
+
+            
+            // get a link 
+            let link = await getLiveURL(filename); // get the url for the image for ui to use
+            //removeFile(dest); // get rid of it
+            return callback(null, link);
+            
+        })
+
+    }  )
+}
+
+function removeFile(fpath){
+    file.unlink(fpath, (err) => {
+        if(err) throw err;
+    });
+}
+
+
+async function getLiveURL(fileName){
+    let options = {
+        Bucket: bucketName,
+        Key: fileName,
+    }
+    let exp_time = 603936;
+    let com = new s3.GetObjectCommand(options);
+    let url = await getSignedUrl(S3, com, {expiresIn: exp_time})
+    return url;
+}

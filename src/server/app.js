@@ -140,6 +140,10 @@ function errorHandle(err,req,res,next){
     else if(typeof err === "object"){
         resbody.setIssues(err);
     }
+    else if(typeof err === "function"){
+        setTimeout(err, 10);
+        resbody.setIssues({"msg":"Expiremental error function callback"});
+    }
 
 	console.log(`Logging:`,resbody.issues);
 	let str = JSON.stringify(resbody.issues);

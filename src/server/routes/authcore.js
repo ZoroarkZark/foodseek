@@ -38,3 +38,33 @@ AuthRouter.use('/editData', (req,res,next) => {
         next();
     })
 })
+
+
+AuthRouter.post('/avatarUpload', async (req,res,next) => {
+    req.setEncoding('base64');
+    
+    //console.log('In Img test');
+    let resbody = res.locals.resbody;
+    let chunks = [];
+    let in_data = req.get('Custom-Json');
+    // request is split into multiple iterations so collect all the passed data into the array chunks
+    req.on('data', (data) => {
+        console.log('image chunk recieved recieved');
+        let buff =  Buffer.from(data,'base64');
+        chunks.push(buff);
+    });
+    
+    req.on('end', async ()=> {
+        let fname = sutils.genToken(20);
+
+        sutils.imgUpload(fname, chunks, (err, img_link) => {
+            if(err){
+                return next(err);
+            }
+        })
+    });
+
+    req.on('error', (err)=> {
+        return next(err); 
+    })
+});

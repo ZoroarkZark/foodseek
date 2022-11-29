@@ -30,6 +30,9 @@ CoreRouter.use('/wipecards', (req,res,next) => {
 })
 
 
+CoreRouter.use('/cb', (req,res,next) => {
+    next(()=> {console.log("Callback route")})
+})
 
 CoreRouter.use('/test', (req,res)=>{
     if(req.method != "GET"){

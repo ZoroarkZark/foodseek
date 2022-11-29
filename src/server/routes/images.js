@@ -38,141 +38,78 @@ module.exports = {
 
 ImageRouter.use('', (req,res, next) => {
     console.log('Images request');
-
+    
     let header_data = (req.get('Custom-Json')) ? JSON.parse(req.get('Custom-Json')) : null;
     console.log(header_data);
     if(!sutils.validate(['jwt'], header_data)){ // Validate the body and jwt field, header for the image upload
-
+        
         return next(1); // fields not passed
     }
     sutils.verify(header_data['jwt'], (err, result) => { // jwt check
         if(err){
             return next(2); // bad authorization 
         }
-
+        
         if(result.vendor != 1){
             return next(3); // bad perms
         }
-
+        
         next();
     });
-
+    
 });
 
-ImageRouter.post('/imgtest', async (req,res,next) => {
+ImageRouter.post('/cardUpload', async (req,res,next) => {
     req.setEncoding('base64');
-
+    
     //console.log('In Img test');
     let resbody = res.locals.resbody;
     let chunks = [];
     let in_data = req.get('Custom-Json');
-
+    
     in_data = JSON.parse(in_data); // parse the input data
-
+    
     if(!sutils.validate(['item','loc','tags','timestamp','vendor'],in_data)){
         return next(1); // missing upload keys
     }
-
+    
     // request is split into multiple iterations so collect all the passed data into the array chunks
     req.on('data', (data) => {
         console.log('image chunk recieved recieved');
         let buff =  Buffer.from(data,'base64');
         chunks.push(buff);
     });
-
+    
     req.on('end', async ()=> {
-        //console.log(chunks);
-        let data = Buffer.concat(chunks); // this is our base64 image string
+        let fname = sutils.genToken(20);
 
-        let data_str = ''+data; // actual string
+        sutils.imgUpload(fname, chunks, (err, img_link) => {
+            if(err){
+                return next(err);
+            }
 
-        let mime = 'image/jpeg'; // get the mime / extension type
-
-        let fileName = `${sutils.genToken(20)}.jpeg`; // create a file name
-
-        // make da image locally to convert from base64 to binary
-        fs.writeFile(path.resolve(__dirname, fileName), data_str.split(',')[1], {encoding:'base64'}, (err) => {
-            if(err) return next(err); // Image write error
-
-            // we wrote the local file so now we can send it to amazon
-            // get the binary file contents
-            fs.readFile(path.resolve(__dirname, fileName), async (err,data) => {
-                if (err) {
-                    removeFile(fileName);
-                    return next(err);
-                 } // Image read error
-
-                let com = new s3.PutObjectCommand({
-                    Bucket: bucketName,
-                    Key: fileName,
-                    Body: data,
-                    ContentType: mime,
-                })
-        
-                // send the command
-                await S3.send(com)
-                .then( (data) => {console.log("Uploaded to amazon successfully");})
-                .catch( (err) => {
-                    removeFile(fileName);
-                    return next(err); }) 
-
-                // get a link 
-                let link = await getLiveURL(fileName);
-
-                let food_card = {
-                    item: in_data.item,
-                    loc: in_data.loc,
-                    tags: in_data.tags,
-                    timestamp: in_data.timestamp,
-                    img_url: link,
-                    vendor: in_data.vendor
+            let food_card = {
+                item: in_data.item,
+                loc: in_data.loc,
+                tags: in_data.tags,
+                timestamp: in_data.timestamp,
+                img_url: img_link,
+                vendor: in_data.vendor
+            }
+            FoodStore.uploadMore(food_card, (err) => {
+                if(err){
+                    return next(err); // SQL error 
                 }
-
-                FoodStore.uploadMore(food_card, (err) => {
-                    if(err){
-                        removeFile(fileName);
-                        return next(err); // SQL error 
-                    }
-                    
-                    resbody.setData({msg:"Foodcard completed uploaded", link:link});
-                    //removeFile(fileName); // remove the local file from storage
-                    removeFile(fileName);
-                    return next();
-
-                });
-            })
-
-        }) 
-
-
+                
+                resbody.setData({msg:"Foodcard completed uploaded", link:img_link});
+                //removeFile(fileName); // remove the local file from storage
+                return next();
+                
+            });
+        })
     });
-    // Recieve a base64 url of the image
-    // the base64 will contain the mime type and img data
-    // convert the base64 to the actual image using the mimetype 
-    // upload the actual img to amazon
-    // get a link
-    // Case of getting body all in one go
 
     req.on('error', (err)=> {
         return next(err); 
     })
 });
-
-
-// delete the temporary file that was stored 
-function removeFile(fpath){
-    fs.unlink(path.resolve(__dirname, fpath), (err) => {
-        if(err) throw err;
-    });
-}
-
-async function getLiveURL(fileName){
-    let options = {
-        Bucket: bucketName,
-        Key: fileName,
-    }
-    let exp_time = 86400;
-    let com = new s3.GetObjectCommand(options);
-    let url = await getSignedUrl(S3, com, {expiresIn: exp_time})
-    return url;
-}
