@@ -773,8 +773,11 @@ class FoodStore {
     
     // return all cards
     getCardsAll(callback){
-        let SQL = "SELECT * FROM ??";
-        let params = [this.table];
+        let SQL = "SELECT * FROM ?? WHERE ?? IS NULL";
+        let params = [
+            this.table,
+            this.col.res,
+        ];
         
         this.conn.query(SQL,params, (err, results) => {
             if(err){
@@ -800,7 +803,7 @@ class FoodStore {
         let lon_min = pos.lon - ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
         let lon_max = pos.lon + ((rounded_km * 0.045) / Math.cos(pos.lat * Math.PI/180))
         
-        let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ?'
+        let SQL = 'SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? AND ?? BETWEEN ? AND ? AND ?? IS NULL'
         var params = [
             this.table,
             this.col.lat,
@@ -808,7 +811,8 @@ class FoodStore {
             lat_max,
             this.col.lon,
             lon_min,
-            lon_max
+            lon_max,
+            this.col.res
         ]
         
         this.conn.query(SQL, params, (err, results) => {
@@ -1022,3 +1026,5 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+
+
