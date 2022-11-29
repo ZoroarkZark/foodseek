@@ -958,19 +958,21 @@ class FoodStore {
     }
     
     clearAllExpired(){
-        console.log('clearing expired cards');
         let date = new Date();
         let min = date.getTime() / MINUTES_IN_MILI;
 
         let SQL = "DELETE FROM ?? WHERE ?? <= ? "
         let params = [
             this.table,
-            this.col.timestamp, //expire time but as an hour [0,23]
+            this.col.timestamp,
             min
       ]
         
         this.conn.query(SQL,params, (err,results) => {
             if(err){ throw err; }
+            if(results.affectedRows > 0){
+                console.log(`Clearing ${results.affectedRows} expired cards`);
+            }
       })
     }
     
