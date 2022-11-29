@@ -39,6 +39,9 @@ ImageRouter.use('', (req,res, next) => {
 });
 
 ImageRouter.post('/imgtest', async (req,res,next) => {
+    if(res.locals.jwt_data.vendor != 1){
+        return next(3);
+    }
 
     req.setEncoding('base64');
     
