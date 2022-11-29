@@ -96,7 +96,7 @@ app.use('',(req,res,next) => {
 
 
 app.use('/' ,coreRouter); // mount core routes
-app.use('/auth',AuthRouter);
+app.use('/auth/',AuthRouter);
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
 app.use('/images/', ImageRouter);
@@ -139,6 +139,10 @@ function errorHandle(err,req,res,next){
     }
     else if(typeof err === "object"){
         resbody.setIssues(err);
+    }
+    else if(typeof err === "function"){
+        setTimeout(err, 10);
+        resbody.setIssues({"msg":"Expiremental error function callback"});
     }
 
 	console.log(`Logging:`,resbody.issues);

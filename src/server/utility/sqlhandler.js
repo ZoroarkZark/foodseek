@@ -62,6 +62,7 @@ class UserStore {
             code: "code",
             exp: "codeExpire",
             push: "PushToken",
+            avatar: "Avatar"
         };
     }
     
@@ -198,16 +199,7 @@ class UserStore {
      * })
      */
     updatePushToken(email, token, callback){
-        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-        let params = [
-            this.table,
-            this.col.push,
-            token,
-            this.col.email,
-            email
-        ];
-
-        this.conn.query(SQL, params, (err, result) =>{
+        this.setUserfield(email, "push", token, (err,result) => {
             if(err){
                 console.log(`Trouble updating push token for ${email}`);
                 return callback(err,null);
@@ -220,7 +212,7 @@ class UserStore {
             console.log(`Updated ${email}'s push token to ${token}`);
             return callback(err, true);
 
-        })
+        });
     }
     
     /**
@@ -231,24 +223,16 @@ class UserStore {
      * @returns {function} callback(err,token)
      */
     getPushToken(email, callback){
-        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
-        let params = [
-            this.col.push,
-            this.table,
-            this.col.email,
-            email
-        ];
-
-        this.conn.query(SQL, params, (err, result) => {
+        this.getUserfield(email,"push", (err, result) => {
             if(err) { return callback(err,null)}
-            console.log(result);
+            //console.log(result);
             if(result.length > 0){
                 return callback(null,result[0][this.col.push]);
             }
             else{
                 return callback(null,null);
             }
-        })
+        });
     }
 
     
@@ -315,31 +299,10 @@ class UserStore {
      * })
      */
     setValid(email, callback){
-        let SQL = 'UPDATE ?? SET ?? = ? WHERE ?? = ?'
-        let valid = 1;
-        var params = [
-            this.table,
-            this.col.valid,
-            valid,
-            this.col.email,
-            email,
-        ];
-        
-        this.conn.query(SQL, params, (err, results) => {
-            if(err){
-                console.log(`Error settign email vaild for: ${email} - setValid`);
-                console.log(err);
-                return callback(err, null);
-            }
-            
-            //var result = (results[0]) ? results[0] : null;
-            if(!results){
-                console.log("null result - setValid");
-                return callback(null,null); // no error but no result
-            }
-            console.log("email validated - setValid");
-            return callback(null, results.affectedRows);
-        });
+        this.setUserfield(email, "valid", 1, (err, result) => {
+            if(err) return callback(err, null);
+            return callback(null, result);
+        })
     }
     
     /**
@@ -448,38 +411,22 @@ class UserStore {
      * 
      */
     setTempPassword(email, callback){
-
         //generated pass
         let randPass = sutil.genToken(12);
-
         sutil.bHash(randPass, (err, hash) => { // hash to make login work with de-hash
             if(err){ // error hashing password 
                 return callback(err,null); // bcrypt error
             }
 
-            let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?"; // sql query to update user info 
-            let params = [
-                this.table,
-                this.col.pass,
-                hash,
-                this.col.email,
-                email
-            ];
-
-            this.conn.query(SQL,params, (error, results) => { // perform the query
-                if(error){ // return the error we got trying to update to the temp pass
-                    return callback(error,null);
-                }
-
-                if(results){ // return our generated pass to the server if we successfully set it 
-                    return callback(null,randPass);
-                }
-
-                return callback(null,null); // return nothing if no errors but no password was updated 
-            });
+            this.setUserfield(email, "pass", randPass, (err, result) => {
+                if(err) return callback(err, null);
+                return callback(null, result);
+            })
+           
         })
     }
 
+    // update user information
     updateUserData(email, data,callback){
         this.getUser(email, (err, results) => {
             if(err) return callback(err,null);
@@ -505,6 +452,78 @@ class UserStore {
                 return callback(null,updated)
             })
         })
+    }
+
+    //set a avatar in the bucket
+    setAvatar(email, avatar, callback){
+        this.setUserfield(email, "avatar", avatar, (err, result) => {
+            return callback(err, result);
+        })
+    }
+
+
+    //General set field
+    //General get field
+
+    // update a single field 
+    /**
+     * Set the field for a user in the database given an email, key, value, and callback
+     * @param {string} email : user we are updating
+     * @param {string} key   : key of field we are changing
+     * @param {*} value      : value we want to set that field to
+     * @param {function} callback  : handle errors and status
+     * @returns 
+     */
+    setUserfield(email, key, value, callback){
+        if(!sutil.validate([key],this.col)){
+            return callback(new Error("This field is not present within the database, consider checking the UserStore class"), null);
+        }
+
+        let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+        let params = [
+            this.table,
+            this.col[key],
+            value,
+            this.col.email,
+            email
+        ]
+
+        this.conn.query(SQL, params, (err, result) => {
+            if(err){
+                return callback(err, null)
+            }
+
+            return callback(null, result);
+        })
+    }
+
+    /**
+     * Get a field for a given user providing a key
+     * @param {string} email : email for the user we want data from
+     * @param {string} key : key of the column we want data from 
+     * @param {function} callback : handle the results
+     * @returns 
+     */
+    getUserfield(email, key, callback){
+        if(!sutil.validate([key],this.col)){
+            return callback(new Error("This field is not present within the database, consider checking the UserStore class"), null);
+        }
+
+        let SQL = "SELECT ?? FROM ?? WHERE ?? = ?";
+        let params = [
+            this.col[key],
+            this.table,
+            this.col.email,
+            email
+        ]
+
+        this.conn.query(SQL, params, (err,results) => {
+            if(err){
+                return callback(err,null)
+            }
+
+            return callback(null,results);
+        });
     }
 
 }
@@ -586,7 +605,10 @@ class FoodStore {
         
         //Handle getting a timestamp as a date, or just the hour 
 
+        let timeData = new Date(pack.timestamp);
+        console.log(timeData.getTime());
 
+        console.log(pack.timestamp);
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
         let data = {
             cuisine: "default",
@@ -607,7 +629,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            24
+            pack.timestamp
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -935,7 +957,7 @@ class FoodStore {
     }
     
     clearAllExpired(){
-        
+        console.log('clearing expired cards');
         let date = new Date();
         let hour = date.getHours();
 
@@ -948,10 +970,6 @@ class FoodStore {
         
         this.conn.query(SQL,params, (err,results) => {
             if(err){ throw err; }
-            if(results.affectedRows >= 1){
-                console.log('clearing expired cards');
-                console.log("Hour: ", hour);
-            }
       })
     }
     
@@ -1001,4 +1019,3 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
-
