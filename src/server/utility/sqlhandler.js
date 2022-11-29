@@ -629,7 +629,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            pack.timestamp
+            timeData.getTime()
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -959,7 +959,7 @@ class FoodStore {
     clearAllExpired(){
         console.log('clearing expired cards');
         let date = new Date();
-        let hour = date.getHours();
+        let hour = date.getTime();
 
         let SQL = "DELETE FROM ?? WHERE ?? <= ? "
         let params = [
