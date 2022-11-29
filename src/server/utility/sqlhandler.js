@@ -773,8 +773,11 @@ class FoodStore {
     
     // return all cards
     getCardsAll(callback){
-        let SQL = "SELECT * FROM ??";
-        let params = [this.table];
+        let SQL = "SELECT * FROM ?? WHERE ?? IS NULL";
+        let params = [
+            this.table,
+            this.col.res,
+        ];
         
         this.conn.query(SQL,params, (err, results) => {
             if(err){
@@ -1022,3 +1025,5 @@ module.exports = {
     UserStore: US,
     FoodStore: FS
 }
+
+
