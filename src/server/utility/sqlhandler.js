@@ -604,15 +604,8 @@ class FoodStore {
         //console.log(pack);
         
         //Handle getting a timestamp as a date, or just the hour 
-        if(typeof pack.timestamp === "number"){
-            pack.timestamp = timestamp % 24; // get timestamp between 0 and 24
-        }
-        if(typeof pack.timestamp === "string"){
-            let date = new Date(pack.timestamp);
-            pack.timestamp = date.getHours();
-        }
 
-
+        console.log(pack.timestamp);
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
         let data = {
             cuisine: "default",
