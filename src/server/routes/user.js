@@ -46,7 +46,7 @@ UserRouter.post('/list', (req, res, next)=>{
     });
     
 });
-
+// list range
 UserRouter.post('/lr', (req,res,next) => {
     let resbody = res.locals.resbody;
     
@@ -67,7 +67,7 @@ UserRouter.post('/lr', (req,res,next) => {
         return next();
     });
 });
-
+// reserve card
 UserRouter.post('/reserve', (req,res,next)=>{
     let resbody = res.locals.resbody;
     
@@ -120,6 +120,25 @@ UserRouter.post('/reserve', (req,res,next)=>{
         })
     })
 });
+// get users reserved card
+// keys required ["jwt", "email"]
+UserRouter.post('/getUserReserved', (req, res, next) => {
+    let resbody = res.locals.resbody;
+    Store.getUserReserved(req.body.email, (err, result) => {
+        if(err) return next(7);
+
+        console.log(result.length);
+
+        if(result.length <= 0){
+            return next({code: 69 , msg: "User has no reservations"});
+        }
+
+        resbody.setData({data: result[0]});
+
+        return next;
+    })
+
+})
 
 UserRouter.post('/cancel', (req,res,next) => {
     let resbody = res.locals.resbody;
