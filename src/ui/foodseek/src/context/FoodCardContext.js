@@ -4,6 +4,14 @@ import { AuthenticationContext } from './AuthenticationContext'
 import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate} from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
+export const CreateExpirationTime = ( timestamp, days=1 ) => {
+  let expirationTime = new Date( timestamp )
+  console.log('Creation Time: ', expirationTime)
+  expirationTime.setHours( 0, 0, 0, 0 )
+  expirationTime.setTime( expirationTime.getTime() + days * 86400000 )
+  console.log('Expiration Time: ', expirationTime)
+  return expirationTime
+}
 
 export const FoodCardContext = createContext()
 
@@ -111,16 +119,17 @@ const loadOrders = async (id) => {
    timestamp.setHours(24); // set expiration time to midnight
    console.log(timestamp.toUTCString());
 
-   const vendor    = user.id; // get the user id from auth context
-   const tags      = card_data.tags; // card data 
-   const item      = card_data.item; // card data
+  const vendor    = user.id; // get the user id from auth context
+  const tags      = card_data.tags; // card data 
+  const item = card_data.item // card data
+
 
    const upload_card = {
     item: item,
     loc: loc,
     vendor: vendor,
     tags: tags,
-    timestamp: 16,
+    timestamp: CreateExpirationTime(new Date()).toUTCString(),
    }
 
    try{ // upload the card
@@ -134,7 +143,7 @@ const loadOrders = async (id) => {
         setError( { cause: 'uploadCard/cardUpload', message: "Couldn't upload card, please try again...", issues: response.issues } ) // Server Rejected Card
         setResult( { error: error, success: response.success } ) 
       }
-    } )
+    } ).catch((err)=> {throw err})
    }
    catch ( err ) {
      setError(err)

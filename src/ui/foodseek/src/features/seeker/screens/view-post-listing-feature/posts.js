@@ -18,20 +18,19 @@ import { Odin } from '../../../../components/common/Odin'
 import { Button } from 'react-native-rapi-ui'
 
 // TODO: move to config for testing
-const DEFAULT_CARD_ARRAY = DATA ? DATA : []
+
 
 // Returns a PostList to display a list of available vendor posts to the user
 export const Posts = ( { navigation } ) => {
-    // error and data storage for the post screen component
-    const [ error, setError ] = useState( null )
-    const [ posts, setPosts ] = useState( DEFAULT_CARD_ARRAY )
-    const [ sort, setSort ] = useState( null )
-    const [ tags, setTags ] = useState( null )
-    
-
     // context classes for location and food card providers
     const { location: loc, keyword: key } = useContext( LocationContext )
-    const { onRefresh, loading: refreshing, setLoading, onReserve, orders} = useContext( FoodCardContext )
+    const { onRefresh, loading: refreshing, setLoading, onReserve, orders, cards } = useContext( FoodCardContext )
+    
+    // error and data storage for the post screen component
+    const [ error, setError ] = useState( null )
+    const [ posts, setPosts ] = useState( cards )
+    const [ sort, setSort ] = useState( null )
+    const [ tags, setTags ] = useState( null )
 
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
@@ -77,20 +76,23 @@ export const Posts = ( { navigation } ) => {
     useEffect( () => {
         onRefresh()
     }, [] )
+
+    useEffect( () => {
+        if ( posts ) return
+        let limit = 10
+        let retry
+        while ( !posts ) {
+            refreshPosts()
+            retry += 1
+        }
+        if ( !posts ) {
+            setError( new Error( `Loading post list failed after ${ limit } retries` ) )
+            return
+        }
+        console.log( posts )
+    }, [])
     
-    // defines the props for the Posts SectionList (the view for the screen)
-    const props = {
-        data: posts,
-        onRefresh: refreshPosts,
-        setKeyword,
-        setLocation,
-        tagList,
-        sortList,
-        style,
-        setSort,
-        setTags,
-        refreshing,
-    }
+    
     
     // re-render/ control filtering and sorting 
     useEffect( () => {
@@ -110,7 +112,19 @@ export const Posts = ( { navigation } ) => {
         if (!error) return
     }, [ error, setError ] )
 
-    
+    // defines the props for the Posts SectionList (the view for the screen)
+    let props = {
+        data: posts,
+        onRefresh: refreshPosts,
+        setKeyword,
+        setLocation,
+        tagList,
+        sortList,
+        style,
+        setSort,
+        setTags,
+        refreshing,
+    }
 
     // Render the Post Listing Screen component
     return (
