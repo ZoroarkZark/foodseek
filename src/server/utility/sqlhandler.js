@@ -7,6 +7,7 @@ require('dotenv').config({path: path.resolve(__dirname, "../../../.env")}); // f
 
 const sutil = require('../utility/serverutility.js');
 
+const TO_MIN = 1000 * 60;
 
 // Some random test postions 
 TEST_POS = [
@@ -606,7 +607,7 @@ class FoodStore {
         //Handle getting a timestamp as a date, or just the hour 
 
         let timeData = new Date(pack.timestamp);
-        console.log(timeData.getTime());
+        timeData = timeData.getTime() / TO_MIN; // convert milliseconds to minutes since 1970
 
         console.log(pack.timestamp);
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
@@ -629,7 +630,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            timeData.getTime()
+            timeData
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -959,7 +960,7 @@ class FoodStore {
     clearAllExpired(){
         console.log('clearing expired cards');
         let date = new Date();
-        let hour = date.getTime();
+        let hour = date.getTime() / TO_MIN;
 
         let SQL = "DELETE FROM ?? WHERE ?? <= ? "
         let params = [
