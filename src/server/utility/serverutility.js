@@ -242,6 +242,10 @@ function pushRequest(target, msg, callback){
 
         response.on('end', () => {
             let response = JSON.parse(str);
+            if(!response || !response.data){
+                return callback(new Error("Expo push notification request not able to be sent"), null);
+            }
+
             if(response.data.status === "error"){
                 console.log('Could not send push notification');
                 console.log(response.data.message);
