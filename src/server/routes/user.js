@@ -135,7 +135,7 @@ UserRouter.post('/getUserReserved', (req, res, next) => {
 
         resbody.setData({card: result[0]});
 
-        return next;
+        return next();
     })
 
 })
