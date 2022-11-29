@@ -31,6 +31,7 @@ export const Posts = ( { navigation } ) => {
     const [ posts, setPosts ] = useState( cards )
     const [ sort, setSort ] = useState( null )
     const [ tags, setTags ] = useState( null )
+    const [ fresh, setFresh ] = useState( true )
 
     // search term and coordinates
     const [ keyword, setKeyword ] = useState( key )
@@ -93,7 +94,6 @@ export const Posts = ( { navigation } ) => {
     }, [])
     
     
-    
     // re-render/ control filtering and sorting 
     useEffect( () => {
         // do filtering sorting and updating lists here
@@ -104,6 +104,10 @@ export const Posts = ( { navigation } ) => {
     // re-render/ control loading behavior
     useEffect( () => {
         // do loading behavior stuff here
+        if (fresh === true){
+            refreshPosts()
+            setFresh(false)
+        }
     }, [ refreshing ] )
     
     // re-render/ control error or helper messages
