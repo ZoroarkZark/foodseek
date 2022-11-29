@@ -105,7 +105,7 @@ VendorRouter.post('/updateTime', (req,res,next) => {
 VendorRouter.post('/del', (req,res,next) => {
     let resbody = res.locals.resbody;
     
-    FoodStore.deleteCard(Number(req.body.id), (err) => {
+    FoodStore.deleteCardsById(Number(req.body.id), (err) => {
         if(err){
             return next(7); // SQL error 
         }
