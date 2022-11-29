@@ -12,7 +12,8 @@ import { FoodCardContext } from '../../../../context/FoodCardContext'
 export const ExpandPost = ( props ) => {
     const { onReserve } = useContext( FoodCardContext )
     const data = props.data;
-    const { card, id, vendor, cuisine, item, distance, time, address, phoneNumber, image} = props.route.params;
+    const { card, id, vendor, cuisine, item, distance, time, address, phoneNumber, image } = props.route.params;
+    const { img_url } = card
     const identity = JSON.stringify(id);
 
     const yesNoAlert = () => {
@@ -35,7 +36,7 @@ export const ExpandPost = ( props ) => {
     //Ideally, want to have data from postCard read in, and data then referenced from info in postCard, and looked up
     return (
     <View>
-    <ImageBackground source={image} resizeMode= "stretch" style={{borderColor: "black", borderWidth: 6, width: 360, height: 300}}>
+    <ImageBackground source={{uri: img_url}} resizeMode= "stretch" style={{borderColor: "black", borderWidth: 6, width: 360, height: 300}}>
         <View style={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-start', textAlign: 'left', paddingTop: 240, flexDirection:'row' , flexWrap:'wrap'}}>    
             <Text style={styles.buttonTextStyleWhite}
               numberOfLines={1}>Name: {item}</Text>

@@ -17,7 +17,7 @@ const PostCard = (props) => {
     return (
         <TouchableOpacity onPress={() => {navigation.navigate('ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
             <Section>
-                <SectionImage source={data.image} height={200} />
+                <SectionImage source={{uri: data.img_url}} height={200} />
                 <SectionContent padding={10}>
                     <View style={style.column}>
                         <View style={style.row}>

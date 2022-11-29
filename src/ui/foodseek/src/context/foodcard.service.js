@@ -15,7 +15,8 @@ export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
-        }
+      }
+
           return response.data
       } )
       .catch( ( error ) => { throw error } )
@@ -73,7 +74,7 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
       //console.log('cards: ','<<<<<',card,'>>>>>')
       const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
       const card_coordinates = { latitude: latitude, longitude: longitude }
-      const { image, cuisine, item, phoneNumber, address, tags } = JSON.parse(data)
+      const { image, cuisine, item, phoneNumber, address, tags } = JSON.parse( data )
       //console.log(tags) 
       const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
       let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
@@ -81,6 +82,7 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
       return {
         ...card,
         id: id,
+        img_url: img_url, 
         image: seekerAvatar,  //Placeholder image.
         vendor: { name: vendor }, // name of the vendor
         favorite: false, // TODO: enable check if favorite false just during testing

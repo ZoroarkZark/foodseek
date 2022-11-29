@@ -157,8 +157,8 @@ export const toTags = ( str ) => {
 }
 
 export const ExpandedView = ( props ) => {
-    const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, image, backgroundColor, item } = props
-    const {id, tags} = card
+    const { loading, setLoading, onUpdate, setComplete, timestamp, vendor, phone, address, time, distance, card, backgroundColor, item } = props
+    const {id, tags, img_url} = card
     const [ name, setName ] = useState( item )
     const [ tagged, setTagged ] = useState(tagsToStr(tags))
     const [ size, setSize ] = useState( Dimensions.get( 'window' ) )
@@ -240,7 +240,7 @@ export const ExpandedView = ( props ) => {
             <View backgroundColor={backgroundColor} borderRadius={10} overflow='hidden' flexDirection='column'>
                     <View style={{ flexDirection: 'row', flexGrow: .9}}>
                     <TouchableOpacity style={{width: size.width, height: size.width}}>
-                            <Image style={{ width: size.width, height: size.width }} source={image} />
+                            <Image style={{ width: size.width, height: size.width }} source={{uri: img_url}} />
                             <Text style={{ color: '#fff', fontWeight: '700', fontSize: 40, bottom: '12%', paddingHorizontal: 20, position: "absolute", textShadowColor: 'black', textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10 }} >{name}</Text>
                             <Text style={{ color: '#fff', fontWeight: '700', fontSize: 25, bottom: '5%', paddingHorizontal: 20, position: "absolute", textShadowColor: 'black', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 10}} >{vendor}</Text>
                     </TouchableOpacity>
