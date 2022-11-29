@@ -105,7 +105,7 @@ VendorRouter.post('/updateTime', (req,res,next) => {
 VendorRouter.post('/del', (req,res,next) => {
     let resbody = res.locals.resbody;
     
-    FoodStore.deleteCard(Number(req.body.id), (err) => {
+    FoodStore.deleteCardsById(Number(req.body.id), (err) => {
         if(err){
             return next(7); // SQL error 
         }
@@ -132,7 +132,7 @@ VendorRouter.post('/conf', (req,res,next) => {
         
         
         if(result.id == req.body.id){
-            if(result.reserved == req.body.email){
+            if(result.reserved == req.body.user){
                 // want to remove the card after a successful confirmation
                 resbody.setData({msg: "confirmed pickup!"});
                 return next();

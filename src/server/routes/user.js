@@ -142,7 +142,7 @@ UserRouter.post('/getUserReserved', (req, res, next) => {
 
 UserRouter.post('/cancel', (req,res,next) => {
     let resbody = res.locals.resbody;
-    Store.cancelReservation(req.body.email, (err, results) => {
+    Store.cancelReservation(req.body.user, (err, results) => {
         if(err){
             return next(err); // return error
         }
