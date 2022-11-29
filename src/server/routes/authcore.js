@@ -11,7 +11,20 @@ module.exports = {AuthRouter}
 
 AuthRouter.use('', (req,res, next) => {
     console.log("Auth Router");
-    sutil.verify(req.body.jwt, (err, results) => { // jwt check
+    //potential header use 
+    let jwt = "";
+    if(req.get('Custom-Json')){
+        let head_data = JSON.parse(req.get('Custom-Json'));
+        if(head_data.jwt){
+            jwt = head_data.jwt
+        }
+    }
+
+    if(req.body.jwt){
+        jwt = req.body.jwt;
+    }
+
+    sutil.verify(jwt, (err, results) => { // jwt check
         if(err || !results || !results.user){
             return next(2); // bad jwt
         }
@@ -26,7 +39,7 @@ AuthRouter.use('', (req,res, next) => {
 
 
 // Required Keys : ["jwt", "data"]
-AuthRouter.use('/editData', (req,res,next) => {
+AuthRouter.post('/editData', (req,res,next) => {
     Store.updateUserData(res.locals.useremail,req.body.data, (err, result) => {
         if(err){
             console.log(err);
@@ -40,31 +53,17 @@ AuthRouter.use('/editData', (req,res,next) => {
 })
 
 
-AuthRouter.post('/avatarUpload', async (req,res,next) => {
-    req.setEncoding('base64');
-    
-    //console.log('In Img test');
-    let resbody = res.locals.resbody;
-    let chunks = [];
-    let in_data = req.get('Custom-Json');
-    // request is split into multiple iterations so collect all the passed data into the array chunks
-    req.on('data', (data) => {
-        console.log('image chunk recieved recieved');
-        let buff =  Buffer.from(data,'base64');
-        chunks.push(buff);
-    });
-    
-    req.on('end', async ()=> {
-        let fname = sutils.genToken(20);
+// Refresh a users avatar by gettting a url for their image in the database
+// these urls are set to 6 days of live time
+AuthRouter.post('/refreshAvatar', (req,res,next) => {
+    Store.getUserfield(res.locals.useremail, "avatar", async (err, filename) => {
+        if(err) return next(7);
+        console.log(filename[0].Avatar);
+        filename = filename[0].Avatar;
+        let link = await sutil.getImgUrl(filename);
 
-        sutils.imgUpload(fname, chunks, (err, img_link) => {
-            if(err){
-                return next(err);
-            }
-        })
-    });
-
-    req.on('error', (err)=> {
-        return next(err); 
+        res.locals.resbody.setData({msg:"refreshing avatar", img_url:link});
+        return next();
     })
-});
+})
+

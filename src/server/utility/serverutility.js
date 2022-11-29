@@ -534,7 +534,6 @@ function B64ImageUpload(filename, data, callback){
 
     let mime = 'image/jpeg'; // mime type supported
     
-    filename = `${filename}.jpeg`; // file name 
     data_str = ''+data; // data in string to get data portion
     data_str = data_str.split(',')[1];
 
@@ -547,7 +546,7 @@ function B64ImageUpload(filename, data, callback){
 
         file.readFile(dest, async (err, data) => { // read back to get raw image
             if(err){
-                //removeFile(dest);
+                removeFile(dest);
                 return callback(err, null);
             }
 
@@ -562,14 +561,14 @@ function B64ImageUpload(filename, data, callback){
             await S3.send(com) // send it 
             .then( (data) => {console.log("Uploaded to amazon successfully");})
             .catch( (err) => {
-                //removeFile(dest);
+                removeFile(dest);
                 return callback(err, null); 
             }) 
 
             
             // get a link 
             let link = await getLiveURL(filename); // get the url for the image for ui to use
-            //removeFile(dest); // get rid of it
+            removeFile(dest); // get rid of it
             return callback(null, link);
             
         })

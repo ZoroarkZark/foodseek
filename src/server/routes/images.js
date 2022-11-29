@@ -6,29 +6,10 @@ const path = require('path');
 const sutils    = require('../utility/serverutility.js');
 const sql       = require('../utility/sqlhandler.js');
 
-const s3 = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-
-
-// use s3.S3Client to get the S3Client class
-const bucketName = process.env.BUCKET_NAME;
-const bucketReg = process.env.BUCKET_REGION;
-const bucketKey = process.env.BUCKET_KEY;
-const bucketSecret= process.env.BUCKET_SECRET;
-
-const S3 = new s3.S3Client({
-    credentials: {
-        accessKeyId: bucketKey,
-        secretAccessKey: bucketSecret
-    },
-    region: bucketReg
-})
-
-
 
 //const FoodStore = sutils.FoodStore;
 const FoodStore   = sql.FoodStore;
-
+const UserStore   = sql.UserStore;
 const ImageRouter = express.Router();
 
 module.exports = {
@@ -50,16 +31,15 @@ ImageRouter.use('', (req,res, next) => {
             return next(2); // bad authorization 
         }
         
-        if(result.vendor != 1){
-            return next(3); // bad perms
-        }
+        res.locals.jwt_data = result;
         
-        next();
+        return next();
     });
     
 });
 
-ImageRouter.post('/cardUpload', async (req,res,next) => {
+ImageRouter.post('/imgtest', async (req,res,next) => {
+
     req.setEncoding('base64');
     
     //console.log('In Img test');
@@ -82,6 +62,7 @@ ImageRouter.post('/cardUpload', async (req,res,next) => {
     
     req.on('end', async ()=> {
         let fname = sutils.genToken(20);
+        fname = `${fname}.jpeg`;
 
         sutils.imgUpload(fname, chunks, (err, img_link) => {
             if(err){
@@ -113,3 +94,40 @@ ImageRouter.post('/cardUpload', async (req,res,next) => {
         return next(err); 
     })
 });
+
+ImageRouter.post('/avatarUpload', async (req, res, next) => {
+    let user = res.locals.jwt_data.user;
+    req.setEncoding('base64');
+    
+    //console.log('In Img test');
+    let resbody = res.locals.resbody;
+    let chunks = [];
+    
+    // request is split into multiple iterations so collect all the passed data into the array chunks
+    req.on('data', (data) => {
+        console.log('image chunk recieved recieved');
+        let buff =  Buffer.from(data,'base64');
+        chunks.push(buff);
+    });
+    
+    req.on('end', async ()=> {
+        let fname = sutils.genToken(20);
+        fname = `${fname}.jpeg`;
+
+        sutils.imgUpload(fname, chunks, (err, img_link) => {
+            if(err){
+                return next(err);
+            }
+
+            UserStore.setAvatar(res.locals.jwt_data.user, fname, (err, res)=>{
+                if(err) return next(7);
+                resbody.setData({msg:`Set ${user} avatar to file : ${fname}`});
+                return next();
+            })
+        })
+    });
+
+    req.on('error', (err)=> {
+        return next(err); 
+    })
+})

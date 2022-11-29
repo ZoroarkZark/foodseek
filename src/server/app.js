@@ -96,7 +96,7 @@ app.use('',(req,res,next) => {
 
 
 app.use('/' ,coreRouter); // mount core routes
-app.use('/auth',AuthRouter);
+app.use('/auth/',AuthRouter);
 app.use('/user/', userRouter); // mount user routes
 app.use('/vendor/', vendorRouter); // mount vendor routes
 app.use('/images/', ImageRouter);
