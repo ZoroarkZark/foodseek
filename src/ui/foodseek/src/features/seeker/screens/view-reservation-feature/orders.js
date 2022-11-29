@@ -13,7 +13,7 @@ import { Button } from 'react-native-rapi-ui'
 
 // TODO: move to config for testing
 export const Orders = ({navigation, route}) => {
-    const { onRefresh, loading, orders } = useContext( FoodCardContext )
+    const { onRefresh, loading, orders, onViewActiveOrders } = useContext( FoodCardContext )
     const [ posts, setPosts ] = useState( [] )
     const [ error, setError ] = useState( null )
     let {refresh: trigger} = route.params ? route.params.refresh : false
@@ -73,7 +73,13 @@ export const Orders = ({navigation, route}) => {
   useEffect( () => {
     if (! error) return
     console.log(error)
-  }, [error, setError])
+  }, [ error, setError ] )
+
+  useEffect( () => {
+    if (! orders) return
+    onViewActiveOrders()
+  }, [] )
+    
 
     return (
         

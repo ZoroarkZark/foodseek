@@ -1,15 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate} from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate, getUserReserved} from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 export const CreateExpirationTime = ( timestamp, days=1 ) => {
   let expirationTime = new Date( timestamp )
-  console.log('Creation Time: ', expirationTime)
+  console.log( 'Creation Time: ', expirationTime )
+  // comment the two lines below to test for 2 minute expiration
   expirationTime.setHours( 0, 0, 0, 0 )
   expirationTime.setTime( expirationTime.getTime() + days * 86400000 )
-  console.log('Expiration Time: ', expirationTime)
+  // uncomment below to test for 2 minute expiration
+  // expirationTime.setMinutes(expirationTime.getMinutes()+2)
+  // console.log('Expiration Time: ', expirationTime) 
   return expirationTime
 }
 
@@ -21,8 +24,6 @@ export const FoodCardProvider = ( { children } ) => {
   const [ loading, setLoading ] = useState( false )
   const [ error, setError ] = useState( null )
   const { location, setLocation } = useContext( LocationContext )
-  const [ speed, setSpeed ] = useState( 1.1176 ) // TODO add speed context given in meters per second
-  const [unit, setUnit] = useState('mi') // TODO add preferred units context
   const { user, jwt, isVendor } = useContext( AuthenticationContext )
   const [ orders, setOrders ] = useState( [] )
   
@@ -56,6 +57,8 @@ const loadOrders = async (id) => {
         console.log('Read error when loading orders ', err)
     }
   }
+
+
 
   // function used to reserve a card for a user
   const onReserve = ( id, card ) => {
@@ -107,6 +110,8 @@ const loadOrders = async (id) => {
     }
   }
 
+
+
   /**
    * Upload a card to the server
    * @param {base64String} image : the base64 encoded image from create-post
@@ -129,7 +134,7 @@ const loadOrders = async (id) => {
     loc: loc,
     vendor: vendor,
     tags: tags,
-    timestamp: CreateExpirationTime(new Date()).toUTCString(),
+    timestamp: CreateExpirationTime(new Date()),
    }
 
    try{ // upload the card
@@ -153,14 +158,14 @@ const loadOrders = async (id) => {
 
 
   // function calls the server with JWT token to request and retrieve cards
-  const retrieveCards = ( loc, jwt, setResult=setCards ) => {
+  const retrieveCards = ( {loc = location, jwt, setResult=setCards} = {} ) => {
     setLoading( true )
     // setCards( [] )
     try {
 
       cardRequest( loc, jwt, user.id, isVendor )
         .then( ( results ) => { 
-          if ( results ) return cardTransform( loc, speed, results.cards, unit)      // transforms incoming data into what we can use
+          if ( results ) return cardTransform( {loc: location, results: results.data.cards})      // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
@@ -178,9 +183,34 @@ const loadOrders = async (id) => {
     }
   }
 
+
+  // gets the current orders for the seeker
+  const onViewActiveOrders = () => {
+    setLoading( true )
+    try {
+      getUserReserved( user.id, jwt )
+        .then( ( results ) => { 
+          if ( results ) return cardTransform( {loc: location, results: results.data.cards} )      // transforms incoming data into what we can use
+      } )
+      .then( ( arr ) => {
+        setError( null )
+        setLoading( false )
+        setOrders( arr )      // updates the state with the provided function
+        return arr
+      } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+      return []
+    }
+  }
+
   // function wraps the retrieval function may not be necessary?
   const refreshCards = ({coords=location, setResult = null} = {}) => {
-    retrieveCards( coords, jwt, setResult )
+    retrieveCards( {loc: coords, jwt: jwt, setResult: setResult} )
   }
 
     // loads the users orders into context if the value for user has been updated
@@ -206,10 +236,16 @@ const loadOrders = async (id) => {
       }
     }, [ location, setLocation ] )
   
+    useEffect( () => {
+      if ( !user ) return 
+      console.log('trying to get active orders...')
+      onViewActiveOrders()
+    }, [] )
+  
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate, onViewActiveOrders}}>
       {children}
     </FoodCardContext.Provider>
   )
