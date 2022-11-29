@@ -48,23 +48,13 @@ export const Orders = ({navigation, route}) => {
   }
   
   const refresh = () => {
-    onRefresh({setResult : updatePosts})
+    onViewActiveOrders()
   }
-
-
-  useEffect( () => {
-    if (!trigger)
-    refresh()
-  }, [])
 
   useEffect( () => {
     if (!trigger) return 
     refresh()
   }, [trigger])
-
-  const refreshPostHistory = useCallback(() => {
-    refresh()
-  },[refresh])
   
   useEffect( () => {
     console.log(posts)
@@ -86,7 +76,7 @@ export const Orders = ({navigation, route}) => {
         <View>
             <Title>Orders</Title>
             <View style={{}}>
-                <PostList DATA={orders} ListEmptyComponent={renderListEmptyComponent} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <PostCard {...{...props, refreshPostHistory}} />}  />
+                <PostList ExpandedPost='EditOrder' DATA={orders} ListEmptyComponent={renderListEmptyComponent} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <PostCard {...{ ...props }} />} />
             </View>
         </View>
     )
