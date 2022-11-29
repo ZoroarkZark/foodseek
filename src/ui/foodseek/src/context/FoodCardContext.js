@@ -129,7 +129,7 @@ const loadOrders = async (id) => {
     loc: loc,
     vendor: vendor,
     tags: tags,
-    timestamp: CreateExpirationTime(new Date()).toUTCString(),
+    timestamp: CreateExpirationTime(new Date()),
    }
 
    try{ // upload the card
