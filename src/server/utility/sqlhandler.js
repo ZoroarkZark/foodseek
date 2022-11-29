@@ -7,6 +7,7 @@ require('dotenv').config({path: path.resolve(__dirname, "../../../.env")}); // f
 
 const sutil = require('../utility/serverutility.js');
 
+const MINUTES_IN_MILI = 1000 * 60;
 
 // Some random test postions 
 TEST_POS = [
@@ -606,6 +607,9 @@ class FoodStore {
         //Handle getting a timestamp as a date, or just the hour 
 
         console.log(pack.timestamp);
+        let timeData = new Date(pack.timestamp);
+        timeData = timeData.getTime() / MINUTES_IN_MILI;
+
         let SQL = "INSERT INTO ?? (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?,?)";
         let data = {
             cuisine: "default",
@@ -626,7 +630,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            pack.timestamp
+            timeData
         ];
 
         this.conn.query(SQL, params, (err) => {
