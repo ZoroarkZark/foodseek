@@ -132,7 +132,7 @@ VendorRouter.post('/conf', (req,res,next) => {
         
         
         if(result.id == req.body.id){
-            if(result.reserved == req.body.user){
+            if(result.reserved == req.body.email){
                 // want to remove the card after a successful confirmation
                 resbody.setData({msg: "confirmed pickup!"});
                 return next();
