@@ -67,7 +67,8 @@ ImageRouter.post('/imgtest', async (req,res,next) => {
         let fname = sutils.genToken(20);
         fname = `${fname}.jpeg`;
 
-        sutils.imgUpload(fname, chunks, (err, img_link) => {
+        let data = Buffer.concat(chunks);
+        sutils.imgUpload(fname, data, (err, img_link) => {
             if(err){
                 return next(err);
             }
@@ -117,7 +118,8 @@ ImageRouter.post('/avatarUpload', async (req, res, next) => {
         let fname = sutils.genToken(20);
         fname = `${fname}.jpeg`;
 
-        sutils.imgUpload(fname, chunks, (err, img_link) => {
+        let data = Buffer.concat(chunks);
+        sutils.imgUpload(fname, data, (err, img_link) => {
             if(err){
                 return next(err);
             }
