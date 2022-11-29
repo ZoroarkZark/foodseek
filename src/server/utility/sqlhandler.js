@@ -607,7 +607,7 @@ class FoodStore {
             JSON.stringify(data),
             pack.vendor,
             pack.img_url,
-            16
+            24
         ];
 
         this.conn.query(SQL, params, (err) => {
@@ -935,7 +935,7 @@ class FoodStore {
     }
     
     clearAllExpired(){
-        console.log('clearing expired cards');
+        
         let date = new Date();
         let hour = date.getHours();
 
@@ -948,6 +948,10 @@ class FoodStore {
         
         this.conn.query(SQL,params, (err,results) => {
             if(err){ throw err; }
+            if(results.affectedRows >= 1){
+                console.log('clearing expired cards');
+                console.log("Hour: ", hour);
+            }
       })
     }
     
