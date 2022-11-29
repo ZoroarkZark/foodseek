@@ -3,6 +3,9 @@ import { getLatitude, getLongitude } from 'geolib'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
+import { SANTA_CRUZ_COORDINATES } from './LocationContext'
+
+
 
 // function sends login request to the server with email and password
 export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
@@ -17,7 +20,7 @@ export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
       }
 
-          return response.data
+          return response
       } )
       .catch( ( error ) => { throw error } )
 }
@@ -26,6 +29,20 @@ export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
 export const cardReserve = ( user, id, jwt ) => {
   let path = 'user/reserve'
   return fetchRequest( path, "post", { user: user, id: id, jwt: jwt } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response
+      } )
+      .catch( ( error ) => { throw error } )
+}
+
+
+export const getUserReserved = ( email, jwt ) => {
+  let path = 'user/getUserReserved'
+  return fetchRequest( path, "post", { email: email, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
               throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
@@ -65,20 +82,24 @@ export const cardUpload = (jwt,card, image) => {
   .catch( (err) => {throw err;})
 }
 
+
+
+export const SPEED = 1.1176 // speed given in meters per second
+export const UNIT = 'mi' // preferred distance unit
 // {"data": "{\"image\":\"test\",\"cuisine\":\"test\",\"item\":\"Falafel Wrap\",\"tags\":\"test\"}", "id": 1, "img_url": null, "lat": 44.814, "lon": 20.4368, "res": "carlington", "timestamp": null, "vendor": null}
 // maps incoming data into an array of card data 
-export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
-  console.log(loc)
+export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, results = [], unit = UNIT} = {} ) => {
+  console.log('\n\n\nentering card transform: ', results)
   try {
     const mappedResults = results.map( ( card ) => {
-      //console.log('cards: ','<<<<<',card,'>>>>>')
       const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
+      console.log('*****************card:', card)
       const card_coordinates = { latitude: latitude, longitude: longitude }
       const { image, cuisine, item, phoneNumber, address, tags } = JSON.parse( data )
-      //console.log(tags) 
       const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
       let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
       let hour = (travel.time / 60).toFixed(0)                      // get hours
+      
       return {
         ...card,
         id: id,
@@ -88,8 +109,8 @@ export const cardTransform = ( loc, speed, results = [], unit = 'mi' ) => {
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item
-        travel: `${travel.distance.toFixed(1)} mi`, // computed travel distance string format: 1.7 mi 
-        time: `${hour > 0 ? `${hour} hr` : ''} ${min} min`, //time format: 16 min
+        travel: travel ? `${travel.distance.toFixed(1)} mi`: '', // computed travel distance string format: 1.7 mi 
+        time: travel ? `${hour > 0 ? `${hour} hr` : ''} ${min} min`: '', //time format: 16 min
         address: address ? address : `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
         phoneNumber: phoneNumber ? phoneNumber : "000-010-0212",  // Fill in with phone number
         reserved: res,
