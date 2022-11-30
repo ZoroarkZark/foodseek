@@ -38,6 +38,7 @@ export const CreatePost = ( { route, navigation } ) => {
         console.log(testTags)
     }
 
+    //splits tags by # and submits them
     function checkTags(){
         setTags([])
         const ar = currentTags.split('#')
@@ -47,8 +48,8 @@ export const CreatePost = ( { route, navigation } ) => {
             setTags(tags => [...tags, ar[i]])
         }
         setTestTags(t)
-        console.log(tags)
-        console.log(testTags)
+        //console.log(tags)
+        //console.log(testTags)
     }
 
     function upload () {
