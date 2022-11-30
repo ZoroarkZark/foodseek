@@ -617,6 +617,10 @@ class FoodStore {
             tags: pack.tags
         }
 
+        if(!pack || !pack.loc || !pack.loc[0] || !pack.loc[1]){
+            return callback(new Error("Location was not an array"),null);
+        }
+
         let params = [
             this.table,
             this.col.lat,
