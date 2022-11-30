@@ -239,7 +239,7 @@ export const Login = ({ navigation }) => {
                     drawerPosition={DrawerLayout.positions.Left}
                     drawerBackgroundColor="#fff"
                 >
-                    {TestScreen()}
+                    {RealScreen()}
 
                 </DrawerLayout>
             </Layout>

@@ -6,6 +6,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
+import { tagsToStr } from '../../features/vendor/screens/view-post-feature/utils/tagsToStr'
 
 
 // PostCard makes up a single list item
@@ -31,15 +32,13 @@ const VendorCard = (props) => {
                         </View>
                         <View style={style.row}>
                             <Text style={style.subtextLeft}>
-                                {data.cuisine}
+                            {data.item}
+                                
                             </Text>
                             <Text style={style.subtextRight}></Text>
                         </View>
                         <View style={style.row}>
-                            <Text style={style.subtextLeft}>{data.item}</Text>
-                            <Text style={style.subtextRight}>
-                                {data.travel} / {data.time}
-                            </Text>
+                            <Text style={style.subtextLeft}>{tagsToStr(data.tags)}</Text>
                         </View>
                     </View>
                 </SectionContent>

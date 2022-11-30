@@ -133,7 +133,7 @@ export const Signup = ({ navigation }) => {
             ln: ln, //last name
             phone: phone, //phone number
             email: email, //email address
-            pwd: pwd, //password
+            // pwd: pwd, //password
         }
         const data = {
             vendor: acc, //account type: 0 (User), 1 (Vendor)
@@ -199,8 +199,8 @@ export const Signup = ({ navigation }) => {
                     if(!validEmail.test(email))
                         alert("Invalid email")
                     //password requires numbers and letters
-                    else if(!validPassword.test(pwd))
-                        alert("Invalid Password! Must contain both letters and numbers")
+                    else if(pwd < 3)
+                        alert("Invalid Password! Password must be greater than 3")
                     else if(!validPhone.test(phone))
                         alert("Invalid Phone!")
                     else

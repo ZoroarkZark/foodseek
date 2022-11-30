@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { StyleSheet, Text, View, ImageBackground, Alert } from 'react-native'
 import { Section, SectionContent, SectionImage } from 'react-native-rapi-ui'
 import {
@@ -7,14 +7,27 @@ import {
 } from 'react-native-gesture-handler'
 import styles from '../../../../style/styleSheet'
 import { FoodCardContext } from '../../../../context/FoodCardContext'
+import { AuthenticationContext } from '../../../../context/AuthenticationContext'
 // Probably change to the styles inside of features
 
 export const ExpandPost = ( props ) => {
+    const { googlePlacesKey: apiKey } = useContext( AuthenticationContext )
     const { onReserve } = useContext( FoodCardContext )
     const data = props.data;
-    const { card, id, vendor, cuisine, item, distance, time, address, phoneNumber, image } = props.route.params;
-    const { img_url } = card
-    const identity = JSON.stringify(id);
+    const { card, id, vendor, cuisine, item, distance, time, phoneNumber, image} = props.route.params;
+    const [ address, setAddress ] = useState( '' )
+    const { img_url, lat: {latitude}, lon: {longitude}} = card
+    console.log( 'lat,lon: ', latitude+','+longitude)
+    const identity = JSON.stringify( id );
+    console.log('KEEEEEEE  ', apiKey)
+    useEffect( () => { 
+        fetch( 'https://maps.googleapis.com/maps/api/geocode/json?address=' + latitude + ',' + longitude + '&key=' + apiKey )
+        .then( ( response ) => response.json() )
+        .then( ( responseJson ) => {
+        console.log( 'ADDRESS GEOCODE is BACK!! => ' + JSON.stringify( responseJson ) )
+        setAddress(responseJson.formatted_address)
+    } )
+    } ,[])
 
     const yesNoAlert = () => {
         Alert.alert(
@@ -55,7 +68,8 @@ export const ExpandPost = ( props ) => {
             <Text> </Text> 
             <Text> Phone Number: {phoneNumber}  </Text>
             <Text> </Text> 
-            <Text> Address: {address} </Text>
+                    <Text> Address: 
+                    </Text>
             <Text> </Text>
             <Text> Time to Arrive: {time} </Text>
             <Text> </Text>

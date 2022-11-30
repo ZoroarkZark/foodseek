@@ -17,8 +17,8 @@ export const AutocompleteSearchBar = props => {
 
   // the function called when the user selects an autocomplete option from the dropdown results
   const onPress = ( data, details = null ) => {
-    // console.log( data )
-    // console.log('details: ',details)
+    console.log( data )
+    console.log('details: ',details)
     let { description = null } = data
         let latitude = getLatitude( details.geometry.location )       // get the coordinates from the google places API response
         let longitude = getLongitude( details.geometry.location )     

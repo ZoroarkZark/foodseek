@@ -20,8 +20,8 @@ export const loginRequest = (email, password) => {
 // function sends signup request to the server with email, password and form data
 export const signupRequest = (email, password, data) => {
     let path = 'signup'
-    const { vendor } = data
-    const formData = vendor === '1' ? data.vend : data.seek
+    const { vend, seek, vendor } = data
+    const formData = vendor === '1' ? vend : seek
     return fetchRequest(path, 'post', {
         email: email,
         pass: password,
