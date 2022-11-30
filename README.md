@@ -1,5 +1,5 @@
 
-Notion Link: https://www.notion.so/FoodSeek-df08685c3bba4df5837135106df0bd04
+Newer README in Notion; Link: https://www.notion.so/FoodSeek-df08685c3bba4df5837135106df0bd04
 
 # OLDER README
 
