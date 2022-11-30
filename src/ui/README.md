@@ -84,7 +84,27 @@ The Geolib library, for determining distance between different points on a map, 
 ---
 
 
-# How to Run/Test
+# How to Run
+
+To install and run FoodSeek
+1. Download Expo (React, NodeJS, NPM etc.) on your computer, along with the Expo Go app.
+You will need to create an expo account in order to use the app. Here is the video we found helpful,
+if you get stuck https://www.youtube.com/watch?v=f6TXEnHT_Mk
+Also, here is the documentation on expo's website https://docs.expo.dev/get-started/installation/
+
+2. Clone the Git repo from https://github.com/ZoroarkZark/foodseek.git
+
+3. Open repo_folder_name/foodseek/src/ui/foodseek in any terminal, we mostly used the VSCode terminal.
+
+4. Run the Expo start command and watch as "Started Metro Bundler" is typed on the screen.
+
+5. Run the Expo Go app on your phone. Log in and press on 'foodseek on __YOUR_COMPUTER_NAME__'.
+
+6. Welcome to the foodseek experience.
+
+---
+
+# How to Test
 
 
 
