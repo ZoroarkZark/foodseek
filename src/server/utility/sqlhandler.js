@@ -87,15 +87,23 @@ class UserStore {
     insertUser(credentials, callback){
         
         // SQL query
-        let SQL = "INSERT INTO ?? (??, ??, ??) VALUES (?, ?, ?)";
+
+        let datastr = ""
+        if(credentials.data && typeof credentials.data === "object"){
+            datastr = JSON.stringify(credentials.data);
+        }
+
+        let SQL = "INSERT INTO ?? (??, ??, ??, ??) VALUES (?, ?, ?, ?)";
         let parameters = [
             this.table,
             this.col.email,
             this.col.pass,
             this.col.vend,
+            this.col.data,
             credentials.email,
             credentials.pass,
-            credentials.vendor
+            credentials.vendor,
+            datastr
         ]
         
         // query the database
