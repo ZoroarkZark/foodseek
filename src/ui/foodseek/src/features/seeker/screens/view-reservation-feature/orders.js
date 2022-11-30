@@ -10,11 +10,15 @@ import { FoodCardContext } from '../../../../context/FoodCardContext'
 // Provides Odin
 import { Odin } from '../../../../components/common/Odin'
 import { Button } from 'react-native-rapi-ui'
+import Container from '../../../../components/styling/Container'
+import { Detail } from '../../../vendor/screens/view-post-feature/utils/EditDetail'
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { toTitleCase } from '../../../vendor/screens/view-post-feature/utils'
 
 // TODO: move to config for testing
 export const Orders = ({navigation, route}) => {
-    const { onRefresh, loading, orders, onViewActiveOrders } = useContext( FoodCardContext )
-    const [ posts, setPosts ] = useState( [] )
+    const { onRefresh, loading: refreshing, orders, onViewActiveOrders } = useContext( FoodCardContext )
+    const [ posts, setPosts ] = useState( orders )
     const [ error, setError ] = useState( null )
     let {refresh: trigger} = route.params ? route.params.refresh : false
     
@@ -30,14 +34,27 @@ export const Orders = ({navigation, route}) => {
         return newField;
     }
 
-    const renderListEmptyComponent = () => (
-        <View>
-            <Text>
-                No active orders!
-            </Text>
-        </View>
-    )
+    // const renderListEmptyComponent = () => (
+    //     <View>
+    //         <Text>
+    //             No active orders!
+    //         </Text>
+    //     </View>
+    // )
 
+    const renderListEmptyComponent = ( { backgroundColor='#fff', item = 'Woops...', description = 'No orders found, go ahead and reserve an order first!'} = {} ) => {
+      return (
+      <Container paddingTop={100} >
+        <View backgroundColor={backgroundColor} borderRadius={10} flexDirection='column' style={{alignItems: 'center', height: 300, justifyContent: 'center'}}>
+              <View>
+              <MaterialIcons name="no-meals-ouline" size={80} color="black" />
+              </View>
+              <View style={{alignItems: 'center',padding: 10}}>
+              <Detail fullLength={true} icon={props => <Ionicons name="alert" {...props} />} label={` ${ item }`} description={description} />
+              </View>
+        </View>
+      </Container>
+  )}
     
   const updatePosts = ( update ) => {
     if ( !update ) {
@@ -48,28 +65,15 @@ export const Orders = ({navigation, route}) => {
   }
   
   const refresh = () => {
-    onRefresh({setResult : updatePosts})
+    onViewActiveOrders()
+    setPosts(orders)
   }
-
-
-  useEffect( () => {
-    if (!trigger)
-    refresh()
-  }, [])
 
   useEffect( () => {
     if (!trigger) return 
     refresh()
   }, [trigger])
-
-  const refreshPostHistory = useCallback(() => {
-    refresh()
-  },[refresh])
   
-  useEffect( () => {
-    console.log(posts)
-  }, [ setPosts ] )
-
   useEffect( () => {
     if (! error) return
     console.log(error)
@@ -79,6 +83,12 @@ export const Orders = ({navigation, route}) => {
     if (! orders) return
     onViewActiveOrders()
   }, [] )
+
+  useEffect( () => {
+    if(!trigger) return
+    refresh()
+    trigger = false
+}, [ refreshing ] )
     
 
     return (
@@ -86,7 +96,7 @@ export const Orders = ({navigation, route}) => {
         <View>
             <Title>Orders</Title>
             <View style={{}}>
-                <PostList DATA={orders} ListEmptyComponent={renderListEmptyComponent} refreshing={loading} onRefresh={() => refresh()} Alternative={props => <PostCard {...{...props, refreshPostHistory}} />}  />
+                <PostList DATA={posts} ListEmptyComponent={renderListEmptyComponent} refreshing={refreshing} onRefresh={() => refresh()} Alternative={props => <PostCard {...{ ...props, ExpandedPost: 'EditOrder' }} />} />
             </View>
         </View>
     )

@@ -39,6 +39,20 @@ export const cardReserve = ( user, id, jwt ) => {
       .catch( ( error ) => { throw error } )
 }
 
+// function sends login request to the server with email and password
+export const cancelOrder = ( email, id, jwt ) => {
+  let path = 'user/cancel'
+  return fetchRequest( path, "post", { email: email, id: id, jwt: jwt } )
+    .then( ( response ) => {
+          if ( response.success != 1 ) {
+              throw new Error(response.issues.msg, {cause: res.issues }) // throws an error if the server sends a response describing an error
+        }
+
+          return response
+      } )
+      .catch( ( error ) => { throw error } )
+}
+
 
 export const getUserReserved = ( email, jwt ) => {
   let path = 'user/getUserReserved'
@@ -60,8 +74,6 @@ export const cardUpdate = ( id, key, value, jwt ) => {
   let passed_data = {
     [key]: value
   } // create a data object
-  console.log('!!!!!!!!!!!!!!this is what is being sent to the server!!!!!!!!!!!!: ', passed_data, 'END OF WHAT IS BEING SENT TO THE SERVER')
-
   return fetchRequest( path, "post", { data: passed_data, id: id, jwt: jwt } )
     .then( ( response ) => {
           if ( response.success != 1 ) {
@@ -89,11 +101,9 @@ export const UNIT = 'mi' // preferred distance unit
 // {"data": "{\"image\":\"test\",\"cuisine\":\"test\",\"item\":\"Falafel Wrap\",\"tags\":\"test\"}", "id": 1, "img_url": null, "lat": 44.814, "lon": 20.4368, "res": "carlington", "timestamp": null, "vendor": null}
 // maps incoming data into an array of card data 
 export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, results = [], unit = UNIT} = {} ) => {
-  console.log('\n\n\nentering card transform: ', results)
   try {
     const mappedResults = results.map( ( card ) => {
       const { id, data, lat: latitude, lon: longitude, res, timestamp, vendor, img_url } = card // destructure object to get desired card properties
-      console.log('*****************card:', card)
       const card_coordinates = { latitude: latitude, longitude: longitude }
       const { image, cuisine, item, phoneNumber, address, tags } = JSON.parse( data )
       const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
@@ -101,7 +111,7 @@ export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, res
       let hour = (travel.time / 60).toFixed(0)                      // get hours
       
       return {
-        ...card,
+        ...card, 
         id: id,
         img_url: img_url, 
         image: seekerAvatar,  //Placeholder image.
@@ -114,7 +124,8 @@ export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, res
         address: address ? address : `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
         phoneNumber: phoneNumber ? phoneNumber : "000-010-0212",  // Fill in with phone number
         reserved: res,
-        tags: tags
+        tags: tags,
+        expiration: timestamp * 60 * 1000
       }
     } )
     return mappedResults

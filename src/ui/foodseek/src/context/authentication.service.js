@@ -41,8 +41,6 @@ export const signupRequest = (email, password, data) => {
 
 export const setPushToken = (email, token, jwt) => {
     let path = 'setPushToken'
-    console.log('setPushToken:  email: ', email, 'token: ', token, 'jwt:', jwt)
-
     return fetchRequest(path, 'post', { email: email, token: token, jwt: jwt })
         .then((response) => {
             if (response.success != 1) {

@@ -13,9 +13,10 @@ import { useNavigation } from '@react-navigation/native';
 const PostCard = (props) => {
     const data = props.data
     const navigation = useNavigation();
+    const { ExpandedPost: ExpandedPostProp } = props
 
     return (
-        <TouchableOpacity onPress={() => {navigation.navigate('ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
+        <TouchableOpacity onPress={() => {navigation.navigate(ExpandedPostProp ? ExpandedPostProp : 'ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
             <Section>
                 <SectionImage source={{uri: data.img_url}} height={200} />
                 <SectionContent padding={10}>
