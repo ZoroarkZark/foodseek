@@ -158,14 +158,14 @@ const loadOrders = async (id) => {
 
 
   // function calls the server with JWT token to request and retrieve cards
-  const retrieveCards = ( {loc = location, jwt, setResult=setCards} = {} ) => {
+  const retrieveCards = ( {loc = location, jwt, setResult=setCards, dist=null} = {} ) => {
     setLoading( true )
     // setCards( [] )
     try {
 
       cardRequest( loc, jwt, user.id, isVendor )
         .then( ( results ) => { 
-          if ( results ) return cardTransform( {loc: location, results: results.data.cards})      // transforms incoming data into what we can use
+          if ( results ) return cardTransform( {loc: location, results: results.data.cards, dist: dist})      // transforms incoming data into what we can use
       } )
       .then( ( arr ) => {
         setError( null )
@@ -238,8 +238,8 @@ const loadOrders = async (id) => {
 
 
   // function wraps the retrieval function may not be necessary?
-  const refreshCards = ({coords=location, setResult = null} = {}) => {
-    retrieveCards( {loc: coords, jwt: jwt, setResult: setResult} )
+  const refreshCards = ({coords=location, setResult = null, dist = null} = {}) => {
+    retrieveCards( {loc: coords, jwt: jwt, setResult: setResult, dist: dist} )
   }
 
     // loads the users orders into context if the value for user has been updated

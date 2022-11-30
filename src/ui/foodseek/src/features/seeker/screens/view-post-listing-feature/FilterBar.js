@@ -8,10 +8,9 @@ export const FilterBar = props => {
   const [ tags, setTags ] = useState( [] )
   const [ filters, setFilters ] = useState( { sortOptions: [], tagOptions: [] } )
   
-  
   useEffect( () => {
     if ( !sortList | !tagList ) return
-    let sortOptions = sortList.map( item => { return ( { label: 'Sort By: ' + item } ) } )
+    let sortOptions = sortList.map( item => { return ( { label: item } ) } )
     let tagOptions = tagList.map( item => { return ( { label: item } ) } )
     setFilters({
       sortOptions: sortOptions,

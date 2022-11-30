@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 // button component that defines the filter buttons
 export const ToggleButton = props => {
-    const { label, callback } = props
+    const { label, callback, width } = props
     const [ status, setStatus ] = useState( 'unchecked' )
 
     const onButtonToggle = ( value ) => {
@@ -37,7 +37,7 @@ export const ToggleButton = props => {
                 borderTopRightRadius: 12,
                 borderBottomLeftRadius: 12,
                 borderBottomRightRadius: 12,
-                width: label.length * 12,
+                width: !width ? label.length * 12 : width,
                 height: 23,
                 marginRight: 4,
             }}
@@ -45,7 +45,7 @@ export const ToggleButton = props => {
             status={status}
             onPress={onButtonToggle}
         >
-            <Text>{label}</Text>
+            <Text style={{numberOfLines : 0}}>{label}</Text>
         </TB>
     )
 }
@@ -56,10 +56,9 @@ export const ToggleButton = props => {
 // horizontal list of filter buttons
 export const FilterOptionsScroller = props => {
     const { filters, setSort, setTag, style } = props
-        const { sortOptions, tagOptions } = filters
-        const [ sortChoice, setSortChoice ] = useState( '' )
-        const [ tagChoice, setTagChoice ] = useState( '' )
-        
+    const { sortOptions, tagOptions } = filters
+    const [ sortChoice, setSortChoice ] = useState( '' )
+    const [ tagChoice, setTagChoice ] = useState( '' )
 
 
         useEffect( () => {
@@ -79,13 +78,13 @@ export const FilterOptionsScroller = props => {
         
         const SortFilters = ( { options, value, setValue, style} ) => {
             return (
-                <View>
+                <View style={{flexDirection: 'row'}}>
                 <TB.Group
                     onValueChange={value => setValue( value )}
                     value={value}>
                     {options.map( ( option ) => {
                         return (
-                            <View
+                            <View key={option.label}
                                 style={style} >
                                 <ToggleButton
                                     label={option.label}
@@ -104,16 +103,22 @@ export const FilterOptionsScroller = props => {
             paddingTop={6}
             contentInset={{ top: 0, left: 10, bottom: 0, right: 10 }}
                 showsHorizontalScrollIndicator={false} >
-                {/* <SortFilters options={sortOptions} value={sortChoice} setValue={setSortChoice} style={style} /> */}
-                {tagOptions.map((filter) => {
-                  return (
+                <SortFilters options={sortOptions} value={sortChoice} setValue={setSortChoice} style={style} />
+                <View style={{ flexDirection: 'row' }}>
+                    {tagOptions.map( ( filter ) => {
+                    return (
+                        <View key={filter.label}
+                                style={style} >
                       <ToggleButton
                           key={filter.label}
                           label={filter.label}
-                          callback={setTagChoice}
-                        />
+                            callback={setTagChoice}
+                            width={'100%'}
+                            />
+                        </View>
                     )
-              })}
+                    } )}
+                </View>
             </ScrollView>
         
     )

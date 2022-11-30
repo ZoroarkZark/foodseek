@@ -8,11 +8,11 @@ import { SANTA_CRUZ_COORDINATES } from './LocationContext'
 
 
 // function sends login request to the server with email and password
-export const cardRequest = ( loc, jwt, vendor, isVendor ) => {
+export const cardRequest = ( loc, jwt, vendor, isVendor, dist=null ) => {
   const latitude = getLatitude( loc )
   const longitude = getLongitude( loc )
-  const path = isVendor ? 'vendor/list' : 'user/list'
-  const payload = isVendor ? { vendor: vendor } : { loc: { lat: latitude, lon: longitude }}
+  const path = isVendor ? 'vendor/list' : dist ? 'user/lr' : 'user/list'
+  const payload = isVendor ? { vendor: vendor } : dist ? { loc: { lat: latitude, lon: longitude }, dist: dist} : { loc: { lat: latitude, lon: longitude }}
 
   return fetchRequest( path, "post", { ...payload, jwt: jwt } )
     .then( ( response ) => {
@@ -124,7 +124,7 @@ export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, res
         address: address ? address : `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
         phoneNumber: phoneNumber ? phoneNumber : "000-010-0212",  // Fill in with phone number
         reserved: res,
-        tags: tags,
+        tags: [...tags, cuisine, vendor],
         expiration: timestamp * 60 * 1000
       }
     } )

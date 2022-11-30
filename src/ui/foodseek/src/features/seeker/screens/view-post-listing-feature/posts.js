@@ -1,5 +1,5 @@
 // TODO: remove this dummy data and move to config or testing
-import { DATA } from '../../../../components/post/TestData' 
+import { DATA } from '../../../../components/post/TestData'
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native'
 
@@ -16,109 +16,199 @@ import { SearchInput } from '../../../../components/common'
 // Provides Odin
 import { Odin } from '../../../../components/common/Odin'
 import { Button } from 'react-native-rapi-ui'
+import { set } from 'react-native-reanimated'
+import { toTitleCase } from '../../../vendor/screens/view-post-feature/utils/toTitleCase'
 
+// https://bobbyhadz.com/blog/javascript-get-object-key-by-value#:~:text=To%20get%20an%20object's%20key,key%20that%20satisfies%20the%20condition.
+function getObjKey(obj, value) {
+    return Object.keys(obj).find(key => obj[key] === value);
+  }
 // TODO: move to config for testing
 
-
 // Returns a PostList to display a list of available vendor posts to the user
-export const Posts = ( { navigation } ) => {
+export const Posts = ({ navigation }) => {
     // context classes for location and food card providers
-    const { location: loc, keyword: key } = useContext( LocationContext )
-    const { onRefresh, loading: refreshing, setLoading, onReserve, orders, cards } = useContext( FoodCardContext )
-    
+    const DEFAULT_DISTANCES = { 5: "<5mi", 10: "<10mi", 20: "<20mi"}
+    const { location: loc, keyword: key } = useContext(LocationContext)
+    const {
+        onRefresh,
+        loading: refreshing,
+        setLoading,
+        onReserve,
+        orders,
+        cards,
+    } = useContext(FoodCardContext)
+
     // error and data storage for the post screen component
-    const [ error, setError ] = useState( null )
-    const [ posts, setPosts ] = useState( cards )
-    const [ sort, setSort ] = useState( null )
-    const [ tags, setTags ] = useState( null )
+    const [error, setError] = useState(null)
+    const [posts, setPosts] = useState(cards)
+    const [sort, setSort] = useState(null)
+    const [tags, setTags] = useState(null)
     const [ fresh, setFresh ] = useState( true )
+    const [ dist, setDist ] = useState( null )
+    const [ filtered, setFiltered ] = useState( [] )
+    const [ data, setData ] = useState( [] )
+    
 
     // search term and coordinates
-    const [ keyword, setKeyword ] = useState( key )
-    const [ location, setLocation ] = useState( loc )
-    const [ searchTerm, setSearchTerm ] = useState ( '' )
+    const [keyword, setKeyword] = useState(key)
+    const [location, setLocation] = useState(loc)
+    const [searchTerm, setSearchTerm] = useState('')
 
     // TODO:
-    const [ sortList, setSortList ] = useState( [ 'Nearest', 'Newest', 'Oldest' ] )
-    const [ tagList, setTagList ] = useState( [ 'Chinese', 'Thai', 'Mexican' ] )
-    
-    const style = {}
-    
+    const [ distance, setDistance ] = useState( DEFAULT_DISTANCES )
+    const [sortList, setSortList] = useState(Object.values(DEFAULT_DISTANCES))
+    const [tagList, setTagList] = useState(['Chinese', 'Thai', 'Mexican'])
 
+    const style = {}
+
+    const display = () => {
+        if ( !filtered ) {
+            setData( posts )
+        } else {
+            setData(filtered)
+        }
+    }
     // updatePosts function wraps the posts structure to prevent rewriting the list when the server response was empty
-    const updatePosts = ( update ) => {
-        if ( !update ) {
-            setError( new Error( 'refreshPosts: yielded no new updates' ) )
+    const updatePosts = (update) => {
+        if (!update) {
+            setError(new Error('refreshPosts: yielded no new updates'))
             return
         }
-        setPosts( update )  
+        setPosts(update)
     }
 
     // function called when new list requests are made to update the display
-    const refreshPosts = () => {
-        onRefresh({coords : location, setResult : updatePosts})
-
+    const refreshPosts = ( { dist } = {} ) => {
+        onRefresh({ coords: location, setResult: updatePosts, dist: dist ? dist : null })
     }
 
     // filters out the cards that are shown based on the current text field
-    function filterPosts ( array, searchTerm ) {
+    function filterPosts(array, searchTerm) {
         const newArray = array.filter((element) => {
             if (!element.tags) return false
             return element.tags.includes(searchTerm)
-        });
-        return newArray;
-    } 
+        })
+        return newArray
+    }
 
-    useEffect( () => {
+    useEffect(() => {
         //console.log(orders)
-    }, [onReserve] )
+    }, [onReserve])
 
     // initializes the list to populate based on the default app location
-    useEffect( () => {
+    useEffect(() => {
         onRefresh()
-    }, [] )
+    }, [])
 
-    useEffect( () => {
-        if ( posts ) return
+    useEffect(() => {
+        if (posts) return
         let limit = 10
         let retry
-        while ( !posts ) {
+        while (!posts) {
             refreshPosts()
             retry += 1
         }
-        if ( !posts ) {
-            setError( new Error( `Loading post list failed after ${ limit } retries` ) )
+        if (!posts) {
+            setError(
+                new Error(`Loading post list failed after ${limit} retries`)
+            )
             return
         }
-        console.log( posts )
+        console.log(posts)
     }, [])
-    
-    
-    // re-render/ control filtering and sorting 
-    useEffect( () => {
-        // do filtering sorting and updating lists here
-        setLoading(true)
-        setLoading(false)
-    }, [ sort, setSort, tags, setTags ] )
-    
+
+
     // re-render/ control loading behavior
-    useEffect( () => {
+    useEffect(() => {
         // do loading behavior stuff here
-        if (fresh === true){
+        if (fresh === true) {
             refreshPosts()
             setFresh(false)
         }
     }, [ refreshing ] )
     
+    useEffect(() => {
+        // do filtering sorting and updating lists here
+        display()
+    }, [ tags, setTags, posts, setPosts, filtered, setFiltered ] )
+
     // re-render/ control error or helper messages
-    useEffect( () => {
+    useEffect(() => {
         // do error handling stuff here
         if (!error) return
-    }, [ error, setError ] )
+    }, [error, setError])
+
+    // create new tag buttons
+    useEffect(() => {
+        if ( !posts ) return
+        if ( tags ) {
+            setTags( [] )
+        }
+        if ( tagList ) {
+            setTagList([])
+        }
+        setLoading(true)
+        let temp = []
+        console.log('posts: ', posts)
+        posts.forEach(card => {
+            const { tags } = card
+            let temp2 = []
+            if(!tags) return
+            tags.forEach(element => {
+                temp2 = [...temp2, toTitleCase(element)]
+            })
+            temp = [...temp, ...temp2]
+        })
+        let result = temp
+        setTagList( Array.from( new Set( result ) ) )
+        setLoading(false)
+    }, [ posts, setPosts ] )
+
+    // if the sort  is updated call a request to refresh the list with the new dist argument
+    useEffect(() => {
+        setLoading( true )
+        if ( !sort ) {
+            setDist( null )
+        } else {
+            let temp = getObjKey( distance, sort )
+            console.log('dist: ', temp)
+            setDist( temp )
+        }
+    }, [ sort, setSort ] )
+    
+    useEffect(() => {
+        // do filtering sorting and updating lists here
+        refreshPosts({dist: dist})
+    }, [dist, setDist])
+    
+    // update the data to reflect the filters selected
+    useEffect(() => {
+        // do filtering sorting and updating lists here
+        if ( !tags ) {
+            setFiltered([])
+            refreshPosts({dist: dist})
+            return
+        }
+        if (!display()) return
+        setLoading( true )
+        let temp = display()
+        console.log(temp)
+        tags.forEach( ( tag ) => {
+            temp = filterPosts(temp, tag)
+        } )
+        if (!temp) {
+            console.log( 'tags returned no results' )
+        } else {
+            setFiltered(temp)
+        }
+        setLoading(false)
+    }, [ tags, setTags ] )
+
 
     // defines the props for the Posts SectionList (the view for the screen)
     let props = {
-        data: posts,
+        data: data,
         onRefresh: refreshPosts,
         setKeyword,
         setLocation,
@@ -138,59 +228,64 @@ export const Posts = ( { navigation } ) => {
                 ListHeaderComponent={
                     <>
                         <View
-                            style={{ paddingTop: 110, padding: 10, paddingBottom: 10, ...style }}
+                            style={{
+                                paddingTop: 110,
+                                padding: 10,
+                                paddingBottom: 10,
+                                ...style,
+                            }}
                         >
                             <AutocompleteSearchBar
-                                {...
-                                {
+                                {...{
                                     setKeyword,
                                     setLocation,
                                     search: refreshPosts,
-                                }
-                                }
+                                }}
                             />
                             <SearchInput
                                 value={searchTerm}
                                 onChangeText={(text) => setSearchTerm(text)}
-                                onSubmitEditing={() => {{
-                                    if (searchTerm != '') 
-                                    { 
-                                        var newCards = filterPosts(posts, searchTerm);
-                                        if (newCards === undefined || newCards.length == 0){
-                                            alert("Sorry! Couldn't find any results! Reloading list.")
-                                            refreshPosts(); 
-                                        }
-                                        else {
-                                            updatePosts(newCards);
-                                        }
-
-                                    } 
-                                    else
+                                onSubmitEditing={() => {
                                     {
-                                        refreshPosts();
+                                        if (searchTerm != '') {
+                                            var newCards = filterPosts(
+                                                posts,
+                                                searchTerm
+                                            )
+                                            if (
+                                                newCards === undefined ||
+                                                newCards.length == 0
+                                            ) {
+                                                alert(
+                                                    "Sorry! Couldn't find any results! Reloading list."
+                                                )
+                                                refreshPosts()
+                                            } else {
+                                                updatePosts(newCards)
+                                            }
+                                        } else {
+                                            refreshPosts()
+                                        }
                                     }
-                                }}}
+                                }}
                             >
-                                 Search...
+                                Search...
                             </SearchInput>
                             <FilterBar
-                                {...
-                                {
+                                {...{
                                     tagList,
                                     sortList,
                                     style,
-                                    callback: 
-                                        ( { sort, tags } ) => {
-                                            setSort( sort )
-                                            setTags( tags )
-                                        },
-                                }
-                                }
+                                    callback: ({ sort, tags }) => {
+                                        setSort(sort)
+                                        setTags(tags)
+                                    },
+                                }}
                             />
                         </View>
                     </>
                 }
-                 />
+            />
         </View>
     )
 }
