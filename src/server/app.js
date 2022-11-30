@@ -139,7 +139,12 @@ function errorHandle(err,req,res,next){
         resbody.setIssue(err);
     }
     else if(typeof err === "object"){
-        resbody.setIssues(err);
+        if(err.message){
+            resbody.setIssues({msg:err.message})
+        }
+        else{
+            resbody.setIssues(err);
+        }
     }
     else if(typeof err === "function"){
         setTimeout(err, 10);

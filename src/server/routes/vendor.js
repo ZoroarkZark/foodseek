@@ -121,6 +121,7 @@ VendorRouter.post('/del', (req,res,next) => {
 // confirm a pickup with a user and foodcard id
 VendorRouter.post('/conf', (req,res,next) => {
     let resbody = res.locals.resbody;
+    console.log(req.body);
     
     FoodStore.getCard(req.body.id, (err, result) => {
         if(err){
@@ -130,12 +131,18 @@ VendorRouter.post('/conf', (req,res,next) => {
             return next({"error":`No card found with ID:${req.body.id}`});
         }
         
-        
+        console.log(result.id == req.body.id);
         if(result.id == req.body.id){
-            if(result.reserved == req.body.email){
+            console.log(result.res,req.body.email);
+            if(result.res === req.body.email){
                 // want to remove the card after a successful confirmation
-                resbody.setData({msg: "confirmed pickup!"});
-                return next();
+                FoodStore.deleteCardsById(result.id, (err, res)=>{
+                    if(err){
+                        return next(err);
+                    }
+                    resbody.setData({msg: "confirmed pickup!"});
+                    return next();
+                })
             }
         }
         else{
