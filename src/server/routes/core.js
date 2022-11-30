@@ -119,10 +119,15 @@ CoreRouter.post('/login', (req, res, next) => {
                 if(hash){
                     const token = sutil.sign({user: req.body.email, vendor: result.vendor});    
                     
+                    let out_data = null;
+                    if(result.data){
+                        out_data = JSON.parse(result.data)
+                    }
+
                     data = {
                         user: req.body.email,
                         vendor: result.vendor,
-                        user_data: result.Data,
+                        user_data: out_data,
                         user_avatar: result.Avatar,
                         jwt: token,
                         gplacesKey: process.env.GPLACEKEY,
