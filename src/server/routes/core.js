@@ -63,6 +63,8 @@ CoreRouter.post('/signup', async (req, res, next) =>
         vendor: req.body.vendor,
         pass: "",
     }
+
+    console.log(req.body);
     
     sutil.bHash(req.body.pass, (err, hash)=>{  // Hash the input password to store in the database
         if(err){
@@ -91,6 +93,11 @@ CoreRouter.post('/signup', async (req, res, next) =>
             }
         });
     });
+
+    req.on('data', (data) => {
+        console.log("Signup-triggered event");
+        return next();
+    })
 });
 
 
