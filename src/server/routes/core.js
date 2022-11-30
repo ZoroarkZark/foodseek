@@ -62,6 +62,7 @@ CoreRouter.post('/signup', async (req, res, next) =>
         email: req.body.email,
         vendor: req.body.vendor,
         pass: "",
+        data: null
     }
 
     console.log(req.body);
@@ -72,7 +73,9 @@ CoreRouter.post('/signup', async (req, res, next) =>
         }
         
         credentials.pass = hash; // store the hash in credentials
-        
+        if(req.body.formData){
+            credentials.data = req.body.formData;
+        }
         Store.insertUser(credentials, (err) => { // Insert the user into the database
             if(err) {
                 return next(err);
@@ -94,10 +97,7 @@ CoreRouter.post('/signup', async (req, res, next) =>
         });
     });
 
-    req.on('data', (data) => {
-        console.log("Signup-triggered event");
-        return next();
-    })
+    
 });
 
 
