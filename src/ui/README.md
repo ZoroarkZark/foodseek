@@ -77,13 +77,6 @@ The Geolib library, for determining distance between different points on a map, 
 
 ---
 
-# Environment Installation
-
-
-
----
-
-
 # How to Run
 
 To install and run FoodSeek
@@ -101,29 +94,6 @@ Also, here is the documentation on expo's website https://docs.expo.dev/get-star
 5. Run the Expo Go app on your phone. Log in and press on 'foodseek on __YOUR_COMPUTER_NAME__'.
 
 6. Welcome to the foodseek experience.
-
----
-
-# How to Test
-
-
-
----
-
-# Description of File Structure
-
-
-
----
-
-# Description of Important Data Structures
-
-
-
----
-
-
-# Attributions
 
 
 
