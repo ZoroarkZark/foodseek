@@ -120,7 +120,7 @@ CoreRouter.post('/login', (req, res, next) => {
                     const token = sutil.sign({user: req.body.email, vendor: result.vendor});    
                     
                     let out_data = null;
-                    if(result.data){
+                    if(result.Data){
                         out_data = JSON.parse(result.data)
                     }
 
