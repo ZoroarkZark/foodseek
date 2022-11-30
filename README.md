@@ -1,3 +1,10 @@
+
+Newer README in Notion; Link: https://sprout-romano-067.notion.site/FoodSeek-df08685c3bba4df5837135106df0bd04
+
+# OLDER README
+
+---
+
 # FoodSeek
 
 *A Food Social Media Platform*
