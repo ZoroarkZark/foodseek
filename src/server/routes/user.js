@@ -104,7 +104,7 @@ UserRouter.post('/reserve', (req,res,next)=>{
                 let push = {title:`${itemname} reserved!`, body:`User ${req.body.user} has reserved your post ${itemname}`};
 
                 sutils.pushNotify(token, push, (err, sent) => {
-                    if(err){
+                    if(err!=1){
                         return next(err);
                     }
                     if(sent){
