@@ -4,24 +4,23 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { CheckBox } from 'react-native-rapi-ui'
 import { PickerInput } from '../../../../../components/common'
 
-
 // Probably change to the styles inside of features
-export const Detail = ( { icon, label, description, rightContent, fontSize=16, ...rest } ) => {
+export const Detail = ( { icon, label, description, rightContent=null, fontSize=16, fullLength=false,...rest } ) => {
   return (
       <View style={{ flexDirection: 'row'}} {...rest}>
           <View style={{ minWidth: '85%', flexDirection: 'column' }}>
               <View>
-                  <Text {...rest} numberOfLines={1} style={{fontSize: fontSize+2, fontWeight: '700'}} >
+                  <Text {...rest} numberOfLines={!fullLength ? 1 : 0} style={{fontSize: fontSize+2, fontWeight: '700'}} >
                       <>{icon({size: fontSize,...rest})}{label} </>
                   </Text>
               </View>
               <View>
-                  <Text {...rest} numberOfLines={1} style={{color: 'grey', fontSize: fontSize}} >
+                  <Text {...rest} numberOfLines={!fullLength ? 1 : 0} style={{color: 'grey', fontSize: fontSize}} >
                       {description}
                   </Text>
               </View>
           </View>
-          <View style={{paddingRight: 20}}>{rightContent}</View>
+          {rightContent ? <View style={{paddingRight: 20}}>{rightContent}</View> : <></>}
       </View>
   )
   

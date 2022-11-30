@@ -66,8 +66,8 @@ export const OrderNavigator = () => {
                 component={screen.Orders}
         />
         <Stack.Screen
-                name="Posts" 
-                component={screen.Posts}
+                name="EditOrder" 
+                component={screen.EditOrder}
                 options={( { navigation } ) => ( {
                 } )}
             />

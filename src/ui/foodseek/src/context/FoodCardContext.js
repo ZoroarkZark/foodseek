@@ -1,18 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthenticationContext } from './AuthenticationContext'
-import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate, getUserReserved} from './foodcard.service'
+import { cardRequest, cardTransform, cardReserve, cardUpload, cardUpdate, getUserReserved, cancelOrder} from './foodcard.service'
 import { LocationContext } from './LocationContext'
 
 export const CreateExpirationTime = ( timestamp, days=1 ) => {
   let expirationTime = new Date( timestamp )
-  console.log( 'Creation Time: ', expirationTime )
+
   // comment the two lines below to test for 2 minute expiration
   expirationTime.setHours( 0, 0, 0, 0 )
   expirationTime.setTime( expirationTime.getTime() + days * 86400000 )
   // uncomment below to test for 2 minute expiration
   // expirationTime.setMinutes(expirationTime.getMinutes()+2)
-  // console.log('Expiration Time: ', expirationTime) 
+
   return expirationTime
 }
 
@@ -71,7 +71,7 @@ const loadOrders = async (id) => {
       } )
         .then( ( result ) => {
           if ( result.success ) {
-          if (card) add( card )      // updates orders list to add this card
+          onViewActiveOrders()
         }
         setError( null )
         setLoading( false )
@@ -85,6 +85,8 @@ const loadOrders = async (id) => {
       console.log( err )
     }
   }
+
+    
 
   const onUpdate = ( id, key, value ) => {
     setLoading( true )
@@ -122,7 +124,6 @@ const loadOrders = async (id) => {
    const loc = [ location.latitude, location.longitude ] // get location
    const timestamp = new Date(); // declare as a date for now
    timestamp.setHours(24); // set expiration time to midnight
-   console.log(timestamp.toUTCString());
 
   const vendor    = user.id; // get the user id from auth context
   const tags      = card_data.tags; // card data 
@@ -140,7 +141,6 @@ const loadOrders = async (id) => {
    try{ // upload the card
     cardUpload(jwt,upload_card,image)
     .then ((response) => {
-      console.log(response);
       if ( response.success == 1 ) {
         setResult({ error: null, success: response.success })
       }
@@ -187,6 +187,7 @@ const loadOrders = async (id) => {
   // gets the current orders for the seeker
   const onViewActiveOrders = () => {
     setLoading( true )
+    setOrders([])
     try {
       getUserReserved( user.id, jwt )
         .then( ( results ) => { 
@@ -207,6 +208,34 @@ const loadOrders = async (id) => {
       return []
     }
   }
+
+  // function used to reserve a card for a user
+  const onCancel = ( card ) => {
+    const { id } = card
+    setLoading( true )
+    try {
+      cancelOrder( user.id, id, jwt )
+        .then( ( response ) => { 
+          response.success = true
+          return response
+      } )
+        .then( ( result ) => {
+          if ( result.success ) {
+          onViewActiveOrders()
+        }
+        setError( null )
+        setLoading( false )
+        return result
+      } )
+      .catch( ( err ) => {
+        setLoading( false )
+        setError( err )
+      })
+    } catch ( err ) {
+      console.log( err )
+    }
+  }
+
 
   // function wraps the retrieval function may not be necessary?
   const refreshCards = ({coords=location, setResult = null} = {}) => {
@@ -238,14 +267,13 @@ const loadOrders = async (id) => {
   
     useEffect( () => {
       if ( !user ) return 
-      console.log('trying to get active orders...')
       onViewActiveOrders()
     }, [] )
   
   
 
   return (
-    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate, onViewActiveOrders}}>
+    <FoodCardContext.Provider value={{cards, onRefresh: refreshCards, loading, setLoading, error, onReserve, orders, uploadCard: uploadCard, onUpdate, onViewActiveOrders, onCancel}}>
       {children}
     </FoodCardContext.Provider>
   )
