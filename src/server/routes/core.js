@@ -115,10 +115,14 @@ CoreRouter.post('/login', (req, res, next) => {
                     data = {
                         user: req.body.email,
                         vendor: result.vendor,
+                        user_data: result.Data,
+                        user_avatar: result.Avatar,
                         jwt: token,
                         gplacesKey: process.env.GPLACEKEY,
                         message: "user signed in!"
                     }
+
+
                     
                     resbody.setData(data);
                     return next();
