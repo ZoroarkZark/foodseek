@@ -108,11 +108,11 @@ UserRouter.post('/reserve', (req,res,next)=>{
                         return next(err);
                     }
                     if(sent){
-                        resbody.addData("PushStatus", "Sent");
+                        resbody.setData("PushStatus", "Sent");
                         return next();
                     }
                     else{
-                        resbody.addData("PushStatus", "Not Sent");
+                        resbody.setData("PushStatus", "Not Sent");
                         return next();
                     }
                 })
