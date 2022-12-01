@@ -37,7 +37,7 @@ const PostCard = (props) => {
                             <Text style={style.subtextRight}></Text>
                         </View>
                         <View style={style.row}>
-                            <Text style={style.subtextLeft}>{data.item}</Text>
+                            <Text style={style.subtextLeft}>{data.vendor.name}</Text>
                             <Text style={style.subtextRight}>
                                 {data.travel}
                             </Text>

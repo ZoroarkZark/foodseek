@@ -3,7 +3,7 @@ import { getLatitude, getLongitude } from 'geolib'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
-import { SANTA_CRUZ_COORDINATES } from './LocationContext'
+import { SANTA_CRUZ_COORDINATES, LocationContext } from './LocationContext'
 
 
 
