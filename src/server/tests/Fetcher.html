@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <title>Lester the Tester</title>
+    <script>
+/*
+░█░░░█▀█░█▀▀░█▀█░█░░░░█▀▄░█▀█░▀█▀░█▀█
+░█░░░█░█░█░░░█▀█░█░░░░█░█░█▀█░░█░░█▀█
+░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░░▀▀░░▀░▀░░▀░░▀░▀
+*/
+        function getHost(){
+            return document.getElementById('live_host').innerHTML;
+        }
+
+        function getJWT(){
+            return document.getElementById('jwt').innerHTML;
+        }
+        function setJWT(jwt){
+            document.getElementById('jwt').innerHTML = jwt;
+        }
+
+        function buildURL(end,path){
+            return `${end}${path}`;
+        }
+
+        function extractJWT(data){
+            if(data.jwt){
+                setJWT(data.jwt);
+                return data.jwt;
+            }
+            else{
+                return "";
+            }
+        }
+
+
+        function buildHost(host){
+            let out ="";
+            out = `http://${host}`;
+            return out;
+        }
+
+        function updateHost(){
+            let host = document.forms['host_form']['host'].value;
+            document.getElementById("live_host").innerHTML = buildHost(host);
+        }
+        // End local info
+/*
+░█▀▀░█▀▀░▀█▀░█▀▀░█░█
+░█▀▀░█▀▀░░█░░█░░░█▀█
+░▀░░░▀▀▀░░▀░░▀▀▀░▀░▀
+*/
+        // Fetching 
+        async function fetchRequest(url, method, payload){
+            // get everything ready for the actual fetch call
+            //url = buildURL(endpoint,url);
+            method = method.toUpperCase();
+            payload = (method=="GET") ? null : JSON.stringify(payload); //If we have a GET send no body, if we have anything else stringify the body
+            //console.log(`${method} @ ${url} : payload ${JSON.stringify(payload)}`);
+
+            // actual fetch call
+            const resp = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: payload
+                })
+            if ( !resp.ok ) { throw new Error(`HTTP error, status = ${resp.status}`) }  // throws an error if fetch call senses an error
+            // json representation of fetch response
+
+            if(!resp.ok){ throw new Error("bad network request");}
+        
+            return resp.json();
+        }
+
+        function decodeRequest(request){
+            let req = {
+                method: "",
+                path: "",
+                payload: "",
+            };
+
+            let req_split = request.split(" ");
+
+            req.method  = req_split[0];
+            req.path     = buildURL(getHost(),req_split[1]);
+            let payload = (req_split[2]) ? req_split.slice(2,req_split.length) : "";
+
+            if(payload != ""){
+                for(let i in payload){
+                    req.payload += `${payload[i]}`;
+                }
+
+                //console.log(req.payload);
+                req.payload = JSON.parse(req.payload);
+            }
+
+            req.payload.jwt = getJWT();
+            //console.log(req);
+            return req;
+        }
+
+        function requestWrap(request,iter,interval){
+            //console.log(`Iter: ${iter}, Interval:${interval}`);
+            //console.log(request.indexOf('logout'));
+            if(request.indexOf("logout")>=0){
+                //console.log("logout");
+                setTimeout( () => {
+                    setJWT("");
+                    appendResponses({"Client-msg": "Logged out"});
+                    return;
+                }, interval*iter);
+            }
+            else{
+                setTimeout( () => {
+
+                    let req_data = decodeRequest(request);
+                    fetchRequest(req_data.path,req_data.method,req_data.payload)
+                        .then( (response) => {
+                            appendResponses(response);
+                            if(response.success == 1){
+                                //console.log("good req");
+                                extractJWT(response.data);
+                            }
+                        })
+                        .catch( (err) => appendResponses(err));
+                }, interval*iter);
+            }
+        }
+
+        function makeRequests(){
+            let interval = document.forms['request_form']['interval'].value; // interval value
+            interval = interval * 1000; // miliseconds to seconds 
+            document.getElementById("response_list").innerHTML = "";
+            document.getElementById("card_list").innerHTML = "";
+            let req_data = document.forms['request_form']['request_list'].value;
+            //document.getElementById('tester').innerHTML = req_data;
+            
+            req_data = req_data.trimEnd(); // get rid of any excess spaces at the end
+
+            let requests = req_data.split("\n");
+            for(let req_ind in requests){
+                //let req_data = decodeRequest(requests[req_ind]);
+                
+                requestWrap(requests[req_ind],req_ind,interval);
+            }
+            
+        }
+
+
+/*
+░█▀▄░█▀▀░█▀▀░█▀█░█▀█░█▀█░█▀▀░█▀▀░█▀▀
+░█▀▄░█▀▀░▀▀█░█▀▀░█░█░█░█░▀▀█░█▀▀░▀▀█
+░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
+*/
+        function appendResponses(response){
+            let list = document.getElementById('response_list');
+            let li_node = document.createElement('li');
+            let res_node = null;
+            
+            //console.log(Object.keys(response))
+            if(response.success){
+                if(response.data.cards){
+                    console.log(response.data.cards);
+                    appendCards(response.data.cards);
+                }
+            }
+
+            res_node = document.createTextNode(JSON.stringify(response));
+            
+            li_node.appendChild(res_node);
+            list.appendChild(li_node);
+        }
+
+        function appendCards(cards){
+            document.getElementById('card_list').innerHTML = "";
+            console.log(`# Cards : ${cards.length}`);
+            for(let i in cards){
+                appendCard(cards[i]);
+            }
+        }
+
+        function appendCard(card){
+            let list = document.getElementById('card_list');
+            console.log(list);
+            let li_node = document.createElement('li');
+            let card_data = JSON.parse(card.data);
+
+            list.appendChild(li_node);
+
+            console.log("make div");
+            let CARD = document.createElement('div');
+            CARD.setAttribute('id',`CARD${card.id}`);
+            
+            li_node.appendChild(CARD);
+
+            let img = document.createElement('img');
+            console.log(Object.keys(card_data));
+            let src = (card.img_url) ? card.img_url : "";
+            img.setAttribute('alt','No Image');
+            img.setAttribute('src',src);
+            img.setAttribute('height',"64px");
+            img.setAttribute('width',"64px");
+
+            CARD.appendChild(img);
+
+
+            console.log("make item");
+            let item = document.createElement('h4');
+            let itemText = document.createTextNode(`${card_data.item} : ${card.id}`);
+            item.appendChild(itemText);
+            CARD.appendChild(item);
+
+            console.log("make vendr");
+            let vendor = document.createElement('p');
+            let ven    = (card.vendor) ? card.vendor : "No Vendor";
+            let vendorText = document.createTextNode(ven);
+            vendor.appendChild(vendorText);
+            CARD.appendChild(vendor);
+
+            console.log("make pos");
+            let pos = document.createElement('p');
+            let posText = document.createTextNode(`(${card.lat},${card.lon})`)
+            pos.appendChild(posText);
+            CARD.appendChild(pos);
+
+            console.log("add to list");
+            return;
+        }
+
+
+/* 
+░▀█▀░█▄█░█▀█░█▀▀░█▀▀░█▀▀
+░░█░░█░█░█▀█░█░█░█▀▀░▀▀█
+░▀▀▀░▀░▀░▀░▀░▀▀▀░▀▀▀░▀▀▀
+*/ 
+        function imgHeaders(){
+            let header_element = document.forms['img_form']['img_headers'].value;
+            return JSON.parse(header_element);
+        }
+
+        function getImg(target){
+            let files = document.getElementById('img_file').files
+            console.log(document.getElementById('img_file').files);
+
+            let file = files[0];
+            let type = file.type;
+
+            if(file){
+                console.log(file.type);
+
+                
+                let reader = new FileReader();
+
+                reader.onload = (evt) => {
+                    console.log(evt.target.result);
+                    if(target == 1){
+                        imgSubmit(evt.target.result,type,getJWT());
+                    }
+                    if(target == 2){
+                        avatar(evt.target.result, getJWT());
+                    }
+                }
+
+                reader.onerror = (err) => {
+                    console.debug(err);
+                }
+
+                let data = reader.readAsDataURL(file); // got the img data
+                
+            }
+        }
+
+        async function imgSubmit(blob,type,jwt){
+           let img_headers = imgHeaders();
+           let expire = new Date();
+           expire = expire.setHours(expire.getHours()+3);
+           expire = expire.toUTCString();
+
+
+           let closingTime = img_headers.timestamp;
+
+           let form = new FormData();
+           form.append('file',blob)
+
+           let host = getHost();
+           let path = "/images/imgtest"
+           host = host + path;
+           let response = await fetch(host, {
+                method: "POST",
+                headers:{
+                    'Custom-Json' : JSON.stringify( {
+                        jwt: jwt,
+                        item: img_headers.item,
+                        vendor: img_headers.vendor,
+                        loc: img_headers.loc,
+                        tags: img_headers.tags,
+                        timestamp: expire,
+                        filetype: type
+                    })
+                },
+                body: form
+           }); 
+           
+           let result = await response.json();
+           appendResponses(result);
+           console.log(result);
+        }
+
+        async function avatar(blob, jwt){
+            let path = "/images/avatarUpload";
+            let host = getHost();
+            host = host + path;
+
+            let form = new FormData();
+            form.append('file', blob
+            )
+
+            let response = await fetch(host, {
+                method: "POST",
+                headers: {
+                    "Custom-Json" : JSON.stringify({
+                        jwt: jwt
+                    })
+                },
+                body: form
+            } );
+
+            let result = await response.json();
+            appendResponses(result);
+            console.log(result);
+        }
+
+        function updateTextInput(val, elId) {
+          document.getElementById(elId).value=val; 
+        }
+
+
+
+    </script>
+
+    <!--STYLES-->
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: "Lucida Console", "Courier New", monospace;
+        }
+
+        div{
+            background-color: lightcyan;
+            border: 3px;
+            border-style: solid;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        h1{
+            color: white;
+        }
+
+        h2 h3{
+            color: rgb(19, 8, 8);
+        }
+
+        label {
+            float: left;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div id="host_targets">
+        <p><strong>Live: </strong>ec2-54-193-142-247.us-west-1.compute.amazonaws.com:3000</p>
+        <h2>Host info</h2>
+        <form name="host_form">
+            <label for="host">Hostname</label>
+            <input id="host" name="host" type="text" value="127.0.0.1:3000">
+            <button type="button" onclick="updateHost()">update</button>
+        </form>
+        <p id="live_host">http://127.0.0.1:3000</p>
+    </div>
+
+    <div id="request_field">
+        <h2>Enter Requests</h2>
+        <form name="request_form">
+            <textarea name="request_list" rows="20" cols="100">get /test
+post /login {"email": "cal", "pass": "123"}
+            </textarea>
+            <button type="button" onclick="makeRequests()">Request</button>
+            <input type="range" id="interval" name="interval" min="0" max="10" step="0.1" value="2" onchange="updateTextInput(this.value, 'intervalText');">
+            <input type="text" id="intervalText" value="2">  
+        </form>
+    </div>
+
+    <div id="imgs">
+        <h2>Image Request</h2>
+        <form name="img_form">
+            <textarea name="img_headers" rows="2", cols="100">
+{"item": "item", "loc":[1,2], "tags": ["vegan"], "vendor": "acme"}
+            </textarea>
+            <input type="file" id="img_file" name="img_file">
+            <p>Set Image for Foodcard</p>
+            <button type="button" onclick="getImg(1)">Upload Image as Card</button>
+        </form>
+        <form name="img_form_2">
+            <p>Set Avatar Button(must be signed in)</p>
+            <button type="button" onclick="getImg(2)">Upload Image as Avatar</button>
+        </form>
+    </div>
+
+    <div id="user_info">
+        <p>JWT TOKEN:</p>
+        <p id="jwt"></p>
+    </div>
+
+    <div id="responses">
+        <h3>Response Log</h3>
+        <ol id="response_list"></ol>
+    </div>
+    
+    <div id="cards">
+        <h3>Card List</h3>
+        <ol id="card_list"></ol>
+    </div>
+
+    <div id="help">
+        <h3>Help</h3>
+        <ul>
+            <li>requests should all be of the form "method path payload"</li>
+            <li>method and path should contain no spaces</li>
+            <li>payload should be in the form of a json string</li>
+            <ul>
+                <li>All keys must be encapsulated by ""</li>
+                <li>Values do not have to be encapsulated</li>
+                <li>eg: {"test": 1, "name": "name"}</li>
+                <li>Sub object keys must be encapsulated but their values dont have to</li>
+            </ul>
+            <li>
+                All requests are seperated when you press enter (aka a \n is inserted)
+            </li>
+            <li>There is a custom method logout, that can be called to remove the jwt</li>
+        </ul>
+
+        <h4>Example Usage</h4>
+        <p>To run a sequence that tests the server</p>
+        <textarea rows="5" cols = "100">
+get /test
+post /test {"test_numerical":1, "test_string":"hello", "test_obj": {"sub_field":1}}
+        </textarea>
+        <p>To run a sequence that deletes a user, signs up, logs in, gets the list of cards and logs out</p>
+        <textarea rows="8" cols="100">
+post /ru {"email":"new_email@ucsc.edu"}
+post /signup {"email":"new_email@ucsc.edu", "pass":"coolpass", "vendor":0}
+post /login {"email":"new_email@ucsc.edu", "pass":"coolpass"}
+post /user/list {}
+logout
+get /test
+        </textarea>
+        <p>uploading food cards</p>
+        <textarea rows="8" cols="100">
+post /vendor/upl {"item": "name"}
+post /vendor/upl2 {"item": "name", "loc":[1.002,20.0001], "tags":["vegan","keto"], "timestamp": "unix time data here" }
+post /upl2 {"item":, "loc":, "tags":, "timestamp": }        
+</textarea>
+        <textarea rows="8" cols="100">
+        </textarea>
+        <h3>Images</h3>
+        <p>Images from this tester are a little wonky</p>
+        <p>YOU MUST HAVE A VENDOR JWT TO UPLOAD</p>
+        <p>So you will have to run a login in the request field to a vendor acc before using the image feature</p>
+        <p>You set the image fields in the Image Request text box</p>
+        <p>All the required fields have placeholders in them already so just change the values</p>
+        <p>Select a file with the choose file button and hit submit</p>
+    </div>
+
+</body>
+</html>

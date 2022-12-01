@@ -18,11 +18,12 @@ const PostCard = (props) => {
     return (
         <TouchableOpacity onPress={() => {navigation.navigate(ExpandedPostProp ? ExpandedPostProp : 'ExpandedPost', {card: data, id: data.id, vendor: data.vendor, image: data.image, cuisine: data.cuisine, item: data.item, distance: data.travel, time: data.time, address: data.address, phoneNumber: data.phoneNumber})}}>
             <Section>
+                {console.log(data)}
                 <SectionImage source={{uri: data.img_url}} height={200} />
                 <SectionContent padding={10}>
                     <View style={style.column}>
                         <View style={style.row}>
-                            <Text style={style.title}>{data.vendor.name}</Text>
+                            <Text style={style.title}>{data.item}</Text>
                             <TouchableWithoutFeedback>
                                 <TouchableOpacity>
                                     <FavoriteButton vendor={data.vendor} />
@@ -31,14 +32,14 @@ const PostCard = (props) => {
                         </View>
                         <View style={style.row}>
                             <Text style={style.subtextLeft}>
-                                {data.cuisine}
+                                { flattenTags(data.tags)}
                             </Text>
                             <Text style={style.subtextRight}></Text>
                         </View>
                         <View style={style.row}>
                             <Text style={style.subtextLeft}>{data.item}</Text>
                             <Text style={style.subtextRight}>
-                                {data.travel} / {data.time}
+                                {data.travel}
                             </Text>
                         </View>
                     </View>
@@ -91,3 +92,11 @@ const style = StyleSheet.create({
 })
 
 export default memo(PostCard)
+
+function flattenTags(tags){
+    let str = "";
+    for(let tag in tags){
+        str+="#"+tags[tag]+" "
+    }
+    return str;
+}

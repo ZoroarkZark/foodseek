@@ -17,15 +17,18 @@ export const ExpandPost = ( props ) => {
     const { card, id, vendor, cuisine, item, distance, time, phoneNumber, image} = props.route.params;
     const [ address, setAddress ] = useState( '' )
     const { img_url, lat: {latitude}, lon: {longitude}} = card
-    console.log( 'lat,lon: ', latitude+','+longitude)
+    //console.log(card);
     const identity = JSON.stringify( id );
-    console.log('KEEEEEEE  ', apiKey)
+    //console.log('KEEEEEEE  ', apiKey)
     useEffect( () => { 
-        fetch( 'https://maps.googleapis.com/maps/api/geocode/json?address=' + latitude + ',' + longitude + '&key=' + apiKey )
+        fetch( 'https://maps.googleapis.com/maps/api/geocode/json?address=' + card.lat + ',' + card.lon + '&key=' + apiKey )
         .then( ( response ) => response.json() )
         .then( ( responseJson ) => {
-        console.log( 'ADDRESS GEOCODE is BACK!! => ' + JSON.stringify( responseJson ) )
-        setAddress(responseJson.formatted_address)
+        //console.log( 'ADDRESS GEOCODE is BACK!! => ' + JSON.stringify( responseJson ) )
+        if(responseJson.results.length > 0){
+            console.log(responseJson.results[0].formatted_address);
+            setAddress(responseJson.results[0].formatted_address);
+        }
     } )
     } ,[])
 
@@ -68,7 +71,7 @@ export const ExpandPost = ( props ) => {
             <Text> </Text> 
             <Text> Phone Number: {phoneNumber}  </Text>
             <Text> </Text> 
-                    <Text> Address: 
+                    <Text> Address: {address}
                     </Text>
             <Text> </Text>
             <Text> Time to Arrive: {time} </Text>
