@@ -277,7 +277,6 @@
         async function imgSubmit(blob,type,jwt){
            let img_headers = imgHeaders();
            let expire = new Date();
-           expire = expire.setHours(expire.getHours()+3);
            expire = expire.toUTCString();
 
 
@@ -391,9 +390,10 @@
             <textarea name="request_list" rows="20" cols="100">get /test
 post /login {"email": "cal", "pass": "123"}
             </textarea>
-            <button type="button" onclick="makeRequests()">Request</button>
+            <button type="button" onclick="makeRequests()">Make Request(s)</button>
             <input type="range" id="interval" name="interval" min="0" max="10" step="0.1" value="2" onchange="updateTextInput(this.value, 'intervalText');">
-            <input type="text" id="intervalText" value="2">  
+            <input type="text" id="intervalText" value="2">
+            <span>Interval(s)</span>
         </form>
     </div>
 
