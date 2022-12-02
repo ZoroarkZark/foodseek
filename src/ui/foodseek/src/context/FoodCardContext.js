@@ -25,6 +25,7 @@ export const FoodCardProvider = ( { children } ) => {
   const [ error, setError ] = useState( null )
   const { location, setLocation } = useContext( LocationContext )
   const { user, jwt, isVendor } = useContext( AuthenticationContext )
+  const { deviceLocation, setDeviceLocation } = useContext( LocationContext )
   const [ orders, setOrders ] = useState( [] )
   
   // called to save a card to the user's order list
@@ -121,24 +122,26 @@ const loadOrders = async (id) => {
    */
   const uploadCard = ( image, card_data, setResult ) => {
    setLoading( true )
-   const loc = [ location.latitude, location.longitude ] // get location
+   //console.log('DEVICE LOCATION',deviceLocation);
+   const loc = [ deviceLocation.coords.latitude, deviceLocation.coords.longitude ] // get location
    const timestamp = new Date(); // declare as a date for now
    timestamp.setHours(24); // set expiration time to midnight
 
-  const vendor    = user.id; // get the user id from auth context
-  const tags      = card_data.tags; // card data 
-  const item = card_data.item // card data
+   const vendor    = user.id; // get the user id from auth context
+   const tags      = card_data.tags; // card data 
+   const item = card_data.item // card data
 
 
    const upload_card = {
     item: item,
-    loc: loc,
+    loc: [ loc[0].toFixed(6), loc[1].toFixed(8)],
     vendor: vendor,
     tags: tags,
     timestamp: CreateExpirationTime(new Date()),
    }
 
    try{ // upload the card
+    console.log(upload_card.loc);
     cardUpload(jwt,upload_card,image)
     .then ((response) => {
       if ( response.success == 1 ) {

@@ -1,0 +1,8 @@
+(12/1):17:40:45     -   GET to path: /test
+(12/1):17:42:8      -   GET to path: /test
+(12/1):17:42:10     -   POST to path: /signup
+(12/1):17:42:10     -   {"msg":"Signup complete, no email provided"}
+(12/1):17:42:33     -   POST to path: /login
+(12/1):17:42:33     -   {"user":"lester","vendor":0,"user_data":null,"user_avatar":null,"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoibGVzdGVyIiwidmVuZG9yIjowLCJpYXQiOjE2Njk5NDUzNTMsImV4cCI6MTY3MDgwOTM1M30.tLkom-LJLRDG-l4RVjbYrzi8CGhyQnAa8w4KjcNx22g","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"}
+(12/1):17:43:8      -   POST to path: /vendor/list
+(12/1):17:43:8      -   {"error":3,"message":"Wrong User Permission (vendor/user)"}

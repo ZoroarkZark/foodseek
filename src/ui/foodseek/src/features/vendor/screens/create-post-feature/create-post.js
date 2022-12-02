@@ -7,6 +7,7 @@ import Container from '../../../../components/styling/Container'
 import TextWrapper from '../../../../components/styling/TextWrapper';
 import { FoodCardContext } from '../../../../context/FoodCardContext'
 import { AuthenticationContext } from '../../../../context/AuthenticationContext'
+import { LocationContext } from '../../../../context/LocationContext'
 
 import { manipulateAsync, SaveFormat} from 'expo-image-manipulator'
 
@@ -20,6 +21,7 @@ export const CreatePost = ( { route, navigation } ) => {
     const [numTags, setNumTags] = useState(0);
     const [timeAvailable, setTimeAvailable] = useState('');
     const uri = (route.params) ? route.params.uri : "";
+    const { getLocation } = useContext( LocationContext );
     //console.log( `recieved uri ${ uri }` );
     
 
@@ -56,6 +58,7 @@ export const CreatePost = ( { route, navigation } ) => {
         let card = {
             item: foodName,
             tags: tags
+            
         }
         console.log(tags)
         if (uri){
@@ -112,7 +115,11 @@ export const CreatePost = ( { route, navigation } ) => {
             <ScrollViewDismissKeyboard>
                 <Container>
                     <Title>Upload Food</Title>
-                    <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => checkInputs(foodName)}/>
+                    <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => {
+                        getLocation();
+                        
+                        checkInputs(foodName)
+                        }}/>
                     <TextInput style={styles.input} value={foodName} placeholder="Enter Item Name..." onChangeText={setFoodName}/>
                 </Container>
             </ScrollViewDismissKeyboard>

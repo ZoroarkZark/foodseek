@@ -1,0 +1,5 @@
+(12/1):17:57:57     -   GET to path: /test
+(12/1):17:57:59     -   POST to path: /login
+(12/1):17:57:59     -   {"user":"cal","vendor":1,"user_data":"{\"name\":\"carl\",\"travel\":\"walking\",\"tags\":[\"gluten-free\",\"dog-friendly\"]}","user_avatar":"387rKzxBiMnI1iaBVF17.jpeg","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY2FsIiwidmVuZG9yIjoxLCJpYXQiOjE2Njk5NDYyNzksImV4cCI6MTY3MDgxMDI3OX0.0CCuHm1K05eJTz7YnkuQ5YEtgEVSnFgN2tTbBagPajM","gplacesKey":"AIzaSyDDPkSA8ah-CuilEGJELrEAXWi3bXDHQdM","message":"user signed in!"}
+(12/1):17:58:19     -   GET to path: /test
+(12/1):17:58:21     -   POST to path: /test

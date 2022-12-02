@@ -3,7 +3,7 @@ import { getLatitude, getLongitude } from 'geolib'
 import { seekerAvatar } from '../../assets'
 import { fetchRequest, img } from '../scripts/deviceinterface'
 import { computeTravel } from '../util'
-import { SANTA_CRUZ_COORDINATES } from './LocationContext'
+import { SANTA_CRUZ_COORDINATES, LocationContext } from './LocationContext'
 
 
 
@@ -109,7 +109,8 @@ export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, res
       const travel = computeTravel( loc, card_coordinates, speed, unit )        // compute values for travel string (distance and minutes)
       let min = (60 * travel.time % 60).toFixed(0)                  // get minutes
       let hour = (travel.time / 60).toFixed(0)                      // get hours
-      
+      //console.log(card_coordinates);
+
       return {
         ...card, 
         id: id,
@@ -119,8 +120,8 @@ export const cardTransform = ( {loc = SANTA_CRUZ_COORDINATES, speed = SPEED, res
         favorite: false, // TODO: enable check if favorite false just during testing
         cuisine: cuisine, // genre/category of vendor menu, ||| original var: cuisine
         item: item, // name of the food item being posted ||| original var: item
-        travel: travel ? `${travel.distance.toFixed(1)} mi`: '', // computed travel distance string format: 1.7 mi 
-        time: travel ? `${hour > 0 ? `${hour} hr` : ''} ${min} min`: '', //time format: 16 min
+        travel: travel ? `${card_coordinates.latitude}:${card_coordinates.longitude},`: '', // computed travel distance string format: 1.7 mi 
+        //time: travel ? `${hour > 0 ? `${hour} hr` : ''} ${min} min`: '', //time format: 16 min
         address: address ? address : `25 Ferret Funland Rd, Bakersfield, California`,  // Fill in with address
         phoneNumber: phoneNumber ? phoneNumber : "000-010-0212",  // Fill in with phone number
         reserved: res,
