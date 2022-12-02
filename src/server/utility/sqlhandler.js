@@ -561,6 +561,14 @@ class FoodStore {
     // changing the object to have a field "pos" = [lat, long]
     
     //dev feature to uplaod a card easier
+    /**
+     * Development Method to easily upload a card just by item name
+     * @param {string} item : name for item
+     * @param {string} vendor : name for vendor 
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err) or callback(null) if no error
+     */
     uploadItem(item,vendor, callback){
         // random pos from list
         let rind = Math.round((Math.random()*100)) % TEST_POS.length;
@@ -601,6 +609,12 @@ class FoodStore {
         
     }
     
+    /**
+     * The real upload function. Needs a pack to upload the item by
+     * @param {*} pack : represents the item we are uploading, required fields `tags`, `item`, `loc`, `vendor`, `img_url`, and `timestamp` 
+     * @param {*} callback 
+     * @returns {*} callback(err) if failure, callback(null) if no error
+     */
     uploadMore(pack, callback){
         //console.log(pack);
         
@@ -721,6 +735,13 @@ class FoodStore {
     }
 
 
+    /**
+     * Get card data based on a cards id
+     * @param {number} id : integer id for the card 
+     * @param {function} callback
+     * 
+     * @returns {function} callback(err, null) if error, callback(null, results) on results
+     */
     getCard(id, callback){
         let SQL = "SELECT * FROM ?? WHERE ?? = ?"
         let params = [
@@ -742,7 +763,12 @@ class FoodStore {
         })
     }
     // 
-    // upload whole card
+    /**
+     * Depreciated development function
+     * @param {*} fooddata : represents card we are uploading 
+     * @param {*} callback 
+     * @returns {function} : callback(err) on error and callback(null) on no error
+     */
     uploadCard(fooddata, callback){
         let SQL = "INSERT INTO ?? (?? , ?? , ??, ?? ) VALUES (?, ?, ?, ?)";
         let data = {
@@ -775,7 +801,20 @@ class FoodStore {
     
     
     
-    // return all cards
+    /**
+     * Return all cards currently stored on the database
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err, null) on error, and callback(null, results) on no error
+     * 
+     * @example for a route that gets all cards
+     * app.get('/getAllCards' ,(req,res,next) => {
+     *  FoodStore.getCardsAll( (err, results) => {
+     *    if(err) return next(err);
+     *    res.end(JSON.stringify({cards: results}));
+     *   })
+     * })
+     */
     getCardsAll(callback){
         let SQL = "SELECT * FROM ?? WHERE ?? IS NULL";
         let params = [
@@ -795,7 +834,14 @@ class FoodStore {
         })
     }
     
-    // get all cards maxdist_m from pos
+    /**
+     * Get cards within a certain range of a position (in lat and lon)
+     * @param {*} pos : Object with fields `lat` and `lon` 
+     * @param {number} maxdist_m : maximum distance in miles
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err, null) on error and callback(null, results) where results is the list of cards within range
+     */
     getCardsByRange(pos , maxdist_m, callback){
         let Km = sutil.getKm(maxdist_m);
         //console.log(Km);
@@ -836,7 +882,13 @@ class FoodStore {
         
     }
     
-    // return all cards uploaded by a vendor
+    /**
+     * Get all cards associated with a given vendor
+     * @param {string} vendor_id : the vendors email
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err, null) on error and callback(null, results) where results is a list of cards associated with the vendor
+     */
     getCardsVendor(vendor_id, callback){
         let SQL = 'SELECT * FROM ?? WHERE ?? = ?'
         let params = [
@@ -859,7 +911,13 @@ class FoodStore {
         
     }
     
-    //return the card the user has
+    /**
+     * Gets a list of cards that the user has reserved (should just be one)
+     * @param {string} user_id : the users email 
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err, null) on error and callback(null, results) where results is the list of cards the user has reserved
+     */
     getUserReserved(user_id, callback){
         let SQL = "SELECT * FROM ?? WHERE ?? = ?";
         let params = [
@@ -875,7 +933,11 @@ class FoodStore {
         });
     }
     
-    // delete card by id 
+    /**
+     * Delete a card by its id 
+     * @param {number} card_id 
+     * @param {function} callback 
+     */
     deleteCardsById(card_id, callback){
         let SQL = 'DELETE FROM ?? where ?? = ?';
         let params = [
@@ -896,6 +958,10 @@ class FoodStore {
         
     }
 
+    /**
+     * Delete all cards stored in the table
+     * @param {*} callback 
+     */
     deleteAll(callback){
         let SQL = 'DELETE FROM ??';
         let params = [
@@ -915,7 +981,14 @@ class FoodStore {
         })
     }
     
-    // reserve card by id and upload user email into reserved field
+    /**
+     * Reserve a card for a user
+     * @param {number} id : number id for the card we are reserving
+     * @param {string} username : email for the user reserving the card
+     * @param {function} callback : function to handle 
+     * 
+     * @returns {function} callback(err,null) if an error happened and callback(null, 1) if it reserved a card
+     */
     reserveCard(id, username, callback){
         //change the card with card.id = id in the database to set its reserved field = username
         // You were using a Insert here but we want to use Update
@@ -944,7 +1017,13 @@ class FoodStore {
         
     }
     
-    // remove the user from the card
+    /**
+     * Cancel a users reservations
+     * @param {string} username : email for the user 
+     * @param {function} callback 
+     * 
+     * @returns {function} callback(err, null) if error, and callback(null, results) where results will be the query info
+     */
     cancelReservation(username, callback){
         let SQL = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
         let params = [
@@ -965,6 +1044,9 @@ class FoodStore {
         
     }
     
+    /**
+     * Function that is used to check if cards in the database are expired
+     */
     clearAllExpired(){
         let date = new Date();
         let min = date.getTime() / MINUTES_IN_MILI;
@@ -984,11 +1066,16 @@ class FoodStore {
       })
     }
     
-    
+    /**
+     * Start the clearing interval
+     */
     startClear(){
         this.clearExp = setInterval(()=> this.clearAllExpired(), 1000 * 60 * 10);
     }
     
+    /**
+     * Stop the clearing interval
+     */
     endClear(){
         clearInterval(this.clearExp);
     }
