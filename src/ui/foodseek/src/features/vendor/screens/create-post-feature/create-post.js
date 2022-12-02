@@ -117,6 +117,7 @@ export const CreatePost = ( { route, navigation } ) => {
                     <Title>Upload Food</Title>
                     <Button text='Take Picture' style={{marginTop:20, marginBottom:20}} onPress={() => {
                         getLocation();
+                        
                         checkInputs(foodName)
                         }}/>
                     <TextInput style={styles.input} value={foodName} placeholder="Enter Item Name..." onChangeText={setFoodName}/>

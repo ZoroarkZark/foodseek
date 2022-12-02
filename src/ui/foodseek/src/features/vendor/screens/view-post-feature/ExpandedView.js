@@ -101,8 +101,6 @@ export const ExpandedView = ( props ) => {
                           ? <TextButton onPress={onSaveChanges}>{readyUpdate ? 'Save Changes' : !changed ? toTitleCase('Tap on details to edit') : toTitleCase('Type return to finish editing')}</TextButton>
                           : <Text>Make changes by tapping on post details, and hit return when you are done editing.</Text>
                       }
-          
-
           </View>
           </ScrollViewDismissKeyboard>
           </KeyboardAvoidingView>

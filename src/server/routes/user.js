@@ -108,11 +108,11 @@ UserRouter.post('/reserve', (req,res,next)=>{
                         return next(err);
                     }
                     if(sent){
-                        resbody.setData("PushStatus", "Sent");
+                        resbody.setData({msg:"PushStatus Sent"});
                         return next();
                     }
                     else{
-                        resbody.setData("PushStatus", "Not Sent");
+                        resbody.setData({msg:"PushStatus Not Sent"});
                         return next();
                     }
                 })
@@ -147,6 +147,8 @@ UserRouter.post('/cancel', (req,res,next) => {
             return next(err); // return error
         }
         
+        
+
         resbody.setData({ msg: `cancel reservations for ${req.body.email}`});
         return next();
     })
